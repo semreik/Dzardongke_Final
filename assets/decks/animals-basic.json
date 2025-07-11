@@ -1,0 +1,25 @@
+{
+  "id": "animals-basic",
+  "title": "Basic Animals",
+  "description": "Learn common animal names in Dzardzongke",
+  "cards": [
+    {
+      "id": "animal-1",
+      "front": "རི་བོང",
+      "back": "Rabbit",
+      "hasAudio": true
+    },
+    {
+      "id": "animal-2",
+      "front": "སྟག",
+      "back": "Tiger",
+      "hasAudio": true
+    },
+    {
+      "id": "animal-3",
+      "front": "གླང་ཆེན",
+      "back": "Elephant",
+      "hasAudio": true
+    }
+  ]
+}

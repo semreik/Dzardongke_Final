@@ -1,0 +1,17 @@
+{
+  "id": "food-basic",
+  "title": "Basic Food Items",
+  "description": "Common food and drink vocabulary in Dzardzongke",
+  "cards": [
+    { "id": "f1", "front": "ཇ་", "back": "Tea" },
+    { "id": "f2", "front": "འོ་མ་", "back": "Milk" },
+    { "id": "f3", "front": "མར་", "back": "Butter" },
+    { "id": "f4", "front": "ཤ་", "back": "Meat" },
+    { "id": "f5", "front": "བྱ་ཤ་", "back": "Chicken" },
+    { "id": "f6", "front": "ཆུ་", "back": "Water" },
+    { "id": "f7", "front": "སྒོག་པ་", "back": "Garlic" },
+    { "id": "f8", "front": "ཚྭ་", "back": "Salt" },
+    { "id": "f9", "front": "སྣུམ་", "back": "Oil" },
+    { "id": "f10", "front": "ཕྱེ་", "back": "Flour" }
+  ]
+}

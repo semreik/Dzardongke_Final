@@ -1,0 +1,215 @@
+import { create } from 'zustand';
+import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
+import type { Card } from '../types/deck';
+import type { CardProgress, ProgressStatus } from '../types/progress';
+import type { StudySession } from '../types/stats';
+
+type DeckProgress = Record<string, CardProgress>; // cardId → progress
+
+export interface ProgressState {
+  progress: Record<string, DeckProgress>;  // deckId → cards
+  sessions: StudySession[];  // Study session history
+  currentSession: StudySession | null;  // Active study session
+  setMastered: (deckId: string, cardId: string, mastered: boolean) => Promise<void>;
+  setLearning: (deckId: string, cardId: string, learning: boolean) => Promise<void>;
+  getDeckProgress: (deckId: string, cards: Card[]) => number;
+  getLastAttempt: (deckId: string) => string | null;
+  getLastCorrect: (deckId: string) => string | null;
+  countByStatus: (deckId: string, status: ProgressStatus) => number;
+  loadProgress: () => Promise<void>;
+  startSession: (deckId: string, totalCards: number) => void;
+  endSession: () => void;
+  getSessionsByDeck: (deckId: string) => StudySession[];
+}
+
+const STORAGE_KEY = 'flashcard_progress';
+
+export const useProgress = create<ProgressState>((set, get) => ({
+  progress: {},
+  sessions: [],
+  currentSession: null,
+
+  setMastered: async (deckId: string, cardId: string, mastered: boolean) => {
+    // Create a completely new state object to ensure React sees the change
+    const newProgress = { ...get().progress };
+    
+    // Initialize deck progress if it doesn't exist
+    if (!newProgress[deckId]) {
+      newProgress[deckId] = {};
+    }
+    
+    // Create new card progress
+    const newStatus: ProgressStatus = mastered ? 'mastered' : 'new';
+    newProgress[deckId] = {
+      ...newProgress[deckId],
+      [cardId]: {
+        status: newStatus,
+        lastCorrect: mastered ? new Date().toISOString() : undefined,
+        lastAttempt: new Date().toISOString()
+      }
+    };
+
+    console.log('[setMastered] Before update:', {
+      deckId,
+      cardId,
+      mastered,
+      currentDeckProgress: newProgress[deckId],
+      newStatus
+    });
+
+    set({ progress: newProgress });
+    
+    // Save both progress and sessions
+    const data = JSON.stringify({
+      progress: newProgress,
+      sessions: get().sessions
+    });
+    
+    if (Platform.OS === 'web') {
+      localStorage.setItem(STORAGE_KEY, data);
+    } else {
+      await SecureStore.setItemAsync(STORAGE_KEY, data);
+    }
+
+    console.log('[setMastered] After update:', {
+      deckId,
+      cardId,
+      storedProgress: get().progress[deckId]?.[cardId],
+      allProgress: get().progress
+    });
+  },
+
+  setLearning: async (deckId: string, cardId: string, learning: boolean) => {
+    // Create a completely new state object to ensure React sees the change
+    const newProgress = { ...get().progress };
+    
+    // Initialize deck progress if it doesn't exist
+    if (!newProgress[deckId]) {
+      newProgress[deckId] = {};
+    }
+    
+    // Create new card progress
+    const newStatus: ProgressStatus = learning ? 'learning' : 'new';
+    newProgress[deckId] = {
+      ...newProgress[deckId],
+      [cardId]: {
+        status: newStatus,
+        lastAttempt: new Date().toISOString()
+      }
+    };
+
+    set({ progress: newProgress });
+    
+    // Save both progress and sessions
+    const data = JSON.stringify({
+      progress: newProgress,
+      sessions: get().sessions
+    });
+    
+    if (Platform.OS === 'web') {
+      localStorage.setItem(STORAGE_KEY, data);
+    } else {
+      await SecureStore.setItemAsync(STORAGE_KEY, data);
+    }
+  },
+
+  getDeckProgress: (deckId: string, cards: Card[]) => {
+    const deckProgress = get().progress[deckId] || {};
+    console.log('[getDeckProgress]', {
+      deckId,
+      deckProgress,
+      totalCards: cards.length,
+      cardStatuses: cards.map(card => ({
+        cardId: card.id,
+        status: deckProgress[card.id]?.status
+      }))
+    });
+    
+    // Count cards explicitly marked as mastered
+    return cards.reduce((count, card) => {
+      const status = deckProgress[card.id]?.status;
+      return status === 'mastered' ? count + 1 : count;
+    }, 0);
+  },
+
+  loadProgress: async () => {
+    let stored: string | null;
+    if (Platform.OS === 'web') {
+      stored = localStorage.getItem(STORAGE_KEY);
+    } else {
+      stored = await SecureStore.getItemAsync(STORAGE_KEY);
+    }
+    console.log('[loadProgress] Stored data:', stored);
+    if (stored) {
+      const { progress, sessions } = JSON.parse(stored);
+      console.log('[loadProgress] Parsed data:', { progress, sessions });
+      set({ progress, sessions: sessions || [] });
+    }
+  },
+
+  startSession: (deckId: string, totalCards: number) => {
+    const session: StudySession = {
+      id: Math.random().toString(36).substring(7),
+      deckId,
+      startTime: new Date().toISOString(),
+      endTime: '',
+      totalCards,
+      masteredCards: 0,
+      learningCards: 0,
+      timeSpentMs: 0
+    };
+    set({ currentSession: session });
+  },
+
+  endSession: () => {
+    const { currentSession, sessions } = get();
+    if (currentSession) {
+      const endTime = new Date().toISOString();
+      const timeSpentMs = new Date(endTime).getTime() - new Date(currentSession.startTime).getTime();
+      const completedSession = {
+        ...currentSession,
+        endTime,
+        timeSpentMs,
+        masteredCards: get().countByStatus(currentSession.deckId, 'mastered'),
+        learningCards: get().countByStatus(currentSession.deckId, 'learning')
+      };
+      
+      const newSessions = [...sessions, completedSession];
+      set({ sessions: newSessions, currentSession: null });
+      
+      // Persist to storage
+      const data = JSON.stringify({ progress: get().progress, sessions: newSessions });
+      if (Platform.OS === 'web') {
+        localStorage.setItem(STORAGE_KEY, data);
+      } else {
+        SecureStore.setItemAsync(STORAGE_KEY, data);
+      }
+    }
+  },
+
+  getSessionsByDeck: (deckId: string) => {
+    return get().sessions.filter(session => session.deckId === deckId);
+  },
+
+  getLastAttempt: (deckId: string) => {
+    const deckProgress = get().progress[deckId] || {};
+    const attempts = Object.values(deckProgress)
+      .map(p => p.lastAttempt)
+      .filter(Boolean) as string[];
+    return attempts.length ? attempts.sort().reverse()[0] : null;
+  },
+
+  getLastCorrect: (deckId: string) => {
+    const deckProgress = get().progress[deckId] || {};
+    const corrects = Object.values(deckProgress)
+      .map(p => p.lastCorrect)
+      .filter(Boolean) as string[];
+    return corrects.length ? corrects.sort().reverse()[0] : null;
+  },
+
+  countByStatus: (deckId: string, status: 'new' | 'learning' | 'mastered') => {
+    const deckProgress = get().progress[deckId] || {};
+    return Object.values(deckProgress).filter(p => p.status === status).length;
+  }
+}));

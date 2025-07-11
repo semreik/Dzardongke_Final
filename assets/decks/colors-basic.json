@@ -1,0 +1,17 @@
+{
+  "id": "colors-basic",
+  "title": "Basic Colors",
+  "description": "Learn common color names in Dzardzongke",
+  "cards": [
+    { "id": "c1", "front": "མཐིང་", "back": "Blue" },
+    { "id": "c2", "front": "དམར་པོ་", "back": "Red" },
+    { "id": "c3", "front": "སེར་པོ་", "back": "Yellow" },
+    { "id": "c4", "front": "ལྗང་ཁུ་", "back": "Green" },
+    { "id": "c5", "front": "དཀར་པོ་", "back": "White" },
+    { "id": "c6", "front": "ནག་པོ་", "back": "Black" },
+    { "id": "c7", "front": "སྨུག་པོ་", "back": "Purple" },
+    { "id": "c8", "front": "དོར་པོ་", "back": "Brown" },
+    { "id": "c9", "front": "སྔོན་པོ་", "back": "Light Blue" },
+    { "id": "c10", "front": "ཟིང་སྐྱ་", "back": "Gray" }
+  ]
+}
