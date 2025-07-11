@@ -3,12 +3,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { DeckList } from '../screens/DeckList';
 import { Study } from '../screens/Study';
 import { Write } from '../screens/Write';
 import { Stats } from '../screens/Stats';
 import { Congrats } from '../screens/Congrats';
+import { Dictionary } from '../screens/Dictionary';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -55,7 +57,24 @@ export const Navigation = () => {
             headerShown: false
           }} 
         />
-        <Tab.Screen name="Stats" component={Stats} options={{ title: 'Statistics' }} />
+        <Tab.Screen
+          name="Stats"
+          component={Stats}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="chart-bar" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Dictionary"
+          component={Dictionary}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="book-open" size={size} color={color} />
+            ),
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

@@ -1,0 +1,64 @@
+{
+  "entries": [
+    {
+      "dz": "བྱ་",
+      "en": "bird",
+      "example": "བྱ་ཆེན་པོ་གཅིག་ནམ་མཁར་འཕུར་གི་འདུག",
+      "exampleEn": "A big bird is flying in the sky"
+    },
+    {
+      "dz": "ཆུ་",
+      "en": "water",
+      "example": "ཆུ་འདི་གཙང་མ་འདུག",
+      "exampleEn": "This water is clean"
+    },
+    {
+      "dz": "ཤིང་",
+      "en": "tree",
+      "example": "ཤིང་སྡོང་སྟེང་ལ་བྱ་ཚང་འདུག",
+      "exampleEn": "There is a bird's nest in the tree"
+    },
+    {
+      "dz": "ཉི་མ་",
+      "en": "sun",
+      "example": "དེ་རིང་ཉི་མ་ཚ་པོ་འདུག",
+      "exampleEn": "The sun is hot today"
+    },
+    {
+      "dz": "ཟླ་བ་",
+      "en": "moon",
+      "example": "དོ་ནུབ་ཟླ་བ་གསལ་པོ་འདུག",
+      "exampleEn": "The moon is bright tonight"
+    },
+    {
+      "dz": "རི་",
+      "en": "mountain",
+      "example": "རི་མཐོན་པོ་དེའི་རྩེ་ལ་གངས་འདུག",
+      "exampleEn": "There is snow on top of that high mountain"
+    },
+    {
+      "dz": "མེ་ཏོག",
+      "en": "flower",
+      "example": "མེ་ཏོག་དམར་པོ་ཡག་པོ་འདུག",
+      "exampleEn": "The red flower is beautiful"
+    },
+    {
+      "dz": "རླུང་",
+      "en": "wind",
+      "example": "དེ་རིང་རླུང་ཤུགས་ཆེན་པོ་རྒྱག་གི་འདུག",
+      "exampleEn": "The wind is blowing strongly today"
+    },
+    {
+      "dz": "གནམ་",
+      "en": "sky",
+      "example": "གནམ་སྔོན་པོ་གཡའ་དག་འདུག",
+      "exampleEn": "The sky is clear blue"
+    },
+    {
+      "dz": "ས་",
+      "en": "earth",
+      "example": "ས་འདི་བཟང་པོ་འདུག",
+      "exampleEn": "This soil is fertile"
+    }
+  ]
+}

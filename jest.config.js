@@ -1,14 +1,30 @@
 module.exports = {
-  preset: 'react-native',
-  setupFilesAfterEnv: ['./test/setup.js'],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  preset: 'jest-expo/ios',
+  setupFilesAfterEnv: ['<rootDir>/test/setup.js'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(react-native' +
+      '|@react-native' +
+      '|expo' +
+      '|@expo' +
+      '|@expo-google-fonts' +
+      '|expo-.*' +
+      '|@react-navigation)/)',
+    'node_modules/ci-info/.*\\.json$'
+  ],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|@react-navigation|@react-native-community|expo-secure-store)/)',
-  ],
   moduleNameMapper: {
-    '\\.json$': '<rootDir>/test/mocks/jsonMock.js'
+    '\\.json$': 'identity-obj-proxy'
+  },
+  testEnvironment: 'jsdom',
+  globals: {
+    'ts-jest': {
+      babelConfig: true,
+      tsconfig: {
+        jsx: 'react'
+      }
+    }
   }
 };
