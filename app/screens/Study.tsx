@@ -40,7 +40,6 @@ export const Study: React.FC = () => {
     });
 
     await setMastered(deckId, currentCard.id, true);
-    await setLearning(deckId, currentCard.id, false);
     
     const masteredCount = countByStatus(deckId, 'mastered');
     console.log('[handleGotIt] After marking as mastered:', {
