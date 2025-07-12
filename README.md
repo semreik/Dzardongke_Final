@@ -2,6 +2,11 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+## Features
+
+- Flashcard study flow with progress tracking
+- Offline Dzardzongke ⇄ English dictionary with fuzzy search
+
 ## Get started
 
 1. Install dependencies

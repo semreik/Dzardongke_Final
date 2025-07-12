@@ -15,9 +15,7 @@ module.exports = {
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
-  moduleNameMapper: {
-    '\\.json$': 'identity-obj-proxy'
-  },
+  moduleNameMapper: {},
   testEnvironment: 'jsdom',
   globals: {
     'ts-jest': {
