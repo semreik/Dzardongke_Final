@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { View, FlatList, StyleSheet, TextInput, Text } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
+import { Searchbar, Text } from 'react-native-paper';
 import Fuse from 'fuse.js';
 import debounce from 'lodash/debounce';
 import { DictEntryCard } from '../components/DictEntryCard';
@@ -34,11 +35,12 @@ export const Dictionary: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
+      <Searchbar
         placeholder="Type a word…"
         onChangeText={handleSearch}
         value={searchQuery}
         style={styles.searchBar}
+        autoCapitalize="none"
       />
       {searchQuery.trim() === '' ? (
         <Text style={styles.placeholder}>Type a word…</Text>
@@ -62,6 +64,7 @@ const styles = StyleSheet.create({
   searchBar: {
     margin: 8,
     elevation: 4,
+    backgroundColor: '#fff',
   },
   list: {
     paddingVertical: 8,

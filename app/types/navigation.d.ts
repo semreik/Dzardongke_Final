@@ -6,7 +6,9 @@ export type RootStackParamList = {
     deckTitle: string;
   };
   Stats: undefined;
-  Dictionary: undefined;
+  Dictionary: {
+    word: string;
+  };
   Congrats: {
     deckTitle: string;
     totalCards: number;

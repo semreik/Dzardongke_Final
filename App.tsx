@@ -1,13 +1,15 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { DeckList } from './app/screens/DeckList';
 import { Study } from './app/screens/Study';
 import { Stats } from './app/screens/Stats';
 import { Write } from './app/screens/Write';
+import { Dictionary } from './app/screens/Dictionary';
 import { useProgress } from './app/stores/useProgress';
 import { useEffect } from 'react';
+import { PaperProvider } from 'react-native-paper';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -30,29 +32,31 @@ export default function App() {
   }, [loadProgress]);
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName: keyof typeof Ionicons.glyphMap;
-
-            if (route.name === 'DeckStack') {
-              iconName = focused ? 'albums' : 'albums-outline';
-            } else {
-              iconName = focused ? 'stats-chart' : 'stats-chart-outline';
-            }
-
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-        })}
-      >
-        <Tab.Screen
-          name="DeckStack"
-          component={DeckStack}
-          options={{ headerShown: false, title: 'Decks' }}
-        />
-        <Tab.Screen name="Stats" component={Stats} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <PaperProvider>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              if (route.name === 'DeckStack') {
+                return <Ionicons name={focused ? 'albums' : 'albums-outline'} size={size} color={color} />;
+              } else if (route.name === 'Stats') {
+                return <MaterialCommunityIcons name="chart-bar" size={size} color={color} />;
+              } else if (route.name === 'Dictionary') {
+                return <MaterialCommunityIcons name="book-open" size={size} color={color} />;
+              }
+              return null;
+            },
+          })}
+        >
+          <Tab.Screen
+            name="DeckStack"
+            component={DeckStack}
+            options={{ headerShown: false, title: 'Decks' }}
+          />
+          <Tab.Screen name="Stats" component={Stats} />
+          <Tab.Screen name="Dictionary" component={Dictionary} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
   );
 }
