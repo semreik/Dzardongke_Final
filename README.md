@@ -6,6 +6,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 - Flashcard study flow with progress tracking
 - Offline Dzardzongke ⇄ English dictionary with fuzzy search
+- Audio pronunciations for Dzongkha words
 
 ## Get started
 
