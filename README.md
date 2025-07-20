@@ -22,6 +22,64 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
+## Audio Pronunciations
+
+The dictionary includes support for audio pronunciations of Dzongkha words. Here's how to manage audio files:
+
+### Adding Audio Files
+
+1. **Prepare your audio file**:
+   - Record or obtain an MP3 file of the word's pronunciation
+   - Keep files small (under 100KB) for better app performance
+   - Use 128kbps quality for a good balance between size and quality
+
+2. **Name your audio file**:
+   - Use the Dzongkha word as the filename (e.g., `go.mp3` for the word "go")
+   - For words with spaces, replace spaces with underscores (e.g., `go_tsukken.mp3`)
+
+3. **Add the file to the project**:
+   - Place the MP3 file in the `/assets/audio/` directory
+
+4. **Update the dictionary entry**:
+   - Open `/assets/dictionary/dzardzongke.dict.json`
+   - Find the entry for your word
+   - Add an `audio` field with the filename:
+     ```json
+     {
+       "dz": "go",
+       "en": "door",
+       "example": "",
+       "exampleEn": "",
+       "audio": "go.mp3"
+     }
+     ```
+
+5. **Register the audio file**:
+   - Open `/app/services/AudioService.ts`
+   - Uncomment and update the `audioMap` to include your new audio file:
+     ```typescript
+     const audioMap: Record<string, any> = {
+       'go.mp3': require('../../assets/audio/go.mp3'),
+       'your_new_file.mp3': require('../../assets/audio/your_new_file.mp3'),
+     };
+     ```
+
+### Removing Audio Files
+
+1. **Remove the audio field** from the dictionary entry in `dzardzongke.dict.json`
+2. **Remove the file reference** from the `audioMap` in `AudioService.ts`
+3. **Delete the audio file** from the `/assets/audio/` directory
+
+### Batch Processing
+
+For adding multiple audio files at once:
+
+1. Place all MP3 files in the `/assets/audio/` directory
+2. Update all corresponding dictionary entries with the `audio` field
+3. Register all files in the `audioMap` in `AudioService.ts`
+
+For more detailed instructions, see the [Audio Pronunciations Guide](./docs/AUDIO_PRONUNCIATIONS.md).
+
 In the output, you'll find options to open the app in a
 
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
