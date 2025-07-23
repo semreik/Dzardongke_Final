@@ -7,6 +7,8 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 - Flashcard study flow with progress tracking
 - Offline Dzardzongke ⇄ English dictionary with fuzzy search
 - Audio pronunciations for Dzongkha words
+- Image-based animal vocabulary flashcards
+- Detailed language explanations for grammar and vocabulary
 
 ## Get started
 
@@ -21,6 +23,90 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```bash
    npx expo start
    ```
+
+## Study Decks and Flashcards
+
+The app includes a flashcard system for learning vocabulary and phrases. These are organized in JSON files that can be easily extended.
+
+### Deck Structure
+
+Decks are stored in `/assets/decks/` as JSON files with the following structure:
+
+```json
+{
+  "id": "unique-deck-id",
+  "title": "Deck Title",
+  "description": "Description of what this deck teaches",
+  "cards": [
+    {
+      "id": "card-unique-id",
+      "front": "Content for front of card (text or image filename)",
+      "back": "Content for back of card",
+      "notes": "Additional explanations or context",
+      "image": "optional-image-filename.png",
+      "hasAudio": false
+    }
+  ]
+}
+```
+
+### Adding Image-Based Cards
+
+To create cards with images on the front:
+
+1. **Add your image files** to `/assets/images/animals/` or another appropriate subdirectory
+2. **Register the images** in the `imageMap` in `/app/components/Card.tsx`:
+   ```typescript
+   const imageMap: Record<string, ImageSourcePropType> = {
+     'existing-image.png': require('../../assets/images/animals/existing-image.png'),
+     'your-new-image.png': require('../../assets/images/animals/your-new-image.png'),
+   };
+   ```
+3. **Reference the image** in your card's `front` field:
+   ```json
+   {
+     "id": "animal-example",
+     "front": "your-new-image.png",
+     "back": "Word in Dzardzongke",
+     "notes": "Detailed explanation",
+     "image": "your-new-image.png",
+     "hasAudio": false
+   }
+   ```
+
+### Creating Effective Notes
+
+The `notes` field supports newline characters (`\n`) for formatting. For language learning cards, we recommend this structure:
+
+```
+English translation
+
+word1 = meaning
+word2 = meaning
+word3 = meaning
+
+Grammatical notes or patterns
+```
+
+Example:
+```json
+"notes": "White dog\n\nkyi = dog\nkaru = white (color)\ncik = a/an (indefinite article)\n\nWord order in Dzardzongke: noun + adjective + article"
+```
+
+### Creating a New Deck
+
+1. Create a new JSON file in `/assets/decks/` (e.g., `colors.json`)
+2. Follow the deck structure format above
+3. Add your cards with appropriate content
+4. Register the deck in `/app/screens/DeckList.tsx` by importing it and adding it to the `decks` array
+
+### Best Practices
+
+- Use consistent naming conventions for deck and card IDs
+- Keep notes concise but informative
+- For language learning, include grammatical patterns and word-by-word translations
+- Group related content into themed decks
+- Use the celebration card pattern at the end of each deck to summarize what was learned
 
 ## Audio Pronunciations
 
@@ -79,6 +165,27 @@ For adding multiple audio files at once:
 3. Register all files in the `audioMap` in `AudioService.ts`
 
 For more detailed instructions, see the [Audio Pronunciations Guide](./docs/AUDIO_PRONUNCIATIONS.md).
+
+## Dictionary Structure
+
+The Dzardzongke dictionary is stored in `/assets/dictionary/dzardzongke.dict.json` with the following structure for each entry:
+
+```json
+{
+  "dz": "Dzardzongke word",
+  "en": "English translation",
+  "example": "Example sentence in Dzardzongke",
+  "exampleEn": "Example translation in English",
+  "audio": "optional-audio-file.mp3"
+}
+```
+
+### Adding New Dictionary Entries
+
+1. Open `/assets/dictionary/dzardzongke.dict.json`
+2. Add your new entry following the structure above
+3. Entries should be alphabetically sorted by the `dz` field
+4. If adding audio, follow the audio pronunciation instructions above
 
 In the output, you'll find options to open the app in a
 
