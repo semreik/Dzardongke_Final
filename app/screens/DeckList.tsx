@@ -9,19 +9,18 @@ import { useProgress } from '../stores/useProgress';
 // Import decks
 import animalsDeck from '../../assets/decks/animals-basic.json';
 import colorsDeck from '../../assets/decks/colors-basic.json';
-import foodDeck from '../../assets/decks/food-basic.json';
-import greetingsDeck from '../../assets/decks/phrases-greetings.json';
+import numbersDeck from '../../assets/decks/numbers-basic.json';
 
-const decks: Deck[] = [animalsDeck, colorsDeck, foodDeck, greetingsDeck];
+const decks: Deck[] = [animalsDeck, colorsDeck, numbersDeck];
 
-export const DeckList: React.FC = () => {
+const DeckList: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const getDeckProgress = useProgress(state => state.getDeckProgress);
 
   const renderItem = ({ item: deck }: { item: Deck }) => (
     <TouchableOpacity
       style={styles.deckItem}
-      onPress={() => navigation.navigate('Study', { deckId: deck.id, cards: deck.cards })}
+      onPress={() => navigation.navigate('Study', { deckId: deck.id, cards: deck.cards, deckTitle: deck.title })}
     >
       <Text style={styles.title}>{deck.title}</Text>
       <Text style={styles.description}>{deck.description}</Text>
@@ -29,6 +28,19 @@ export const DeckList: React.FC = () => {
         <ProgressBar progress={getDeckProgress(deck.id, deck.cards)} />
         <Text style={styles.cardCount}>{deck.cards.length} cards</Text>
       </View>
+      
+      {deck.id === 'numbers-basic' && (
+        <TouchableOpacity
+          style={styles.practiceButton}
+          onPress={() => navigation.navigate('NumbersWrite', { 
+            deckId: deck.id, 
+            cards: deck.cards,
+            deckTitle: deck.title 
+          })}
+        >
+          <Text style={styles.practiceButtonText}>Practice Writing Numbers</Text>
+        </TouchableOpacity>
+      )}
     </TouchableOpacity>
   );
 
@@ -76,10 +88,25 @@ const styles = StyleSheet.create({
   progressContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 16,
   },
   cardCount: {
     marginLeft: 8,
     fontSize: 14,
     color: '#666',
   },
+  practiceButton: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 8,
+    padding: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  practiceButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
+
+export default DeckList;

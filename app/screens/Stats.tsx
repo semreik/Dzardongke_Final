@@ -8,10 +8,9 @@ import { useProgress } from '../stores/useProgress';
 // Import decks
 import animalsDeck from '../../assets/decks/animals-basic.json';
 import colorsDeck from '../../assets/decks/colors-basic.json';
-import foodDeck from '../../assets/decks/food-basic.json';
-import greetingsDeck from '../../assets/decks/phrases-greetings.json';
+import numbersDeck from '../../assets/decks/numbers-basic.json';
 
-const decks: Deck[] = [animalsDeck, colorsDeck, foodDeck, greetingsDeck];
+const decks: Deck[] = [animalsDeck, colorsDeck, numbersDeck];
 
 export const Stats: React.FC = () => {
   const { getDeckProgress, getSessionsByDeck, loadProgress } = useProgress();

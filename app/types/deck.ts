@@ -3,6 +3,8 @@ export interface Card {
   front: string;
   back: string;
   hasAudio?: boolean;
+  image?: string;
+  notes?: string;
 }
 
 export interface Deck {

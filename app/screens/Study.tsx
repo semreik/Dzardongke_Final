@@ -12,7 +12,7 @@ import { useProgress } from '../stores/useProgress';
 type StudyScreenRouteProp = RouteProp<RootStackParamList, 'Study'>;
 type StudyScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 
-export const Study: React.FC = () => {
+const Study: React.FC = () => {
   const route = useRoute<StudyScreenRouteProp>();
   const navigation = useNavigation<StudyScreenNavigationProp>();
   const { deckId, cards, deckTitle } = route.params;
@@ -151,3 +151,5 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
+
+export default Study;

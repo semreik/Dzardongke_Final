@@ -3,15 +3,69 @@
   "title": "Basic Colors",
   "description": "Learn common color names in Dzardzongke",
   "cards": [
-    { "id": "c1", "front": "མཐིང་", "back": "Blue" },
-    { "id": "c2", "front": "དམར་པོ་", "back": "Red" },
-    { "id": "c3", "front": "སེར་པོ་", "back": "Yellow" },
-    { "id": "c4", "front": "ལྗང་ཁུ་", "back": "Green" },
-    { "id": "c5", "front": "དཀར་པོ་", "back": "White" },
-    { "id": "c6", "front": "ནག་པོ་", "back": "Black" },
-    { "id": "c7", "front": "སྨུག་པོ་", "back": "Purple" },
-    { "id": "c8", "front": "དོར་པོ་", "back": "Brown" },
-    { "id": "c9", "front": "སྔོན་པོ་", "back": "Light Blue" },
-    { "id": "c10", "front": "ཟིང་སྐྱ་", "back": "Gray" }
+    {
+      "id": "color-white",
+      "front": "White",
+      "back": "karu",
+      "notes": "There are multiple words for white in Dzardzongke",
+      "image": "",
+      "hasAudio": false
+    },
+    {
+      "id": "color-yellow",
+      "front": "Yellow",
+      "back": "seru",
+      "notes": "Yellow is 'seru' in Dzardzongke",
+      "image": "",
+      "hasAudio": false
+    },
+    {
+      "id": "color-black",
+      "front": "Black",
+      "back": "nakpu",
+      "notes": "Black is 'nakpu' in Dzardzongke",
+      "image": "",
+      "hasAudio": false
+    },
+    {
+      "id": "color-green",
+      "front": "Green",
+      "back": "jongkhu",
+      "notes": "Green is 'jongkhu' in Dzardzongke",
+      "image": "",
+      "hasAudio": false
+    },
+    {
+      "id": "color-brown",
+      "front": "Brown",
+      "back": "múkpu",
+      "notes": "Brown is 'múkpu' in Dzardzongke",
+      "image": "",
+      "hasAudio": false
+    },
+    {
+      "id": "color-blue",
+      "front": "Blue",
+      "back": "ngóenpo",
+      "notes": "Blue is 'ngóenpo' in Dzardzongke",
+      "image": "",
+      "hasAudio": false
+    },
+    {
+      "id": "color-red",
+      "front": "Red",
+      "back": "che",
+      "notes": "Red is 'che' in Dzardzongke",
+      "image": "",
+      "hasAudio": false
+    },
+    {
+      "id": "color-celebration",
+      "front": "🎉 Great Job! 🎉",
+      "back": "You've completed the colors deck!",
+      "notes": "Congratulations on learning the basic colors in Dzardzongke!",
+      "image": "",
+      "hasAudio": false
+    }
   ]
 }

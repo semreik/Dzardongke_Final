@@ -24,7 +24,7 @@ const fuse = new Fuse(dictionary.entries, {
   }
 });
 
-export const Dictionary: React.FC = () => {
+const Dictionary: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState(dictionary.entries);
 
@@ -142,3 +142,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+export default Dictionary;
