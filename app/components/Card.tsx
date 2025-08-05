@@ -9,6 +9,17 @@ interface Props {
   onFlip: () => void;
 }
 
+// Map of color names to their CSS color values
+const colorMap: Record<string, string> = {
+  'White': '#FFFFFF',
+  'Yellow': '#FFEB3B',
+  'Black': '#212121',
+  'Green': '#4CAF50',
+  'Brown': '#795548',
+  'Blue': '#2196F3',
+  'Red': '#F44336'
+};
+
 export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
   // Check if the front content is an image filename
   const isFrontImage = card.front && typeof card.front === 'string' && card.front.endsWith('.png');
@@ -16,8 +27,22 @@ export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
   // Check if the image exists in our imageMap
   const imageExists = isFrontImage && imageMap[card.front as string] !== undefined;
   
+  // Check if this is a color card by checking if the front matches a color name
+  // For color cards, we'll use the front (English) color name to determine the background color
+  // regardless of whether the card is flipped or not
+  const isColorCard = typeof card.front === 'string' && colorMap[card.front] !== undefined;
+  const cardBackgroundColor = isColorCard ? colorMap[card.front as string] : undefined;
+  
+  // For dark background colors, use white text
+  const isDarkColor = cardBackgroundColor === colorMap['Black'] || cardBackgroundColor === colorMap['Blue'] || 
+                      cardBackgroundColor === colorMap['Brown'] || cardBackgroundColor === colorMap['Green'] || 
+                      cardBackgroundColor === colorMap['Red'];
+  
   return (
-    <TouchableOpacity onPress={onFlip} style={styles.container}>
+    <TouchableOpacity 
+      onPress={onFlip} 
+      style={[styles.container, cardBackgroundColor ? { backgroundColor: cardBackgroundColor } : null]}
+    >
       <View style={styles.content}>
         {!isFlipped && imageExists ? (
           <Image 
@@ -26,10 +51,12 @@ export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
             resizeMode="contain"
           />
         ) : (
-          <Text style={styles.text}>{isFlipped ? card.back : (imageExists ? '' : card.front)}</Text>
+          <Text style={[styles.text, isDarkColor ? styles.lightText : null]}>
+            {isFlipped ? card.back : (imageExists ? '' : card.front)}
+          </Text>
         )}
         {isFlipped && card.notes && (
-          <Text style={styles.notes}>{card.notes}</Text>
+          <Text style={[styles.notes, isDarkColor ? styles.lightText : null]}>{card.notes}</Text>
         )}
         {card.hasAudio && (
           <Ionicons name="volume-high" size={24} color="#666" style={styles.audioIcon} />
@@ -75,6 +102,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: 'center',
     marginBottom: 10,
+    color: '#000000',
+  },
+  lightText: {
+    color: '#FFFFFF',
   },
   notes: {
     fontSize: 16,
