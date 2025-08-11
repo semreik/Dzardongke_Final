@@ -17,7 +17,9 @@ const colorMap: Record<string, string> = {
   'green': '#4CAF50',
   'brown': '#795548',
   'blue': '#2196F3',
-  'red': '#F44336'
+  'red': '#F44336',
+  'gray': '#9E9E9E',
+  'grey': '#9E9E9E'
 };
 
 export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
