@@ -2,7 +2,7 @@ import Fuse from 'fuse.js';
 import debounce from 'lodash/debounce';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Searchbar, Text } from 'react-native-paper';
+import { Searchbar, Snackbar, Text } from 'react-native-paper';
 import { DictEntryCard } from '../components/DictEntryCard';
 import { contentRegistry } from '../services/contentRegistry';
 import { useLanguage } from '../stores/useLanguage';
@@ -10,12 +10,27 @@ import { useSaved } from '../stores/useSaved';
 
 const Dictionary: React.FC = () => {
   const { selectedLanguage } = useLanguage();
-  const { saveItem } = useSaved();
+  const { saveItem, items, loadSaved } = useSaved();
   const dictionary = contentRegistry[selectedLanguage].dictionary;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState(dictionary.entries);
   const [savedKeys, setSavedKeys] = useState<Set<string>>(new Set());
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState('');
+
+  // Seed saved markers from persisted store
+  React.useEffect(() => {
+    loadSaved();
+  }, [loadSaved]);
+
+  React.useEffect(() => {
+    if (items && items.length) {
+      const next = new Set<string>();
+      items.forEach(i => next.add(`${i.prompt}=>${i.answer}`));
+      setSavedKeys(next);
+    }
+  }, [items]);
 
   const markSaved = (key: string) => {
     setSavedKeys(prev => {
@@ -116,6 +131,8 @@ const Dictionary: React.FC = () => {
                           source: 'dictionary',
                         });
                         markSaved(key);
+                        setSnackbarMsg('Saved!');
+                        setSnackbarVisible(true);
                       }}
                       style={styles.saveLink}
                     >
@@ -136,6 +153,14 @@ const Dictionary: React.FC = () => {
           windowSize={10}
         />
       )}
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={1200}
+        style={styles.snackbar}
+      >
+        {snackbarMsg}
+      </Snackbar>
     </View>
   );
 };
@@ -166,6 +191,9 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     marginHorizontal: 16,
     marginBottom: 12,
+  },
+  snackbar: {
+    backgroundColor: '#10b981',
   },
   emptyStateContainer: {
     flex: 1,

@@ -82,7 +82,21 @@ export const MultipleChoice: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
-  const { saveItem } = useSaved();
+  const { saveItem, items, loadSaved } = useSaved();
+  const [savedKeys, setSavedKeys] = useState<Set<string>>(new Set());
+
+  // Seed saved markers from persisted store
+  React.useEffect(() => {
+    loadSaved();
+  }, [loadSaved]);
+
+  React.useEffect(() => {
+    if (items) {
+      const next = new Set<string>();
+      items.forEach(i => next.add(`${i.prompt}=>${i.answer}`));
+      setSavedKeys(next);
+    }
+  }, [items]);
 
   const currentItem = quizPool.length > 0 ? quizPool[currentIndex % quizPool.length] : null;
 
@@ -131,6 +145,8 @@ export const MultipleChoice: React.FC = () => {
 
   const isCorrect = options.find(o => o.text === selected)?.isCorrect === true;
   const promptTitle = selectedLanguage === 'qu' ? 'What is the Quechua word for:' : 'What is the Dzardzongkha word for:';
+  const currentKey = `${currentItem.prompt}=>${currentItem.answer}`;
+  const isSaved = savedKeys.has(currentKey);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -170,18 +186,25 @@ export const MultipleChoice: React.FC = () => {
                 {currentItem.notes && <Text style={styles.notes}>Notes: {currentItem.notes}</Text>}
               </>
             )}
-            <TouchableOpacity
-              style={styles.saveBtn}
-              onPress={() => saveItem({
-                prompt: currentItem.prompt,
-                answer: currentItem.answer,
-                language: selectedLanguage as any,
-                explanation: `“${currentItem.answer}” means “${currentItem.prompt}”. ${currentItem.notes ? `Notes: ${currentItem.notes}` : ''}`,
-                source: 'deck'
-              })}
-            >
-              <Text style={styles.saveText}>Save to Profile</Text>
-            </TouchableOpacity>
+            {isSaved ? (
+              <Text style={styles.savedBadge}>Saved</Text>
+            ) : (
+              <TouchableOpacity
+                style={styles.saveBtn}
+                onPress={async () => {
+                  await saveItem({
+                    prompt: currentItem.prompt,
+                    answer: currentItem.answer,
+                    language: selectedLanguage as any,
+                    explanation: `“${currentItem.answer}” means “${currentItem.prompt}”. ${currentItem.notes ? `Notes: ${currentItem.notes}` : ''}`,
+                    source: 'deck',
+                  });
+                  setSavedKeys(prev => new Set(prev).add(currentKey));
+                }}
+              >
+                <Text style={styles.saveText}>Save to Profile</Text>
+              </TouchableOpacity>
+            )}
             <View style={styles.navRow}>
               <TouchableOpacity style={styles.prevBtn} onPress={handlePrev}>
                 <Text style={styles.prevText}>Previous</Text>
@@ -216,6 +239,7 @@ const styles = StyleSheet.create({
   notes: { fontSize: 14, color: '#6b7280', marginTop: 4 },
   saveBtn: { alignSelf: 'flex-start', backgroundColor: '#10b981', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8, marginTop: 4 },
   saveText: { color: 'white', fontWeight: '600', fontSize: 16 },
+  savedBadge: { color: '#10b981', fontWeight: '700', marginTop: 8 },
   navRow: { flexDirection: 'row', gap: 8, marginTop: 8 },
   prevBtn: { backgroundColor: '#6b7280', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8 },
   prevText: { color: 'white', fontWeight: '600', fontSize: 16 },
