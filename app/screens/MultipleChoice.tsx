@@ -3,37 +3,94 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { useLanguage } from '../stores/useLanguage';
 import { contentRegistry } from '../services/contentRegistry';
 import type { Deck, Card } from '../types/deck';
-import { Card as PromptCard } from '../components/Card';
 
 type QuizOption = {
   text: string;
   isCorrect: boolean;
 };
 
+type QuizItem = { prompt: string; answer: string; notes?: string };
+
 export const MultipleChoice: React.FC = () => {
   const { selectedLanguage } = useLanguage();
   const decks: Deck[] = contentRegistry[selectedLanguage].decks;
+  const dictionary = contentRegistry[selectedLanguage].dictionary;
 
-  const allCards = useMemo<Card[]>(() => {
-    const cards = decks.flatMap(d => d.cards);
-    // filter to cards that have a back (answer)
-    return cards.filter(c => typeof c.back === 'string' && c.back.trim().length > 0);
+  // Heuristics to decide if a string is a good standalone prompt/answer
+  const isSensibleText = (s?: string) => {
+    if (!s) return false;
+    const t = s.trim();
+    if (!t) return false;
+    if (/🎉|\!|\?|…/.test(t)) return false;
+    if (t.endsWith('.png')) return false;
+    if (t.length > 24) return false;
+    return true;
+  };
+
+  const deckItems = useMemo<QuizItem[]>(() => {
+    const items: QuizItem[] = [];
+    decks.forEach(deck => {
+      deck.cards.forEach((c: Card) => {
+        if (
+          typeof c.back === 'string' &&
+          isSensibleText(c.back) &&
+          typeof c.front === 'string' &&
+          isSensibleText(c.front) &&
+          !/celebration/i.test(c.id)
+        ) {
+          items.push({ prompt: String(c.front), answer: String(c.back), notes: c.notes });
+        }
+      });
+    });
+    return items;
   }, [decks]);
+
+  const dictItems = useMemo<QuizItem[]>(() => {
+    const items: QuizItem[] = [];
+    const seen = new Set<string>();
+    dictionary.entries.forEach((e: any) => {
+      const en = e.en as string;
+      const dz = e.dz as string;
+      if (isSensibleText(en) && isSensibleText(dz)) {
+        const key = `${en}=>${dz}`;
+        if (!seen.has(key)) {
+          items.push({ prompt: en, answer: dz });
+          seen.add(key);
+        }
+      }
+    });
+    return items;
+  }, [dictionary.entries]);
+
+  const quizPool = useMemo<QuizItem[]>(() => {
+    const combined = [...dictItems, ...deckItems];
+    // dedupe by prompt=>answer
+    const map = new Map<string, QuizItem>();
+    combined.forEach(it => {
+      const key = `${it.prompt}=>${it.answer}`;
+      if (!map.has(key)) map.set(key, it);
+    });
+    const arr = Array.from(map.values());
+    // shuffle
+    return arr
+      .map(a => [Math.random(), a] as const)
+      .sort((a, b) => a[0] - b[0])
+      .map(([, a]) => a);
+  }, [dictItems, deckItems]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
 
-  const currentCard = allCards.length > 0 ? allCards[currentIndex % allCards.length] : null;
+  const currentItem = quizPool.length > 0 ? quizPool[currentIndex % quizPool.length] : null;
 
   const options: QuizOption[] = useMemo(() => {
-    if (!currentCard) return [];
-    const correct = currentCard.back;
+    if (!currentItem) return [];
+    const correct = currentItem.answer;
     // Pick 3 distractors
-    const pool = allCards
-      .filter(c => c.id !== currentCard.id)
-      .map(c => c.back)
-      .filter((v, idx, arr) => typeof v === 'string' && v.trim().length > 0 && arr.indexOf(v) === idx);
+    const pool = quizPool
+      .map(q => q.answer)
+      .filter((v, idx, arr) => typeof v === 'string' && v.trim().length > 0 && v !== correct && arr.indexOf(v) === idx);
 
     // Shuffle helper
     const shuffle = <T,>(arr: T[]) => arr.map(a => [Math.random(), a] as const).sort((a, b) => a[0] - b[0]).map(([, a]) => a);
@@ -41,7 +98,7 @@ export const MultipleChoice: React.FC = () => {
     const distractors = shuffle(pool).slice(0, 3);
     const combined = shuffle([correct, ...distractors]).map(text => ({ text, isCorrect: text === correct }));
     return combined;
-  }, [currentCard, allCards]);
+  }, [currentItem, quizPool]);
 
   const handleSelect = (opt: QuizOption) => {
     if (showResult) return;
@@ -55,7 +112,7 @@ export const MultipleChoice: React.FC = () => {
     setShowResult(false);
   };
 
-  if (!currentCard) {
+  if (!currentItem) {
     return (
       <View style={styles.container}> 
         <Text style={styles.title}>Multiple Choice</Text>
@@ -72,7 +129,7 @@ export const MultipleChoice: React.FC = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Multiple Choice</Text>
         <Text style={styles.prompt}>{promptTitle}</Text>
-        <PromptCard card={currentCard} isFlipped={false} onFlip={() => {}} />
+        <Text style={styles.bigPrompt}>{currentItem.prompt}</Text>
 
         <View style={styles.optionsContainer}>
           {options.map(opt => {
@@ -100,15 +157,9 @@ export const MultipleChoice: React.FC = () => {
               <>
                 <Text style={[styles.feedback, styles.wrongText]}>Not quite.</Text>
                 <Text style={styles.explanationTitle}>Answer</Text>
-                <Text style={styles.explanation}>
-                  {selectedLanguage === 'qu' ? 'Quechua' : 'Dzardzongkha'}: {currentCard.back}
-                </Text>
-                {typeof currentCard.front === 'string' && currentCard.front.trim() !== '' && !currentCard.front.endsWith('.png') && (
-                  <Text style={styles.explanation}>English prompt: {currentCard.front}</Text>
-                )}
-                {currentCard.notes && (
-                  <Text style={styles.notes}>Notes: {currentCard.notes}</Text>
-                )}
+                <Text style={styles.explanation}>{selectedLanguage === 'qu' ? 'Quechua' : 'Dzardzongkha'}: {currentItem.answer}</Text>
+                <Text style={styles.explanation}>English: {currentItem.prompt}</Text>
+                {currentItem.notes && <Text style={styles.notes}>Notes: {currentItem.notes}</Text>}
               </>
             )}
             <TouchableOpacity style={styles.nextBtn} onPress={handleNext}>
