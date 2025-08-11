@@ -19,6 +19,7 @@ import { RootStackParamList } from './app/navigation/types';
 import Onboarding from './app/screens/Onboarding';
 import { useLanguage } from './app/stores/useLanguage';
 import Settings from './app/screens/Settings';
+import MultipleChoice from './app/screens/MultipleChoice';
 
 const Tab = createBottomTabNavigator();
 const InnerStack = createStackNavigator();
@@ -99,6 +100,7 @@ export default function App() {
               component={ConversationsStack} 
               options={{ headerShown: false, title: 'Conversations' }}
             />
+            <Tab.Screen name="MultipleChoice" component={MultipleChoice} options={{ title: 'Quiz' }} />
             <Tab.Screen name="Settings" component={Settings} />
           </Tab.Navigator>
         )}
