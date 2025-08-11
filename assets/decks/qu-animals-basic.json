@@ -1,0 +1,31 @@
+{
+  "id": "animals-basic",
+  "title": "Basic Animals (Quechua)",
+  "description": "Learn common animal names in Quechua",
+  "cards": [
+    { "id": "animal-alpaca", "front": "alpaca", "back": "paqucha", "hasAudio": false },
+    { "id": "animal-llama", "front": "llama", "back": "llama", "hasAudio": false },
+    { "id": "animal-vicuna", "front": "vicuña", "back": "wik'uña", "hasAudio": false },
+    { "id": "animal-snake", "front": "snake", "back": "mach’aqwa", "hasAudio": false },
+    { "id": "animal-condor", "front": "condor", "back": "kuntur", "hasAudio": false },
+    { "id": "animal-deer", "front": "deer", "back": "taruka", "hasAudio": false },
+    { "id": "animal-mouse", "front": "mouse", "back": "huk'ucha", "hasAudio": false },
+    { "id": "animal-pig", "front": "pig", "back": "khuchi", "hasAudio": false },
+    { "id": "animal-cow", "front": "cow", "back": "waka", "hasAudio": false },
+    { "id": "animal-sheep", "front": "sheep", "back": "uha", "hasAudio": false },
+    { "id": "animal-puma", "front": "puma", "back": "puma", "hasAudio": false },
+    { "id": "animal-fox", "front": "fox", "back": "atuq", "hasAudio": false },
+    { "id": "animal-eagle", "front": "eagle", "back": "anka", "hasAudio": false },
+    { "id": "animal-dog", "front": "dog", "back": "allqu", "hasAudio": false },
+    { "id": "animal-cat", "front": "cat", "back": "misi", "hasAudio": false },
+    { "id": "animal-worm", "front": "worm", "back": "kuru", "hasAudio": false },
+    { "id": "animal-chick", "front": "chick", "back": "chiwchi", "hasAudio": false },
+    { "id": "animal-chicken", "front": "chicken", "back": "wallpa", "hasAudio": false },
+    { "id": "animal-guinea-pig", "front": "guinea pig", "back": "quwi", "hasAudio": false },
+    { "id": "animal-fly", "front": "fly", "back": "ch'uspi", "hasAudio": false },
+    { "id": "animal-fish", "front": "fish", "back": "challwa", "hasAudio": false },
+    { "id": "animal-toad", "front": "toad", "back": "hamp'atu", "hasAudio": false }
+  ]
+}
+
+

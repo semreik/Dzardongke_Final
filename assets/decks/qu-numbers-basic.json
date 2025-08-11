@@ -1,0 +1,20 @@
+{
+  "id": "numbers-basic",
+  "title": "Numbers (Quechua)",
+  "description": "Learn to count in Quechua",
+  "cards": [
+    { "id": "number-0", "front": "0", "back": "ch'usaq", "hasAudio": false },
+    { "id": "number-1", "front": "1", "back": "huq", "hasAudio": false },
+    { "id": "number-2", "front": "2", "back": "ishkay", "hasAudio": false },
+    { "id": "number-3", "front": "3", "back": "kinsa", "hasAudio": false },
+    { "id": "number-4", "front": "4", "back": "tawa", "hasAudio": false },
+    { "id": "number-5", "front": "5", "back": "phishqa", "hasAudio": false },
+    { "id": "number-6", "front": "6", "back": "suqta", "hasAudio": false },
+    { "id": "number-7", "front": "7", "back": "qanchis", "hasAudio": false },
+    { "id": "number-8", "front": "8", "back": "pusaq", "hasAudio": false },
+    { "id": "number-9", "front": "9", "back": "isqun", "hasAudio": false },
+    { "id": "number-10", "front": "10", "back": "chunka", "hasAudio": false }
+  ]
+}
+
+

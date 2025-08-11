@@ -1,0 +1,17 @@
+{
+  "id": "colors-basic",
+  "title": "Basic Colors (Quechua)",
+  "description": "Learn common color names in Quechua",
+  "cards": [
+    { "id": "color-blue", "front": "blue", "back": "anqas", "hasAudio": false },
+    { "id": "color-brown", "front": "brown", "back": "ch’unpi", "hasAudio": false },
+    { "id": "color-red", "front": "red", "back": "puka", "hasAudio": false },
+    { "id": "color-yellow", "front": "yellow", "back": "q’illu", "hasAudio": false },
+    { "id": "color-green", "front": "green", "back": "q’umir", "hasAudio": false },
+    { "id": "color-gray", "front": "gray", "back": "uqi", "hasAudio": false },
+    { "id": "color-black", "front": "black", "back": "yana", "hasAudio": false },
+    { "id": "color-white", "front": "white", "back": "yuraq", "hasAudio": false }
+  ]
+}
+
+
