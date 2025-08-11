@@ -1,32 +1,35 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import Fuse from 'fuse.js';
 import debounce from 'lodash/debounce';
 import { DictEntryCard } from '../components/DictEntryCard';
-import dictionary from '../../assets/dictionary/dzardzongke.dict.json';
-
-const fuse = new Fuse(dictionary.entries, {
-  keys: [
-    { name: 'en', weight: 2 },  // Give more weight to English matches
-    { name: 'dz', weight: 1 }
-  ],
-  threshold: 0.3,           // Lower threshold for stricter matching
-  includeScore: true,
-  ignoreLocation: true,     // Ignore location for better matching of phrases
-  useExtendedSearch: true,  // Enable extended search for better phrase matching
-  sortFn: (a, b) => {       // Custom sort function to prioritize exact matches
-    // If both items have the same score, maintain original order
-    if (a.score === b.score) return 0;
-    
-    // Lower score is better in Fuse.js
-    return a.score < b.score ? -1 : 1;
-  }
-});
+import { useLanguage } from '../stores/useLanguage';
+import { contentRegistry } from '../services/contentRegistry';
 
 const Dictionary: React.FC = () => {
+  const { selectedLanguage } = useLanguage();
+  const dictionary = contentRegistry[selectedLanguage].dictionary;
+
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState(dictionary.entries);
+
+  const fuse = useMemo(() => {
+    return new Fuse(dictionary.entries, {
+      keys: [
+        { name: 'en', weight: 2 },
+        { name: 'dz', weight: 1 },
+      ],
+      threshold: 0.3,
+      includeScore: true,
+      ignoreLocation: true,
+      useExtendedSearch: true,
+      sortFn: (a, b) => {
+        if (a.score === b.score) return 0;
+        return (a.score || 0) < (b.score || 0) ? -1 : 1;
+      },
+    });
+  }, [dictionary.entries]);
 
   const debouncedSearch = useCallback(
     debounce((text: string) => {
@@ -34,24 +37,21 @@ const Dictionary: React.FC = () => {
         setResults(dictionary.entries);
         return;
       }
-      
-      // Improve search by looking for exact matches first
-      const exactMatches = dictionary.entries.filter(entry => 
-        entry.en.toLowerCase().includes(text.toLowerCase()) ||
-        entry.dz.toLowerCase().includes(text.toLowerCase())
+
+      const exactMatches = dictionary.entries.filter(entry =>
+        (entry.en || '').toLowerCase().includes(text.toLowerCase()) ||
+        (entry.dz || '').toLowerCase().includes(text.toLowerCase())
       );
-      
-      // If we have exact matches, prioritize them
+
       if (exactMatches.length > 0) {
         setResults(exactMatches);
         return;
       }
-      
-      // Otherwise use fuzzy search
+
       const searchResults = fuse.search(text);
       setResults(searchResults.map(result => result.item));
     }, 150),
-    [setResults]
+    [dictionary.entries, fuse]
   );
 
   const handleSearch = (query: string) => {
@@ -62,7 +62,7 @@ const Dictionary: React.FC = () => {
   return (
     <View style={styles.container}>
       <Searchbar
-        placeholder="Search in Dzongkha or English..."
+        placeholder="Search in target language or English..."
         onChangeText={handleSearch}
         value={searchQuery}
         style={styles.searchBar}
@@ -72,8 +72,10 @@ const Dictionary: React.FC = () => {
       />
       {searchQuery.trim() === '' ? (
         <View style={styles.emptyStateContainer}>
-          <Text style={styles.emptyStateTitle}>Dzongkha Dictionary</Text>
-          <Text style={styles.placeholder}>Type a word to search...</Text>
+          <Text style={styles.emptyStateTitle}>Dictionary</Text>
+          <Text style={styles.placeholder}>
+            {dictionary.entries.length === 0 ? 'No data available yet for this language.' : 'Type a word to search...'}
+          </Text>
         </View>
       ) : results.length === 0 ? (
         <View style={styles.emptyStateContainer}>

@@ -3,12 +3,14 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { MaterialIcons } from '@expo/vector-icons';
-import conversationsData from '../../assets/conversations/conversations.json';
 import type { ConversationCategory } from '../types/conversation';
+import { useLanguage } from '../stores/useLanguage';
+import { contentRegistry } from '../services/contentRegistry';
 
 export const ConversationCategories: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const categories = conversationsData.categories;
+  const { selectedLanguage } = useLanguage();
+  const categories = contentRegistry[selectedLanguage].conversations.categories;
 
   const renderItem = ({ item }: { item: ConversationCategory }) => (
     <TouchableOpacity
@@ -48,9 +50,7 @@ export const ConversationCategories: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Conversation Practice</Text>
-      <Text style={styles.subheader}>
-        Select a category to practice real-life conversations in Dzardzongke
-      </Text>
+      <Text style={styles.subheader}>Select a category to practice real-life conversations</Text>
       <FlatList
         data={categories}
         renderItem={renderItem}

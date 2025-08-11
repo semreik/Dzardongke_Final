@@ -1,8 +1,7 @@
 import type { Card } from '../types/deck';
-import type { ConversationCategory, Conversation } from '../types/conversation';
 
 export type RootStackParamList = {
-  DeckList: undefined;
+  Decks: undefined;
   Study: {
     deckId: string;
     cards: Card[];
@@ -34,4 +33,5 @@ export type RootStackParamList = {
     conversationId: string;
     title: string;
   };
+  Onboarding: undefined;
 };

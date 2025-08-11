@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import type { StackScreenProps } from '@react-navigation/stack';
 import type { Card } from '../types/deck';
 import { useProgress } from '../stores/useProgress';
 
@@ -26,7 +25,8 @@ export const Write: React.FC<Props> = ({ navigation, route }) => {
   const handleCheck = () => {
     setShowResult(true);
     if (isCorrect) {
-      setMastered(currentCard.id, true);
+      // fix: provide namespaced deckId + cardId
+      setMastered(deckId, currentCard.id, true);
     }
   };
 

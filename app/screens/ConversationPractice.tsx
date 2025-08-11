@@ -15,8 +15,9 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RouteProp } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
-import conversationsData from '../../assets/conversations/conversations.json';
 import type { Exchange } from '../types/conversation';
+import { useLanguage } from '../stores/useLanguage';
+import { contentRegistry } from '../services/contentRegistry';
 
 type ConversationPracticeRouteProp = RouteProp<{
   params: {
@@ -32,8 +33,9 @@ export const ConversationPractice: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const route = useRoute<ConversationPracticeRouteProp>();
   const { categoryId, conversationId, title } = route.params;
-  
-  const category = conversationsData.categories.find(cat => cat.id === categoryId);
+  const { selectedLanguage } = useLanguage();
+  const categories = contentRegistry[selectedLanguage].conversations.categories;
+  const category = categories.find(cat => cat.id === categoryId);
   const conversation = category?.conversations.find(conv => conv.id === conversationId);
   const exchanges = conversation ? conversation.exchanges : [];
   

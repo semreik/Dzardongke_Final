@@ -4,8 +4,9 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RouteProp } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
-import conversationsData from '../../assets/conversations/conversations.json';
 import type { ConversationCategory, Conversation } from '../types/conversation';
+import { useLanguage } from '../stores/useLanguage';
+import { contentRegistry } from '../services/contentRegistry';
 
 type ConversationListRouteProp = RouteProp<{
   params: {
@@ -18,8 +19,9 @@ export const ConversationList: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const route = useRoute<ConversationListRouteProp>();
   const { categoryId, title } = route.params;
-  
-  const category = conversationsData.categories.find(cat => cat.id === categoryId);
+  const { selectedLanguage } = useLanguage();
+  const categories = contentRegistry[selectedLanguage].conversations.categories;
+  const category = categories.find(cat => cat.id === categoryId);
   const conversations = category ? category.conversations : [];
 
   React.useLayoutEffect(() => {

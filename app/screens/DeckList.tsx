@@ -5,44 +5,47 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import type { Deck } from '../types/deck';
 import { ProgressBar } from '../components/ProgressBar';
 import { useProgress } from '../stores/useProgress';
-
-// Import decks
-import animalsDeck from '../../assets/decks/animals-basic.json';
-import colorsDeck from '../../assets/decks/colors-basic.json';
-import numbersDeck from '../../assets/decks/numbers-basic.json';
-
-const decks: Deck[] = [animalsDeck, colorsDeck, numbersDeck];
+import { useLanguage } from '../stores/useLanguage';
+import { contentRegistry, nsDeckId } from '../services/contentRegistry';
 
 const DeckList: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const getDeckProgress = useProgress(state => state.getDeckProgress);
+  const { selectedLanguage } = useLanguage();
+  const decks: Deck[] = contentRegistry[selectedLanguage].decks;
 
-  const renderItem = ({ item: deck }: { item: Deck }) => (
-    <TouchableOpacity
-      style={styles.deckItem}
-      onPress={() => navigation.navigate('Study', { deckId: deck.id, cards: deck.cards, deckTitle: deck.title })}
-    >
-      <Text style={styles.title}>{deck.title}</Text>
-      <Text style={styles.description}>{deck.description}</Text>
-      <View style={styles.progressContainer}>
-        <ProgressBar progress={getDeckProgress(deck.id, deck.cards)} />
-        <Text style={styles.cardCount}>{deck.cards.length} cards</Text>
-      </View>
-      
-      {deck.id === 'numbers-basic' && (
-        <TouchableOpacity
-          style={styles.practiceButton}
-          onPress={() => navigation.navigate('NumbersWrite', { 
-            deckId: deck.id, 
-            cards: deck.cards,
-            deckTitle: deck.title 
-          })}
-        >
-          <Text style={styles.practiceButtonText}>Practice Writing Numbers</Text>
-        </TouchableOpacity>
-      )}
-    </TouchableOpacity>
-  );
+  const renderItem = ({ item: deck }: { item: Deck }) => {
+    const namespacedId = nsDeckId(selectedLanguage, deck.id);
+    const masteredCount = getDeckProgress(namespacedId, deck.cards);
+    const progress = deck.cards.length > 0 ? masteredCount / deck.cards.length : 0;
+
+    return (
+      <TouchableOpacity
+        style={styles.deckItem}
+        onPress={() => navigation.navigate('Study', { deckId: namespacedId, cards: deck.cards, deckTitle: deck.title })}
+      >
+        <Text style={styles.title}>{deck.title}</Text>
+        <Text style={styles.description}>{deck.description}</Text>
+        <View style={styles.progressContainer}>
+          <ProgressBar progress={progress} />
+          <Text style={styles.cardCount}>{deck.cards.length} cards</Text>
+        </View>
+        
+        {deck.id === 'numbers-basic' && (
+          <TouchableOpacity
+            style={styles.practiceButton}
+            onPress={() => navigation.navigate('NumbersWrite', { 
+              deckId: namespacedId, 
+              cards: deck.cards,
+              deckTitle: deck.title 
+            })}
+          >
+            <Text style={styles.practiceButtonText}>Practice Writing Numbers</Text>
+          </TouchableOpacity>
+        )}
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -110,3 +113,4 @@ const styles = StyleSheet.create({
 });
 
 export default DeckList;
+export { DeckList };

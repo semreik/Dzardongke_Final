@@ -4,41 +4,26 @@ import { useFocusEffect } from '@react-navigation/native';
 import type { Deck } from '../types/deck';
 import { ProgressBar } from '../components/ProgressBar';
 import { useProgress } from '../stores/useProgress';
-
-// Import decks
-import animalsDeck from '../../assets/decks/animals-basic.json';
-import colorsDeck from '../../assets/decks/colors-basic.json';
-import numbersDeck from '../../assets/decks/numbers-basic.json';
-
-const decks: Deck[] = [animalsDeck, colorsDeck, numbersDeck];
+import { useLanguage } from '../stores/useLanguage';
+import { contentRegistry, nsDeckId } from '../services/contentRegistry';
 
 export const Stats: React.FC = () => {
   const { getDeckProgress, getSessionsByDeck, loadProgress } = useProgress();
+  const { selectedLanguage } = useLanguage();
+  const decks: Deck[] = contentRegistry[selectedLanguage].decks;
 
-  // Reload progress every time the screen comes into focus
   useFocusEffect(
     React.useCallback(() => {
-      console.log('[Stats] Screen focused, reloading progress');
       loadProgress();
     }, [loadProgress])
   );
 
   const renderItem = ({ item: deck }: { item: Deck }) => {
-    console.log('[Stats] Rendering deck:', {
-      deckId: deck.id,
-      title: deck.title,
-      totalCards: deck.cards.length
-    });
+    const namespacedId = nsDeckId(selectedLanguage, deck.id);
+    const masteredCount = getDeckProgress(namespacedId, deck.cards);
+    const progress = deck.cards.length ? masteredCount / deck.cards.length : 0;
 
-    const masteredCount = getDeckProgress(deck.id, deck.cards);
-    const progress = masteredCount / deck.cards.length;
-    console.log('[Stats] Progress calculated:', {
-      deckId: deck.id,
-      masteredCount,
-      progress
-    });
-
-    const sessions = getSessionsByDeck(deck.id);
+    const sessions = getSessionsByDeck(namespacedId);
     const lastSession = sessions[sessions.length - 1];
     
     return (

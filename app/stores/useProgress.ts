@@ -144,7 +144,21 @@ export const useProgress = create<ProgressState>((set, get) => ({
     if (stored) {
       const { progress, sessions } = JSON.parse(stored);
       console.log('[loadProgress] Parsed data:', { progress, sessions });
-      set({ progress, sessions: sessions || [] });
+      // Migrate legacy un-namespaced deckIds to 'dz:' once
+      let nextProgress = progress;
+      if (progress && typeof progress === 'object') {
+        const keys = Object.keys(progress);
+        const hasPrefixed = keys.some(k => k.includes(':'));
+        if (!hasPrefixed) {
+          const migrated: Record<string, any> = {};
+          keys.forEach(k => {
+            migrated[`dz:${k}`] = progress[k];
+          });
+          nextProgress = migrated;
+          console.log('[loadProgress] Migrated legacy progress keys to dz:* namespace');
+        }
+      }
+      set({ progress: nextProgress || {}, sessions: sessions || [] });
     }
   },
 

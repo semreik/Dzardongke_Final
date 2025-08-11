@@ -11,82 +11,95 @@ import Dictionary from './app/screens/Dictionary';
 import { ConversationCategories } from './app/screens/ConversationCategories';
 import { ConversationList } from './app/screens/ConversationList';
 import { ConversationPractice } from './app/screens/ConversationPractice';
+import { Congrats } from './app/screens/Congrats';
 import { useProgress } from './app/stores/useProgress';
 import { useEffect } from 'react';
 import { PaperProvider } from 'react-native-paper';
 import { RootStackParamList } from './app/navigation/types';
+import Onboarding from './app/screens/Onboarding';
+import { useLanguage } from './app/stores/useLanguage';
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const InnerStack = createStackNavigator();
+const RootStack = createStackNavigator();
 
 function DeckStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Decks" component={DeckList} />
-      <Stack.Screen name="Study" component={Study} />
-      <Stack.Screen name="Write" component={Write} options={{ title: 'Write Practice' }} />
-      <Stack.Screen name="NumbersWrite" component={NumbersWrite} options={{ title: 'Numbers Practice' }} />
-    </Stack.Navigator>
+    <InnerStack.Navigator>
+      <InnerStack.Screen name="Decks" component={DeckList} />
+      <InnerStack.Screen name="Study" component={Study} />
+      <InnerStack.Screen name="Write" component={Write} options={{ title: 'Write Practice' }} />
+      <InnerStack.Screen name="NumbersWrite" component={NumbersWrite} options={{ title: 'Numbers Practice' }} />
+      <InnerStack.Screen name="Congrats" component={Congrats} />
+    </InnerStack.Navigator>
   );
 }
 
 function ConversationsStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Categories" component={ConversationCategories} options={{ title: 'Conversation Categories' }} />
-      <Stack.Screen 
+    <InnerStack.Navigator>
+      <InnerStack.Screen name="Categories" component={ConversationCategories} options={{ title: 'Conversation Categories' }} />
+      <InnerStack.Screen 
         name="ConversationList" 
         component={ConversationList} 
         options={({ route }: any) => ({ title: route.params?.title || 'Conversations' })} 
       />
-      <Stack.Screen 
+      <InnerStack.Screen 
         name="ConversationPractice" 
         component={ConversationPractice} 
         options={({ route }: any) => ({ title: route.params?.title || 'Practice' })} 
       />
-    </Stack.Navigator>
+    </InnerStack.Navigator>
   );
 }
 
 export default function App() {
   const loadProgress = useProgress(state => state.loadProgress);
+  const { loadLanguage, hasChosenLanguage } = useLanguage();
 
   useEffect(() => {
     loadProgress();
-  }, [loadProgress]);
+    loadLanguage();
+  }, [loadProgress, loadLanguage]);
 
   return (
     <PaperProvider>
       <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              if (route.name === 'DeckStack') {
-                return <Ionicons name={focused ? 'albums' : 'albums-outline'} size={size} color={color} />;
-              } else if (route.name === 'Stats') {
-                return <MaterialCommunityIcons name="chart-bar" size={size} color={color} />;
-              } else if (route.name === 'Dictionary') {
-                return <MaterialCommunityIcons name="book-open" size={size} color={color} />;
-              } else if (route.name === 'Conversations') {
-                return <MaterialCommunityIcons name="chat" size={size} color={color} />;
-              }
-              return null;
-            },
-          })}
-        >
-          <Tab.Screen
-            name="DeckStack"
-            component={DeckStack}
-            options={{ headerShown: false, title: 'Decks' }}
-          />
-          <Tab.Screen name="Stats" component={Stats} />
-          <Tab.Screen name="Dictionary" component={Dictionary} />
-          <Tab.Screen 
-            name="Conversations" 
-            component={ConversationsStack} 
-            options={{ headerShown: false, title: 'Conversations' }}
-          />
-        </Tab.Navigator>
+        {!hasChosenLanguage ? (
+          <RootStack.Navigator screenOptions={{ headerShown: false }}>
+            <RootStack.Screen name="Onboarding" component={Onboarding} />
+          </RootStack.Navigator>
+        ) : (
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                if (route.name === 'DeckStack') {
+                  return <Ionicons name={focused ? 'albums' : 'albums-outline'} size={size} color={color} />;
+                } else if (route.name === 'Stats') {
+                  return <MaterialCommunityIcons name="chart-bar" size={size} color={color} />;
+                } else if (route.name === 'Dictionary') {
+                  return <MaterialCommunityIcons name="book-open" size={size} color={color} />;
+                } else if (route.name === 'Conversations') {
+                  return <MaterialCommunityIcons name="chat" size={size} color={color} />;
+                }
+                return null;
+              },
+            })}
+          >
+            <Tab.Screen
+              name="DeckStack"
+              component={DeckStack}
+              options={{ headerShown: false, title: 'Decks' }}
+            />
+            <Tab.Screen name="Stats" component={Stats} />
+            <Tab.Screen name="Dictionary" component={Dictionary} />
+            <Tab.Screen 
+              name="Conversations" 
+              component={ConversationsStack} 
+              options={{ headerShown: false, title: 'Conversations' }}
+            />
+          </Tab.Navigator>
+        )}
       </NavigationContainer>
     </PaperProvider>
   );
