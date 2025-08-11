@@ -40,7 +40,6 @@ export const ConversationPractice: React.FC = () => {
   const exchanges = conversation ? conversation.exchanges : [];
   
   const [currentExchangeIndex, setCurrentExchangeIndex] = useState(0);
-  const [showDzardzongke, setShowDzardzongke] = useState(true);
   const [viewMode, setViewMode] = useState<'both' | 'english' | 'dz'>('both');
   const [isPlaying, setIsPlaying] = useState(false);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
@@ -102,10 +101,6 @@ export const ConversationPractice: React.FC = () => {
     if (currentExchangeIndex > 0) {
       setCurrentExchangeIndex(currentExchangeIndex - 1);
     }
-  };
-
-  const toggleDzardzongke = () => {
-    setShowDzardzongke(!showDzardzongke);
   };
 
   const cycleViewMode = () => {
@@ -183,29 +178,22 @@ export const ConversationPractice: React.FC = () => {
           style={styles.contentContainer}
           contentContainerStyle={styles.contentInner}
         >
-          {currentExchange && (
-            <>
-              {(viewMode === 'both' || viewMode === 'english') && (
-                <View style={styles.bubbleContainer}>
-                  <View style={[
-                    styles.bubble,
-                    isSpeakerA ? styles.bubbleLeft : styles.bubbleRight
-                  ]}>
-                    <Text style={styles.bubbleText}>{currentExchange.english}</Text>
-                  </View>
+          {exchanges.slice(0, currentExchangeIndex + 1).map((ex, idx) => {
+            const left = ex.speaker === 'A';
+            return (
+              <View style={styles.bubbleContainer} key={`${ex.speaker}-${idx}`}>
+                <View style={[styles.bubble, left ? styles.bubbleLeft : styles.bubbleRight]}>
+                  {viewMode !== 'dz' && (
+                    <Text style={styles.bubbleText}>{ex.english}</Text>
+                  )}
+                  {viewMode === 'both' && <View style={{ height: 6 }} />}
+                  {viewMode !== 'english' && (
+                    <Text style={[styles.bubbleText, styles.translationText]}>{ex.dzardzongke}</Text>
+                  )}
                 </View>
-              )}
-
-              {(viewMode === 'both' || viewMode === 'dz') && (
-                <View style={styles.translationContainer}>
-                  <Text style={styles.translationLabel}>Dzardzongkha:</Text>
-                  <View style={styles.translationBubble}>
-                    <Text style={styles.translationText}>{currentExchange.dzardzongke}</Text>
-                  </View>
-                </View>
-              )}
-            </>
-          )}
+              </View>
+            );
+          })}
         </ScrollView>
 
         <View style={styles.controlsContainer}>
@@ -386,7 +374,7 @@ const styles = StyleSheet.create({
   },
   translationText: {
     fontSize: 16,
-    color: '#333',
+    color: '#1f2937',
     fontWeight: '500',
   },
   controlsContainer: {
