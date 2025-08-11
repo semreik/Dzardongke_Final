@@ -6,6 +6,7 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/types';
 import type { Card } from '../types/deck';
 import { useProgress } from '../stores/useProgress';
+import { useLanguage } from '../stores/useLanguage';
 
 type NumbersWriteScreenRouteProp = RouteProp<RootStackParamList, 'NumbersWrite'>;
 type NumbersWriteScreenNavigationProp = StackNavigationProp<RootStackParamList>;
@@ -14,6 +15,7 @@ const NumbersWrite: React.FC = () => {
   const route = useRoute<NumbersWriteScreenRouteProp>();
   const navigation = useNavigation<NumbersWriteScreenNavigationProp>();
   const { deckId, cards } = route.params;
+  const { selectedLanguage } = useLanguage();
   
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [userInput, setUserInput] = useState('');
@@ -77,7 +79,9 @@ const NumbersWrite: React.FC = () => {
       </Text>
       
       <View style={styles.cardContainer}>
-        <Text style={styles.prompt}>Write the Dzardzongke word for:</Text>
+        <Text style={styles.prompt}>
+          {selectedLanguage === 'qu' ? 'Write the Quechua word for:' : 'Write the Dzardzongke word for:'}
+        </Text>
         <Text style={styles.number}>{currentCard.front}</Text>
         
         <TextInput
