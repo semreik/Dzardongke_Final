@@ -9,15 +9,15 @@ interface Props {
   onFlip: () => void;
 }
 
-// Map of color names to their CSS color values
+// Map of color names to their CSS color values (keys are lowercase for case-insensitive match)
 const colorMap: Record<string, string> = {
-  'White': '#FFFFFF',
-  'Yellow': '#FFEB3B',
-  'Black': '#212121',
-  'Green': '#4CAF50',
-  'Brown': '#795548',
-  'Blue': '#2196F3',
-  'Red': '#F44336'
+  'white': '#FFFFFF',
+  'yellow': '#FFEB3B',
+  'black': '#212121',
+  'green': '#4CAF50',
+  'brown': '#795548',
+  'blue': '#2196F3',
+  'red': '#F44336'
 };
 
 export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
@@ -27,16 +27,17 @@ export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
   // Check if the image exists in our imageMap
   const imageExists = isFrontImage && imageMap[card.front as string] !== undefined;
   
-  // Check if this is a color card by checking if the front matches a color name
+  // Check if this is a color card by checking if the front matches a color name (case-insensitive)
   // For color cards, we'll use the front (English) color name to determine the background color
   // regardless of whether the card is flipped or not
-  const isColorCard = typeof card.front === 'string' && colorMap[card.front] !== undefined;
-  const cardBackgroundColor = isColorCard ? colorMap[card.front as string] : undefined;
+  const frontKey = typeof card.front === 'string' ? (card.front as string).toLowerCase() : '';
+  const isColorCard = typeof card.front === 'string' && colorMap[frontKey] !== undefined;
+  const cardBackgroundColor = isColorCard ? colorMap[frontKey] : undefined;
   
   // For dark background colors, use white text
-  const isDarkColor = cardBackgroundColor === colorMap['Black'] || cardBackgroundColor === colorMap['Blue'] || 
-                      cardBackgroundColor === colorMap['Brown'] || cardBackgroundColor === colorMap['Green'] || 
-                      cardBackgroundColor === colorMap['Red'];
+  const isDarkColor = cardBackgroundColor === colorMap['black'] || cardBackgroundColor === colorMap['blue'] || 
+                      cardBackgroundColor === colorMap['brown'] || cardBackgroundColor === colorMap['green'] || 
+                      cardBackgroundColor === colorMap['red'];
   
   return (
     <TouchableOpacity 
