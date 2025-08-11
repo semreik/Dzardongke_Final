@@ -4,11 +4,14 @@ import { Searchbar, Text } from 'react-native-paper';
 import Fuse from 'fuse.js';
 import debounce from 'lodash/debounce';
 import { DictEntryCard } from '../components/DictEntryCard';
+import { useSaved } from '../stores/useSaved';
+import { useLanguage } from '../stores/useLanguage';
 import { useLanguage } from '../stores/useLanguage';
 import { contentRegistry } from '../services/contentRegistry';
 
 const Dictionary: React.FC = () => {
   const { selectedLanguage } = useLanguage();
+  const { saveItem } = useSaved();
   const dictionary = contentRegistry[selectedLanguage].dictionary;
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -85,7 +88,24 @@ const Dictionary: React.FC = () => {
       ) : (
         <FlatList
           data={results}
-          renderItem={({ item }) => <DictEntryCard entry={item} />}
+          renderItem={({ item }) => (
+            <>
+              <DictEntryCard entry={item} />
+              <Text
+                onPress={() => saveItem({
+                  prompt: item.en,
+                  answer: item.dz,
+                  language: selectedLanguage as any,
+                  explanation: `“${item.dz}” means “${item.en}”.` + (item.example ? ` Example: ${item.example}` : ''),
+                  notes: item.exampleEn,
+                  source: 'dictionary'
+                })}
+                style={styles.saveLink}
+              >
+                Save
+              </Text>
+            </>
+          )}
           keyExtractor={(item, index) => `${item.dz}-${index}`}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
@@ -119,6 +139,11 @@ const styles = StyleSheet.create({
   list: {
     paddingVertical: 8,
     paddingHorizontal: 8,
+  },
+  saveLink: {
+    color: '#007AFF',
+    marginHorizontal: 16,
+    marginBottom: 12,
   },
   emptyStateContainer: {
     flex: 1,

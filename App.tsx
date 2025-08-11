@@ -20,6 +20,7 @@ import Onboarding from './app/screens/Onboarding';
 import { useLanguage } from './app/stores/useLanguage';
 import Settings from './app/screens/Settings';
 import MultipleChoice from './app/screens/MultipleChoice';
+import Profile from './app/screens/Profile';
 
 const Tab = createBottomTabNavigator();
 const InnerStack = createStackNavigator();
@@ -102,6 +103,7 @@ export default function App() {
             />
             <Tab.Screen name="MultipleChoice" component={MultipleChoice} options={{ title: 'Quiz' }} />
             <Tab.Screen name="Settings" component={Settings} />
+            <Tab.Screen name="Profile" component={Profile} />
           </Tab.Navigator>
         )}
       </NavigationContainer>
