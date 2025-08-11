@@ -41,6 +41,15 @@ export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
                       cardBackgroundColor === colorMap['brown'] || cardBackgroundColor === colorMap['green'] || 
                       cardBackgroundColor === colorMap['red'];
   
+  const formatDisplayText = (text: unknown): string => {
+    const s = typeof text === 'string' ? text : '';
+    // For animal cards, render phrases in lowercase per requirement
+    if (card.id && typeof card.id === 'string' && card.id.startsWith('animal-')) {
+      return s.toLowerCase();
+    }
+    return s;
+  };
+
   return (
     <TouchableOpacity 
       onPress={onFlip} 
@@ -55,7 +64,7 @@ export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
           />
         ) : (
           <Text style={[styles.text, isDarkColor ? styles.lightText : null]}>
-            {isFlipped ? card.back : (imageExists ? '' : card.front)}
+            {isFlipped ? formatDisplayText(card.back) : (imageExists ? '' : formatDisplayText(card.front))}
           </Text>
         )}
         {isFlipped && card.notes && (

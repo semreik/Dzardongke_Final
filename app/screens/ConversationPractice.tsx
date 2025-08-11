@@ -40,7 +40,8 @@ export const ConversationPractice: React.FC = () => {
   const exchanges = conversation ? conversation.exchanges : [];
   
   const [currentExchangeIndex, setCurrentExchangeIndex] = useState(0);
-  const [showDzardzongke, setShowDzardzongke] = useState(false);
+  const [showDzardzongke, setShowDzardzongke] = useState(true);
+  const [viewMode, setViewMode] = useState<'both' | 'english' | 'dz'>('both');
   const [isPlaying, setIsPlaying] = useState(false);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   
@@ -105,6 +106,10 @@ export const ConversationPractice: React.FC = () => {
 
   const toggleDzardzongke = () => {
     setShowDzardzongke(!showDzardzongke);
+  };
+
+  const cycleViewMode = () => {
+    setViewMode(prev => (prev === 'both' ? 'english' : prev === 'english' ? 'dz' : 'both'));
   };
 
   const currentExchange = exchanges[currentExchangeIndex];
@@ -180,18 +185,20 @@ export const ConversationPractice: React.FC = () => {
         >
           {currentExchange && (
             <>
-              <View style={styles.bubbleContainer}>
-                <View style={[
-                  styles.bubble,
-                  isSpeakerA ? styles.bubbleLeft : styles.bubbleRight
-                ]}>
-                  <Text style={styles.bubbleText}>{currentExchange.english}</Text>
+              {(viewMode === 'both' || viewMode === 'english') && (
+                <View style={styles.bubbleContainer}>
+                  <View style={[
+                    styles.bubble,
+                    isSpeakerA ? styles.bubbleLeft : styles.bubbleRight
+                  ]}>
+                    <Text style={styles.bubbleText}>{currentExchange.english}</Text>
+                  </View>
                 </View>
-              </View>
-              
-              {showDzardzongke && (
+              )}
+
+              {(viewMode === 'both' || viewMode === 'dz') && (
                 <View style={styles.translationContainer}>
-                  <Text style={styles.translationLabel}>Dzardzongke:</Text>
+                  <Text style={styles.translationLabel}>Dzardzongkha:</Text>
                   <View style={styles.translationBubble}>
                     <Text style={styles.translationText}>{currentExchange.dzardzongke}</Text>
                   </View>
@@ -220,15 +227,15 @@ export const ConversationPractice: React.FC = () => {
           
           <TouchableOpacity 
             style={styles.translationButton}
-            onPress={toggleDzardzongke}
+            onPress={cycleViewMode}
           >
             <MaterialIcons 
-              name={showDzardzongke ? 'visibility-off' : 'visibility'} 
+              name={'visibility'} 
               size={24} 
               color="#007AFF" 
             />
             <Text style={styles.controlText}>
-              {showDzardzongke ? 'Hide Translation' : 'Show Translation'}
+              {viewMode === 'both' ? 'Show English only' : viewMode === 'english' ? 'Show Dzardzongkha only' : 'Show Both'}
             </Text>
           </TouchableOpacity>
           

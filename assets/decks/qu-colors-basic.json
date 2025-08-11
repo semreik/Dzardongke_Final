@@ -1,7 +1,7 @@
 {
   "id": "colors-basic",
-  "title": "Basic Colors (Quechua)",
-  "description": "Learn common color names in Quechua",
+  "title": "Basic Colours (Quechua)",
+  "description": "Learn common colour names in Quechua",
   "cards": [
     { "id": "color-blue", "front": "blue", "back": "anqas", "hasAudio": false },
     { "id": "color-brown", "front": "brown", "back": "ch’unpi", "hasAudio": false },
