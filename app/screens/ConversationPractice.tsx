@@ -56,7 +56,6 @@ export const ConversationPractice: React.FC = () => {
   useEffect(() => {
     // Reset animation when changing exchanges
     speakingAnimation.setValue(0);
-    setShowDzardzongke(false);
     
     // Start speaking animation
     Animated.loop(
