@@ -1,7 +1,6 @@
-import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import { render, screen } from '@testing-library/react-native';
 import { DeckList } from '../../app/screens/DeckList';
-import { NavigationContainer } from '@react-navigation/native';
 
 // Mock navigation
 jest.mock('@react-navigation/native', () => ({
@@ -24,10 +23,9 @@ describe('DeckList', () => {
       </NavigationContainer>
     );
     
-    // Check all deck titles are displayed
+    // Check all deck titles are displayed (current assets)
     expect(screen.getByText('Basic Animals')).toBeTruthy();
     expect(screen.getByText('Basic Colors')).toBeTruthy();
-    expect(screen.getByText('Basic Food Items')).toBeTruthy();
-    expect(screen.getByText('Basic Greetings')).toBeTruthy();
+    expect(screen.getByText('Numbers (1-10)')).toBeTruthy();
   });
 });

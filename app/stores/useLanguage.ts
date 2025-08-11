@@ -9,6 +9,7 @@ interface LanguageState {
   hasChosenLanguage: boolean;
   loadLanguage: () => Promise<void>;
   setLanguage: (lang: LanguageCode) => Promise<void>;
+  resetLanguageChoice: () => Promise<void>;
 }
 
 const STORAGE_KEY = 'app_language';
@@ -45,6 +46,15 @@ export const useLanguage = create<LanguageState>((set, get) => ({
       localStorage.setItem(STORAGE_KEY, data);
     } else {
       await SecureStore.setItemAsync(STORAGE_KEY, data);
+    }
+  },
+
+  resetLanguageChoice: async () => {
+    set({ hasChosenLanguage: false });
+    if (Platform.OS === 'web') {
+      localStorage.removeItem(STORAGE_KEY);
+    } else {
+      await SecureStore.deleteItemAsync(STORAGE_KEY);
     }
   },
 }));
