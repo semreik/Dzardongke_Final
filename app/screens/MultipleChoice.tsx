@@ -114,6 +114,12 @@ export const MultipleChoice: React.FC = () => {
     setShowResult(false);
   };
 
+  const handlePrev = () => {
+    setCurrentIndex(prev => (prev - 1 + quizPool.length) % quizPool.length);
+    setSelected(null);
+    setShowResult(false);
+  };
+
   if (!currentItem) {
     return (
       <View style={styles.container}> 
@@ -176,9 +182,14 @@ export const MultipleChoice: React.FC = () => {
             >
               <Text style={styles.saveText}>Save to Profile</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.nextBtn} onPress={handleNext}>
-              <Text style={styles.nextText}>Next</Text>
-            </TouchableOpacity>
+            <View style={styles.navRow}>
+              <TouchableOpacity style={styles.prevBtn} onPress={handlePrev}>
+                <Text style={styles.prevText}>Previous</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.nextBtn} onPress={handleNext}>
+                <Text style={styles.nextText}>Next</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </View>
@@ -205,7 +216,10 @@ const styles = StyleSheet.create({
   notes: { fontSize: 14, color: '#6b7280', marginTop: 4 },
   saveBtn: { alignSelf: 'flex-start', backgroundColor: '#10b981', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8, marginTop: 4 },
   saveText: { color: 'white', fontWeight: '600', fontSize: 16 },
-  nextBtn: { alignSelf: 'flex-start', backgroundColor: '#007AFF', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8, marginTop: 8 },
+  navRow: { flexDirection: 'row', gap: 8, marginTop: 8 },
+  prevBtn: { backgroundColor: '#6b7280', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8 },
+  prevText: { color: 'white', fontWeight: '600', fontSize: 16 },
+  nextBtn: { backgroundColor: '#007AFF', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8 },
   nextText: { color: 'white', fontWeight: '600', fontSize: 16 },
 });
 

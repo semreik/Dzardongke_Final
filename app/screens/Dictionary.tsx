@@ -100,7 +100,7 @@ const Dictionary: React.FC = () => {
             const key = `${item.en}=>${item.dz}`;
             const isSaved = savedKeys.has(key);
             return (
-              <>
+              <View style={styles.itemContainer}>
                 <DictEntryCard entry={item} />
                 <View style={styles.row}>
                   {!isSaved ? (
@@ -125,7 +125,7 @@ const Dictionary: React.FC = () => {
                     <Text style={styles.savedTag}>Saved!</Text>
                   )}
                 </View>
-              </>
+              </View>
             );
           }}
           keyExtractor={(item, index) => `${item.dz}-${index}`}
@@ -189,6 +189,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#555',
     textAlign: 'center',
+  },
+  itemContainer: {
+    marginBottom: 8,
   },
   row: {
     flexDirection: 'row',
