@@ -1,13 +1,12 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
-import { Searchbar, Text } from 'react-native-paper';
 import Fuse from 'fuse.js';
 import debounce from 'lodash/debounce';
+import React, { useCallback, useMemo, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { Searchbar, Text } from 'react-native-paper';
 import { DictEntryCard } from '../components/DictEntryCard';
-import { useSaved } from '../stores/useSaved';
-import { useLanguage } from '../stores/useLanguage';
-import { useLanguage } from '../stores/useLanguage';
 import { contentRegistry } from '../services/contentRegistry';
+import { useLanguage } from '../stores/useLanguage';
+import { useSaved } from '../stores/useSaved';
 
 const Dictionary: React.FC = () => {
   const { selectedLanguage } = useLanguage();
@@ -16,6 +15,15 @@ const Dictionary: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState(dictionary.entries);
+  const [savedKeys, setSavedKeys] = useState<Set<string>>(new Set());
+
+  const markSaved = (key: string) => {
+    setSavedKeys(prev => {
+      const next = new Set(prev);
+      next.add(key);
+      return next;
+    });
+  };
 
   const fuse = useMemo(() => {
     return new Fuse(dictionary.entries, {
@@ -88,24 +96,38 @@ const Dictionary: React.FC = () => {
       ) : (
         <FlatList
           data={results}
-          renderItem={({ item }) => (
-            <>
-              <DictEntryCard entry={item} />
-              <Text
-                onPress={() => saveItem({
-                  prompt: item.en,
-                  answer: item.dz,
-                  language: selectedLanguage as any,
-                  explanation: `“${item.dz}” means “${item.en}”.` + (item.example ? ` Example: ${item.example}` : ''),
-                  notes: item.exampleEn,
-                  source: 'dictionary'
-                })}
-                style={styles.saveLink}
-              >
-                Save
-              </Text>
-            </>
-          )}
+          renderItem={({ item }) => {
+            const key = `${item.en}=>${item.dz}`;
+            const isSaved = savedKeys.has(key);
+            return (
+              <>
+                <DictEntryCard entry={item} />
+                <View style={styles.row}>
+                  {!isSaved ? (
+                    <Text
+                      onPress={async () => {
+                        await saveItem({
+                          prompt: item.en,
+                          answer: item.dz,
+                          language: selectedLanguage as any,
+                          explanation:
+                            `“${item.dz}” means “${item.en}”.` + (item.example ? ` Example: ${item.example}` : ''),
+                          notes: item.exampleEn,
+                          source: 'dictionary',
+                        });
+                        markSaved(key);
+                      }}
+                      style={styles.saveLink}
+                    >
+                      Save
+                    </Text>
+                  ) : (
+                    <Text style={styles.savedTag}>Saved!</Text>
+                  )}
+                </View>
+              </>
+            );
+          }}
           keyExtractor={(item, index) => `${item.dz}-${index}`}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
@@ -167,6 +189,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#555',
     textAlign: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginRight: 16,
+    marginBottom: 8,
+  },
+  savedTag: {
+    color: '#10b981',
+    fontWeight: '700',
+  },
+  saveLink: {
+    color: '#007AFF',
+    marginHorizontal: 16,
+    marginBottom: 12,
   },
 });
 
