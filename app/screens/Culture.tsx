@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useRef, useState } from 'react';
-import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Image as RNImage } from 'react-native';
+import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useLanguage } from '../stores/useLanguage';
 
 type Step = 'intro' | 'image' | 'quiz' | 'done';
@@ -44,17 +44,8 @@ const Culture: React.FC = () => {
     );
   }
 
-  // Use the asset's intrinsic size to render at correct aspect ratio (prevents crop/blur)
-  // Require will throw if missing, as requested
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const IMG_SOURCE = require('../../assets/images/Culture/culture1.png');
-  const aspectRatio = useMemo(() => {
-    const meta = RNImage.resolveAssetSource(IMG_SOURCE);
-    if (meta && meta.width && meta.height) {
-      return meta.width / meta.height;
-    }
-    return 16 / 9;
-  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -103,12 +94,7 @@ const Culture: React.FC = () => {
                 </Text>
               </View>
             ) : (
-              <Image
-                source={IMG_SOURCE}
-                style={[styles.photo, { aspectRatio }]}
-                resizeMode="contain"
-                onError={() => setImageError(true)}
-              />
+              <Image source={IMG_SOURCE} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
             )}
             <Text style={styles.caption}>Part of the Muktinath Valley with Dzar on the left and Dzong on the right — August 2022</Text>
           </View>
