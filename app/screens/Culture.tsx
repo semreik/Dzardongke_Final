@@ -14,6 +14,10 @@ type Step =
   | 'regionImage'
   | 'regionFest'
   | 'regionQuiz'
+  | 'dachang1'
+  | 'dachang2'
+  | 'dachangImage'
+  | 'dachangQuiz'
   | 'done';
 
 interface QuizOption {
@@ -41,7 +45,7 @@ const Culture: React.FC = () => {
     []
   );
 
-  const stepsOrder: Step[] = ['intro1', 'intro2', 'intro3', 'image', 'quiz', 'region1', 'region2', 'regionImage', 'regionFest', 'regionQuiz'];
+  const stepsOrder: Step[] = ['intro1', 'intro2', 'intro3', 'image', 'quiz', 'region1', 'region2', 'regionImage', 'regionFest', 'regionQuiz', 'dachang1', 'dachang2', 'dachangImage', 'dachangQuiz'];
   const go = (next: Step) => {
     Animated.sequence([
       Animated.timing(fade, { toValue: 0, duration: 150, useNativeDriver: true }),
@@ -62,6 +66,8 @@ const Culture: React.FC = () => {
   const IMG_SOURCE = require('../../assets/images/Culture/culture1.png');
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const IMG_SOURCE_2 = require('../../assets/images/Culture/culture2.png');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const IMG_SOURCE_3 = require('../../assets/images/Culture/culture3.png');
 
   const subtitle = useMemo(() => {
     if (step === 'intro1' || step === 'intro2' || step === 'intro3' || step === 'image' || step === 'quiz') {
@@ -70,12 +76,25 @@ const Culture: React.FC = () => {
     if (step === 'region1' || step === 'region2' || step === 'regionImage' || step === 'regionFest' || step === 'regionQuiz') {
       return 'Part b — About the Dzardzongkha region';
     }
+    if (step === 'dachang1' || step === 'dachang2' || step === 'dachangImage' || step === 'dachangQuiz') {
+      return 'Part a — Dachang preparations';
+    }
+    return 'Culture';
+  }, [step]);
+
+  const titleText = useMemo(() => {
+    if (['intro1','intro2','intro3','image','quiz','region1','region2','regionImage','regionFest','regionQuiz'].includes(step)) {
+      return '1. Dzardzongkha: Language & Region';
+    }
+    if (['dachang1','dachang2','dachangImage','dachangQuiz'].includes(step)) {
+      return '2. Dachang festival';
+    }
     return 'Culture';
   }, [step]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Culture</Text>
+      <Text style={styles.title}>{titleText}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>
 
       <Animated.View style={{ opacity: fade }}>
@@ -228,6 +247,60 @@ const Culture: React.FC = () => {
             </View>
           </View>
         )}
+
+        {step === 'dachang1' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              Dachang “arrow beer,” is traditionally celebrated in the fourth month of the year. The local calendars of each of the villages do not coincide, however, so this means that the events are staggered over three months, one village at the time. Moreover, even villages that celebrate the Dachang in the same month do not do so on the same dates. The Dachang of Dzar, for example, finishes on the 13th day of the month, the day before the Khyenga Dachang begins. This is usually in March, April or May (10 April in 2025).
+            </Text>
+          </View>
+        )}
+
+        {step === 'dachang2' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              Before the festival starts the village needs to make the necessary preparations. First, the village community buys a yak, which will feed the village for a week during the festivities. Early morning a small herd of seven or eight yaks is brought down to the village. The Khyenga community only need one, but it is impossible to bring a single animal down from the pasturelands - they won’t leave their companions.
+            </Text>
+          </View>
+        )}
+
+        {step === 'dachangImage' && (
+          <View style={styles.card}>
+            <Image source={IMG_SOURCE_3} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Text style={styles.caption}>Yaks to be brought down for the festival - April 2024</Text>
+          </View>
+        )}
+
+        {step === 'dachangQuiz' && (
+          <View style={styles.card}>
+            <Text style={styles.quizTitle}>Quiz</Text>
+            <Text style={styles.quizQ}>Are the Dachang festivals celebrated at the same time in all villages?</Text>
+            <View style={{ gap: 8, marginTop: 8 }}>
+              {[
+                { text: 'YES', correct: false },
+                { text: 'NO', correct: true },
+              ].map(opt => {
+                const isSelected = selected === opt.text;
+                const isCorrect = showResult && opt.correct;
+                const isWrong = showResult && isSelected && !opt.correct;
+                return (
+                  <TouchableOpacity
+                    key={opt.text}
+                    style={[styles.choice, isCorrect ? styles.correct : isWrong ? styles.wrong : undefined]}
+                    onPress={() => {
+                      if (showResult) return;
+                      setSelected(opt.text);
+                      setShowResult(true);
+                    }}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.choiceText}>{opt.text}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        )}
       </Animated.View>
 
       <View style={styles.navRow}>
@@ -257,7 +330,19 @@ const Culture: React.FC = () => {
             }}
           >
             <Text style={[styles.navText, { color: 'white' }]}>
-              {step === 'quiz' ? 'Next' : step === 'regionQuiz' && !showResultMulti ? 'Check answers' : step === 'regionQuiz' ? 'Finish' : 'Next'}
+              {
+                step === 'quiz'
+                  ? 'Next'
+                  : step === 'regionQuiz' && !showResultMulti
+                  ? 'Check answers'
+                  : step === 'regionQuiz'
+                  ? 'Next'
+                  : step === 'dachangQuiz' && !showResult
+                  ? 'Check answer'
+                  : step === 'dachangQuiz'
+                  ? 'Finish'
+                  : 'Next'
+              }
             </Text>
             <MaterialCommunityIcons name="chevron-right" size={18} color={'white'} />
           </TouchableOpacity>
