@@ -3,7 +3,18 @@ import React, { useMemo, useRef, useState } from 'react';
 import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useLanguage } from '../stores/useLanguage';
 
-type Step = 'intro1' | 'intro2' | 'intro3' | 'image' | 'quiz' | 'done';
+type Step =
+  | 'intro1'
+  | 'intro2'
+  | 'intro3'
+  | 'image'
+  | 'quiz'
+  | 'region1'
+  | 'region2'
+  | 'regionImage'
+  | 'regionFest'
+  | 'regionQuiz'
+  | 'done';
 
 interface QuizOption {
   text: string;
@@ -17,6 +28,8 @@ const Culture: React.FC = () => {
   const [selected, setSelected] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [multiSelected, setMultiSelected] = useState<Set<string>>(new Set());
+  const [showResultMulti, setShowResultMulti] = useState(false);
 
   const quizOptions: QuizOption[] = useMemo(
     () => [
@@ -28,7 +41,7 @@ const Culture: React.FC = () => {
     []
   );
 
-  const stepsOrder: Step[] = ['intro1', 'intro2', 'intro3', 'image', 'quiz'];
+  const stepsOrder: Step[] = ['intro1', 'intro2', 'intro3', 'image', 'quiz', 'region1', 'region2', 'regionImage', 'regionFest', 'regionQuiz'];
   const go = (next: Step) => {
     Animated.sequence([
       Animated.timing(fade, { toValue: 0, duration: 150, useNativeDriver: true }),
@@ -47,11 +60,23 @@ const Culture: React.FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const IMG_SOURCE = require('../../assets/images/Culture/culture1.png');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const IMG_SOURCE_2 = require('../../assets/images/Culture/culture2.png');
+
+  const subtitle = useMemo(() => {
+    if (step === 'intro1' || step === 'intro2' || step === 'intro3' || step === 'image' || step === 'quiz') {
+      return 'Part a — Introduction to the Dzardzongkha language';
+    }
+    if (step === 'region1' || step === 'region2' || step === 'regionImage' || step === 'regionFest' || step === 'regionQuiz') {
+      return 'Part b — About the Dzardzongkha region';
+    }
+    return 'Culture';
+  }, [step]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Culture</Text>
-      <Text style={styles.subtitle}>Part a — Introduction to the Dzardzongkha language</Text>
+      <Text style={styles.subtitle}>{subtitle}</Text>
 
       <Animated.View style={{ opacity: fade }}>
         {step === 'intro1' && (
@@ -138,6 +163,71 @@ const Culture: React.FC = () => {
             </View>
           </View>
         )}
+
+        {step === 'region1' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              A short distance north of Jomsom is the Pandak river, an eastern tributary of the Kali Gandaki. This river is an old territorial boundary. To the south of it is the territory of the former kingdom of Thini (also known as Sompo). The area to the north of it was controlled by a settlement called Tshotsholung or “Old Kagbeni”. Old Kagbeni was submerged by a massive landslide at some unknown period and moved to its present location, a short distance to the north as the entrance of the Muktinath Valley.
+            </Text>
+          </View>
+        )}
+
+        {step === 'region2' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              All this territory, up to the present-day Tibetan border, both north and south of the Pandak River, was conquered by the founder of the kingdom of Lo, Amepal (a mes dpal) in the 14th century. The Pandak River is also a cultural dividing line: villages to the south of it speak Thakali, a Tamangic language in the Tibeto-Burman family. Communities to the north of it speak different varieties of Tibetan or Seke, which is more like Thakali. Currently, Dzardzongke is spoken in the villages of Lubrak, Kagbeni, Khyenga, Chongkor, Dzar, Dzong and Chusang.
+            </Text>
+          </View>
+        )}
+
+        {step === 'regionImage' && (
+          <View style={styles.card}>
+            <Image source={IMG_SOURCE_2} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Text style={styles.caption}>The northern part of the village of Chusang - August 2022</Text>
+          </View>
+        )}
+
+        {step === 'regionFest' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              In some of the villages in the Dzardzongke Valley and beyond, they still celebrate festivals like the Dachang and the Yarthung. Traditionally, the main ceremony was the Demdem Chöpa, which featured dancing, singing, archery and the propitiation of local territorial gods. It is not known when the ceremony used to be celebrated, but the Dachang ceremonies that are held in each of the villages may be the local survivals of this once inter-communal event between multiple villages. In the next lesson, you will learn more about the Dachang and other festivals.
+            </Text>
+          </View>
+        )}
+
+        {step === 'regionQuiz' && (
+          <View style={styles.card}>
+            <Text style={styles.quizTitle}>Quiz</Text>
+            <Text style={styles.quizQ}>What did they do during the ancient Demdem Chöpa ceremony?</Text>
+            <View style={{ gap: 8, marginTop: 8 }}>
+              {[
+                { text: 'dancing', correct: true },
+                { text: 'singing', correct: true },
+                { text: 'worship the buddha', correct: false },
+                { text: 'archery', correct: true },
+              ].map(opt => {
+                const isSelected = multiSelected.has(opt.text);
+                const isCorrect = showResultMulti && opt.correct;
+                const isWrong = showResultMulti && isSelected && !opt.correct;
+                return (
+                  <TouchableOpacity
+                    key={opt.text}
+                    style={[styles.choice, isSelected ? { borderColor: '#2563eb' } : undefined, isCorrect ? styles.correct : isWrong ? styles.wrong : undefined]}
+                    onPress={() => {
+                      if (showResultMulti) return;
+                      const next = new Set(multiSelected);
+                      if (next.has(opt.text)) next.delete(opt.text); else next.add(opt.text);
+                      setMultiSelected(next);
+                    }}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.choiceText}>{opt.text}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        )}
       </Animated.View>
 
       <View style={styles.navRow}>
@@ -157,12 +247,18 @@ const Culture: React.FC = () => {
           <TouchableOpacity
             style={[styles.navBtn, styles.primary]}
             onPress={() => {
+              if (step === 'regionQuiz' && !showResultMulti) {
+                setShowResultMulti(true);
+                return;
+              }
               const idx = stepsOrder.indexOf(step);
               const next = idx < stepsOrder.length - 1 ? stepsOrder[idx + 1] : 'done';
               go(next as Step);
             }}
           >
-            <Text style={[styles.navText, { color: 'white' }]}>{step === 'quiz' ? 'Finish' : 'Next'}</Text>
+            <Text style={[styles.navText, { color: 'white' }]}>
+              {step === 'quiz' ? 'Next' : step === 'regionQuiz' && !showResultMulti ? 'Check answers' : step === 'regionQuiz' ? 'Finish' : 'Next'}
+            </Text>
             <MaterialCommunityIcons name="chevron-right" size={18} color={'white'} />
           </TouchableOpacity>
         )}
