@@ -14,6 +14,10 @@ type Step =
   | 'regionImage'
   | 'regionFest'
   | 'regionQuiz'
+  | 'festivalsC1'
+  | 'festivalsCImage'
+  | 'festivalsC2'
+  | 'festivalsCQuiz'
   | 'dachang1'
   | 'dachang2'
   | 'dachangImage'
@@ -45,7 +49,7 @@ const Culture: React.FC = () => {
     []
   );
 
-  const stepsOrder: Step[] = ['intro1', 'intro2', 'intro3', 'image', 'quiz', 'region1', 'region2', 'regionImage', 'regionFest', 'regionQuiz', 'dachang1', 'dachang2', 'dachangImage', 'dachangQuiz'];
+  const stepsOrder: Step[] = ['intro1', 'intro2', 'intro3', 'image', 'quiz', 'region1', 'region2', 'regionImage', 'regionFest', 'regionQuiz', 'festivalsC1', 'festivalsCImage', 'festivalsC2', 'festivalsCQuiz', 'dachang1', 'dachang2', 'dachangImage', 'dachangQuiz'];
   const go = (next: Step) => {
     Animated.sequence([
       Animated.timing(fade, { toValue: 0, duration: 150, useNativeDriver: true }),
@@ -68,6 +72,8 @@ const Culture: React.FC = () => {
   const IMG_SOURCE_2 = require('../../assets/images/Culture/culture2.png');
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const IMG_SOURCE_3 = require('../../assets/images/Culture/culture3.png');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const IMG_SOURCE_4 = require('../../assets/images/Culture/culture4.png');
 
   const subtitle = useMemo(() => {
     if (step === 'intro1' || step === 'intro2' || step === 'intro3' || step === 'image' || step === 'quiz') {
@@ -76,6 +82,9 @@ const Culture: React.FC = () => {
     if (step === 'region1' || step === 'region2' || step === 'regionImage' || step === 'regionFest' || step === 'regionQuiz') {
       return 'Part b — About the Dzardzongkha region';
     }
+    if (step === 'festivalsC1' || step === 'festivalsCImage' || step === 'festivalsC2' || step === 'festivalsCQuiz') {
+      return 'Part c — Dzardzongkha festivals';
+    }
     if (step === 'dachang1' || step === 'dachang2' || step === 'dachangImage' || step === 'dachangQuiz') {
       return 'Part a — Dachang preparations';
     }
@@ -83,7 +92,7 @@ const Culture: React.FC = () => {
   }, [step]);
 
   const titleText = useMemo(() => {
-    if (['intro1','intro2','intro3','image','quiz','region1','region2','regionImage','regionFest','regionQuiz'].includes(step)) {
+    if (['intro1','intro2','intro3','image','quiz','region1','region2','regionImage','regionFest','regionQuiz','festivalsC1','festivalsCImage','festivalsC2','festivalsCQuiz'].includes(step)) {
       return '1. Dzardzongkha: Language & Region';
     }
     if (['dachang1','dachang2','dachangImage','dachangQuiz'].includes(step)) {
@@ -108,6 +117,64 @@ const Culture: React.FC = () => {
               Sam is the Dzardzongkha word for “new” and dzong means ‘castle’ so the name of the town of Jomsom means
               “Newcastle”.
             </Text>
+          </View>
+        )}
+
+        {step === 'festivalsC1' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              Traditional festivals in the Dzardzongke valley and its surroundings are at specific times in the year. Although Buddhism and Hinduism are found throughout the area, these festivals originally represented older, so-called “pagan” traditions. In recent times, they have become more mixed with other religious traditions. There are three main “pagan” calendrical ceremonies in the Baragaon area, expressed in the following maxim: pi dachang, yar yartung, gun tshongguk “In the spring there is the Dachang; in summer the Yartung, and in winter the Tshongguk.”
+            </Text>
+            <Text style={styles.p}>
+              Tshongguk literally means “Bringing home the [profits from] trade”. This is the local name for the New Year ceremony according to the agrarian calendar that precedes the main official Tibeto-Mongol calendar by a month. This is the calendar that is observed in most of the villages. It refers to the rule whereby everyone who goes to India for seasonal trade after the buckwheat harvest in October should return to their respective communities by this date. If they didn’t return on time, they had to pay a fine, because it was important to bring bag the trade earnings to the village.
+            </Text>
+          </View>
+        )}
+
+        {step === 'festivalsCImage' && (
+          <View style={styles.card}>
+            <Image source={IMG_SOURCE_3} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Text style={styles.caption}>Poster to advertise the annual Yarthung horse riding competition in August 2022</Text>
+          </View>
+        )}
+
+        {step === 'festivalsC2' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              The festivals are, in principle, spaced at four-month intervals. The Yartung “Summer festival,” is an occasion featuring all sorts of sports, especially horsemanship. The Dachang “Arrow-Beer” focusses specifically on archery. All three ceremonies are embedded in a week of feasting, propitiation of local gods, dancing and songs.
+            </Text>
+          </View>
+        )}
+
+        {step === 'festivalsCQuiz' && (
+          <View style={styles.card}>
+            <Text style={styles.quizTitle}>Quiz</Text>
+            <Text style={styles.quizQ}>When is the annual horse riding competition?</Text>
+            <View style={{ gap: 8, marginTop: 8 }}>
+              {[
+                { text: 'During Tshongguk in Winter', correct: false },
+                { text: 'During Dachang in Spring', correct: false },
+                { text: 'During Yarthung in Summer', correct: true },
+              ].map(opt => {
+                const isSelected = selected === opt.text;
+                const isCorrect = showResult && opt.correct;
+                const isWrong = showResult && isSelected && !opt.correct;
+                return (
+                  <TouchableOpacity
+                    key={opt.text}
+                    style={[styles.choice, isCorrect ? styles.correct : isWrong ? styles.wrong : undefined]}
+                    onPress={() => {
+                      if (showResult) return;
+                      setSelected(opt.text);
+                      setShowResult(true);
+                    }}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.choiceText}>{opt.text}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
         )}
 
@@ -266,7 +333,7 @@ const Culture: React.FC = () => {
 
         {step === 'dachangImage' && (
           <View style={styles.card}>
-            <Image source={IMG_SOURCE_3} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Image source={IMG_SOURCE_4} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
             <Text style={styles.caption}>Yaks to be brought down for the festival - April 2024</Text>
           </View>
         )}
@@ -330,19 +397,7 @@ const Culture: React.FC = () => {
             }}
           >
             <Text style={[styles.navText, { color: 'white' }]}>
-              {
-                step === 'quiz'
-                  ? 'Next'
-                  : step === 'regionQuiz' && !showResultMulti
-                  ? 'Check answers'
-                  : step === 'regionQuiz'
-                  ? 'Next'
-                  : step === 'dachangQuiz' && !showResult
-                  ? 'Check answer'
-                  : step === 'dachangQuiz'
-                  ? 'Finish'
-                  : 'Next'
-              }
+              {step === 'regionQuiz' && !showResultMulti ? 'Check answers' : (step === 'quiz' || step === 'festivalsCQuiz' || step === 'dachangQuiz') && !showResult ? 'Check answer' : step === 'dachangQuiz' ? 'Finish' : 'Next'}
             </Text>
             <MaterialCommunityIcons name="chevron-right" size={18} color={'white'} />
           </TouchableOpacity>
