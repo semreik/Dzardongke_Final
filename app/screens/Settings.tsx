@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../stores/useLanguage';
 
 const Settings: React.FC = () => {
@@ -7,7 +8,10 @@ const Settings: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Settings</Text>
+      <View style={styles.headerRow}>
+        <MaterialCommunityIcons name="cog" size={20} color="#64748b" />
+        <Text style={styles.title}>Settings</Text>
+      </View>
       <Text style={styles.label}>Current language</Text>
       <Text style={styles.value}>{selectedLanguage === 'dz' ? 'Dzardzongkha' : 'Quechua'}</Text>
 
@@ -29,7 +33,8 @@ const Settings: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#f7f7fb' },
-  title: { fontSize: 20, fontWeight: '700', marginBottom: 16 },
+  headerRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
+  title: { fontSize: 20, fontWeight: '700' },
   label: { fontSize: 14, color: '#666' },
   value: { fontSize: 16, marginBottom: 16 },
   row: { flexDirection: 'row', gap: 10, marginBottom: 16 },

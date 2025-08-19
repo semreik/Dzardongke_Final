@@ -153,7 +153,9 @@ export const MultipleChoice: React.FC = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Multiple Choice</Text>
         <Text style={styles.prompt}>{promptTitle}</Text>
-        <Text style={styles.bigPrompt}>{currentItem.prompt}</Text>
+        <View style={styles.promptCard}>
+          <Text style={styles.bigPrompt}>{currentItem.prompt}</Text>
+        </View>
 
         <View style={styles.optionsContainer}>
           {options.map(opt => {
@@ -166,6 +168,7 @@ export const MultipleChoice: React.FC = () => {
                 style={[styles.optionBtn, showCorrect ? styles.correctBtn : showWrong ? styles.wrongBtn : undefined]}
                 onPress={() => handleSelect(opt)}
                 disabled={showResult}
+                activeOpacity={0.85}
               >
                 <Text style={styles.optionText}>{opt.text}</Text>
               </TouchableOpacity>
@@ -225,8 +228,9 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#f5f5f5' },
   title: { fontSize: 22, fontWeight: '700', marginBottom: 8 },
   prompt: { fontSize: 16, color: '#555', marginBottom: 8 },
+  promptCard: { backgroundColor: 'white', borderRadius: 12, padding: 16, borderWidth: 1, borderColor: '#e5e7eb', marginBottom: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2 },
   optionsContainer: { gap: 10, marginTop: 8 },
-  optionBtn: { backgroundColor: 'white', padding: 14, borderRadius: 8, borderWidth: 1, borderColor: '#e5e7eb' },
+  optionBtn: { backgroundColor: 'white', padding: 16, borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2 },
   optionText: { fontSize: 16, color: '#111827' },
   correctBtn: { backgroundColor: '#E8F5E9', borderColor: '#4CAF50' },
   wrongBtn: { backgroundColor: '#FDECEC', borderColor: '#FF3B30' },

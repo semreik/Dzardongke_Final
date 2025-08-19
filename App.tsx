@@ -22,6 +22,7 @@ import Settings from './app/screens/Settings';
 import MultipleChoice from './app/screens/MultipleChoice';
 import Profile from './app/screens/Profile';
 import Credits from './app/screens/Credits';
+import { Colors } from './constants/Colors';
 
 const Tab = createBottomTabNavigator();
 const InnerStack = createStackNavigator();
@@ -76,17 +77,30 @@ export default function App() {
         ) : (
           <Tab.Navigator
             screenOptions={({ route }) => ({
+              tabBarActiveTintColor: Colors.light.tint,
               tabBarIcon: ({ focused, color, size }) => {
                 if (route.name === 'DeckStack') {
                   return <Ionicons name={focused ? 'albums' : 'albums-outline'} size={size} color={color} />;
                 } else if (route.name === 'Stats') {
                   return <MaterialCommunityIcons name="chart-bar" size={size} color={color} />;
                 } else if (route.name === 'Dictionary') {
-                  return <MaterialCommunityIcons name="book-open" size={size} color={color} />;
+                  return <MaterialCommunityIcons name="book-open-page-variant" size={size} color={color} />;
                 } else if (route.name === 'Conversations') {
                   return <MaterialCommunityIcons name="chat" size={size} color={color} />;
+                } else if (route.name === 'MultipleChoice') {
+                  return <MaterialCommunityIcons name="checkbox-multiple-choice" size={size} color={color} />;
+                } else if (route.name === 'Settings') {
+                  return <Ionicons name={focused ? 'settings' : 'settings-outline'} size={size} color={color} />;
+                } else if (route.name === 'Profile') {
+                  return <MaterialCommunityIcons name="account" size={size} color={color} />;
+                } else if (route.name === 'Credits') {
+                  return <MaterialCommunityIcons name="information" size={size} color={color} />;
                 }
                 return null;
+              },
+              tabBarStyle: {
+                paddingBottom: 6,
+                height: 60,
               },
             })}
           >
