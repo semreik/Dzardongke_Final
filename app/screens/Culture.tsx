@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useRef, useState } from 'react';
-import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Image as RNImage } from 'react-native';
 import { useLanguage } from '../stores/useLanguage';
 
 type Step = 'intro' | 'image' | 'quiz' | 'done';
@@ -43,6 +43,18 @@ const Culture: React.FC = () => {
       </View>
     );
   }
+
+  // Use the asset's intrinsic size to render at correct aspect ratio (prevents crop/blur)
+  // Require will throw if missing, as requested
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const IMG_SOURCE = require('../../assets/images/Culture/culture1.png');
+  const aspectRatio = useMemo(() => {
+    const meta = RNImage.resolveAssetSource(IMG_SOURCE);
+    if (meta && meta.width && meta.height) {
+      return meta.width / meta.height;
+    }
+    return 16 / 9;
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -92,9 +104,9 @@ const Culture: React.FC = () => {
               </View>
             ) : (
               <Image
-                source={require('../../assets/images/Culture/culture1.png')}
-                style={styles.photo}
-                resizeMode="cover"
+                source={IMG_SOURCE}
+                style={[styles.photo, { aspectRatio }]}
+                resizeMode="contain"
                 onError={() => setImageError(true)}
               />
             )}
@@ -151,10 +163,11 @@ const styles = StyleSheet.create({
   container: { padding: 16, backgroundColor: '#f7f7fb' },
   title: { fontSize: 22, fontWeight: '700', marginBottom: 6 },
   subtitle: { fontSize: 16, color: '#475569', marginBottom: 10 },
-  card: { backgroundColor: 'white', borderRadius: 12, padding: 14, borderWidth: 1, borderColor: '#e5e7eb' },
+  meta: { fontSize: 14, color: '#64748b' },
+  card: { backgroundColor: 'white', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: '#e5e7eb', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } },
   p: { color: '#1f2937', lineHeight: 22, marginBottom: 8 },
-  photo: { width: '100%', height: 180, borderRadius: 10 },
-  caption: { marginTop: 6, color: '#6b7280', fontStyle: 'italic' },
+  photo: { width: '100%', borderRadius: 14, backgroundColor: '#f8fafc' },
+  caption: { marginTop: 10, color: '#475569', fontStyle: 'italic' },
   quizTitle: { fontWeight: '700', marginBottom: 4 },
   quizQ: { color: '#374151' },
   choice: { backgroundColor: 'white', borderRadius: 10, padding: 12, borderWidth: 1, borderColor: '#e5e7eb' },
@@ -162,7 +175,7 @@ const styles = StyleSheet.create({
   correct: { backgroundColor: '#E8F5E9', borderColor: '#4CAF50' },
   wrong: { backgroundColor: '#FDECEC', borderColor: '#FF3B30' },
   navRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 },
-  navBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: '#e5e7eb', backgroundColor: 'white' },
+  navBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 16, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', backgroundColor: 'white' },
   navText: { fontWeight: '600', color: '#0f172a' },
   disabled: { opacity: 0.5 },
   disabledText: { color: '#9ca3af' },
