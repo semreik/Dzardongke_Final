@@ -47,6 +47,7 @@ interface QuizOption {
 const Culture: React.FC = () => {
   const { selectedLanguage } = useLanguage();
   const [step, setStep] = useState<Step>('intro1');
+  const [activeDeck, setActiveDeck] = useState<'1' | '2'>('1');
   const fade = useRef(new Animated.Value(1)).current;
   const [selected, setSelected] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -64,21 +65,37 @@ const Culture: React.FC = () => {
     []
   );
 
-  const stepsOrder: Step[] = [
+  const deck1Steps: Step[] = [
     'intro1', 'intro2', 'intro3', 'image', 'quiz',
     'region1', 'region2', 'regionImage', 'regionFest', 'regionQuiz',
     'festivalsC1', 'festivalsCImage', 'festivalsC2', 'festivalsCQuiz',
+  ];
+  const deck2Steps: Step[] = [
     'dachang1', 'dachang2', 'dachangImage', 'dachangQuiz',
     'officialsB1', 'officialsBImage', 'officialsB2', 'officialsB3', 'officialsBImage2', 'officialsBQuiz',
     'fullmoonC1', 'fullmoonImage1', 'fullmoonC2', 'fullmoonImage2', 'fullmoonC3', 'fullmoonImage3', 'fullmoonC4', 'fullmoonCQuiz',
     'mainDRitual'
   ];
+  const stepsOrder: Step[] = [...deck1Steps, ...deck2Steps];
   const go = (next: Step) => {
     Animated.sequence([
       Animated.timing(fade, { toValue: 0, duration: 150, useNativeDriver: true }),
       Animated.timing(fade, { toValue: 1, duration: 150, useNativeDriver: true }),
     ]).start(() => setStep(next));
   };
+
+  // Reset quiz state when entering any quiz step to avoid pre-revealing answers
+  React.useEffect(() => {
+    const singleQuizzes: Step[] = ['quiz', 'festivalsCQuiz', 'dachangQuiz', 'officialsBQuiz', 'fullmoonCQuiz'];
+    if (singleQuizzes.includes(step)) {
+      setShowResult(false);
+      setSelected(null);
+    }
+    if (step === 'regionQuiz') {
+      setShowResultMulti(false);
+      setMultiSelected(new Set());
+    }
+  }, [step]);
 
   if (selectedLanguage !== 'dz') {
     return (
@@ -135,25 +152,39 @@ const Culture: React.FC = () => {
     return 'Culture';
   }, [step]);
 
-  const titleText = useMemo(() => {
-    if (['intro1','intro2','intro3','image','quiz','region1','region2','regionImage','regionFest','regionQuiz','festivalsC1','festivalsCImage','festivalsC2','festivalsCQuiz'].includes(step)) {
-      return '1. Dzardzongkha: Language & Region';
-    }
-    if ([
-      'dachang1','dachang2','dachangImage','dachangQuiz',
-      'officialsB1','officialsBImage','officialsB2','officialsB3','officialsBImage2','officialsBQuiz',
-      'fullmoonC1','fullmoonImage1','fullmoonC2','fullmoonImage2','fullmoonC3','fullmoonImage3','fullmoonC4','fullmoonCQuiz',
-      'mainDRitual'
-    ].includes(step)) {
-      return '2. Dachang festival';
-    }
-    return 'Culture';
-  }, [step]);
+  const titleText = useMemo(() => (activeDeck === '1' ? '1. Dzardzongkha: Language & Region' : '2. Dachang festival'), [activeDeck]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>{titleText}</Text>
+      <View style={styles.segmentRow}>
+        <TouchableOpacity
+          style={[styles.segmentBtn, activeDeck === '1' ? styles.segmentActive : undefined]}
+          onPress={() => {
+            setActiveDeck('1');
+            if (!deck1Steps.includes(step)) setStep(deck1Steps[0]);
+          }}
+        >
+          <Text style={[styles.segmentText, activeDeck === '1' ? styles.segmentTextActive : undefined]}>Language & Region</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.segmentBtn, activeDeck === '2' ? styles.segmentActive : undefined]}
+          onPress={() => {
+            setActiveDeck('2');
+            if (!deck2Steps.includes(step)) setStep(deck2Steps[0]);
+          }}
+        >
+          <Text style={[styles.segmentText, activeDeck === '2' ? styles.segmentTextActive : undefined]}>Dachang festival</Text>
+        </TouchableOpacity>
+      </View>
       <Text style={styles.subtitle}>{subtitle}</Text>
+      {(() => {
+        const currentDeck = activeDeck === '1' ? deck1Steps : deck2Steps;
+        const idx = currentDeck.indexOf(step);
+        const total = currentDeck.length;
+        if (idx === -1) return null;
+        return <Text style={styles.progressText}>Step {idx + 1} of {total}</Text>;
+      })()}
 
       <Animated.View style={{ opacity: fade }}>
         {step === 'intro1' && (
@@ -275,9 +306,6 @@ const Culture: React.FC = () => {
 
         {step === 'fullmoonC3' && (
           <View style={styles.card}>
-            <Text style={styles.p}>
-              25
-            </Text>
             <Text style={styles.p}>
               Finally, two of the other constables are chosen to consecrate the village shrines. This last group starts at the site at which Lhabon Takla later performs the propitiation ritual, the cluster of stupas jammed between a pair of huge Himalayan poplars. The site is called Jowo Dongpo, the “Lord’s trees”. One of the constables splashes red clay on the appropriate part of the main trees and the shrine, and also on the trees within the shrine enclosure, and the other administers whitewash. As they do so, one of them, loudly recites:
             </Text>
@@ -600,16 +628,17 @@ const Culture: React.FC = () => {
 
       <View style={styles.navRow}>
         <TouchableOpacity
-          style={[styles.navBtn, stepsOrder.indexOf(step) <= 0 ? styles.disabled : undefined]}
-          disabled={stepsOrder.indexOf(step) <= 0}
+          style={[styles.navBtn, (activeDeck === '1' ? deck1Steps.indexOf(step) <= 0 : deck2Steps.indexOf(step) <= 0) ? styles.disabled : undefined]}
+          disabled={activeDeck === '1' ? deck1Steps.indexOf(step) <= 0 : deck2Steps.indexOf(step) <= 0}
           onPress={() => {
-            const idx = stepsOrder.indexOf(step);
-            const prev = idx > 0 ? stepsOrder[idx - 1] : stepsOrder[0];
+            const currentDeck = activeDeck === '1' ? deck1Steps : deck2Steps;
+            const idx = currentDeck.indexOf(step);
+            const prev = idx > 0 ? currentDeck[idx - 1] : currentDeck[0];
             go(prev);
           }}
         >
-          <MaterialCommunityIcons name="chevron-left" size={18} color={stepsOrder.indexOf(step) <= 0 ? '#9ca3af' : '#0f172a'} />
-          <Text style={[styles.navText, stepsOrder.indexOf(step) <= 0 ? styles.disabledText : undefined]}>Back</Text>
+          <MaterialCommunityIcons name="chevron-left" size={18} color={(activeDeck === '1' ? deck1Steps.indexOf(step) <= 0 : deck2Steps.indexOf(step) <= 0) ? '#9ca3af' : '#0f172a'} />
+          <Text style={[styles.navText, (activeDeck === '1' ? deck1Steps.indexOf(step) <= 0 : deck2Steps.indexOf(step) <= 0) ? styles.disabledText : undefined]}>Back</Text>
         </TouchableOpacity>
         {step !== 'done' && (
           <TouchableOpacity
@@ -619,21 +648,17 @@ const Culture: React.FC = () => {
                 setShowResultMulti(true);
                 return;
               }
-              const idx = stepsOrder.indexOf(step);
-              const next = idx < stepsOrder.length - 1 ? stepsOrder[idx + 1] : 'done';
+              if (['quiz','festivalsCQuiz','dachangQuiz','officialsBQuiz','fullmoonCQuiz'].includes(step)) {
+                if (!showResult) { setShowResult(true); return; }
+              }
+              const currentDeck = activeDeck === '1' ? deck1Steps : deck2Steps;
+              const idx = currentDeck.indexOf(step);
+              const next = idx < currentDeck.length - 1 ? currentDeck[idx + 1] : (activeDeck === '1' ? deck2Steps[0] : 'done');
               go(next as Step);
             }}
           >
             <Text style={[styles.navText, { color: 'white' }]}>
-              {step === 'regionQuiz' && !showResultMulti
-                ? 'Check answers'
-                : (step === 'quiz' || step === 'festivalsCQuiz' || step === 'dachangQuiz' || step === 'officialsBQuiz' || step === 'fullmoonCQuiz') && !showResult
-                ? 'Check answer'
-                : step === 'dachangQuiz'
-                ? 'Next'
-                : step === 'fullmoonCQuiz'
-                ? 'Finish'
-                : 'Next'}
+              {step === 'regionQuiz' && !showResultMulti ? 'Check answers' : (['quiz','festivalsCQuiz','dachangQuiz','officialsBQuiz','fullmoonCQuiz'] as Step[]).includes(step) && !showResult ? 'Check answer' : 'Next'}
             </Text>
             <MaterialCommunityIcons name="chevron-right" size={18} color={'white'} />
           </TouchableOpacity>
@@ -664,6 +689,12 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.5 },
   disabledText: { color: '#9ca3af' },
   primary: { backgroundColor: '#2563eb', borderColor: '#2563eb' },
+  segmentRow: { flexDirection: 'row', gap: 8, marginBottom: 8 },
+  segmentBtn: { flex: 1, paddingVertical: 8, borderRadius: 10, borderWidth: 1, borderColor: '#e5e7eb', backgroundColor: 'white', alignItems: 'center' },
+  segmentActive: { backgroundColor: '#eef2ff', borderColor: '#6366f1' },
+  segmentText: { color: '#0f172a', fontWeight: '600' },
+  segmentTextActive: { color: '#3730a3' },
+  progressText: { color: '#64748b', marginBottom: 8 },
 });
 
 export default Culture;
