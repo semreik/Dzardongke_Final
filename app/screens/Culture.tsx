@@ -3,7 +3,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useLanguage } from '../stores/useLanguage';
 
-type Step = 'intro' | 'image' | 'quiz' | 'done';
+type Step = 'intro1' | 'intro2' | 'intro3' | 'image' | 'quiz' | 'done';
 
 interface QuizOption {
   text: string;
@@ -12,7 +12,7 @@ interface QuizOption {
 
 const Culture: React.FC = () => {
   const { selectedLanguage } = useLanguage();
-  const [step, setStep] = useState<Step>('intro');
+  const [step, setStep] = useState<Step>('intro1');
   const fade = useRef(new Animated.Value(1)).current;
   const [selected, setSelected] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -28,6 +28,7 @@ const Culture: React.FC = () => {
     []
   );
 
+  const stepsOrder: Step[] = ['intro1', 'intro2', 'intro3', 'image', 'quiz'];
   const go = (next: Step) => {
     Animated.sequence([
       Animated.timing(fade, { toValue: 0, duration: 150, useNativeDriver: true }),
@@ -53,7 +54,7 @@ const Culture: React.FC = () => {
       <Text style={styles.subtitle}>Part a — Introduction to the Dzardzongkha language</Text>
 
       <Animated.View style={{ opacity: fade }}>
-        {step === 'intro' && (
+        {step === 'intro1' && (
           <View style={styles.card}>
             <Text style={styles.p}>
               Mustang is one of 77 districts in Nepal, and the most sparsely populated. Like many districts or parts of
@@ -63,6 +64,11 @@ const Culture: React.FC = () => {
               Sam is the Dzardzongkha word for “new” and dzong means ‘castle’ so the name of the town of Jomsom means
               “Newcastle”.
             </Text>
+          </View>
+        )}
+
+        {step === 'intro2' && (
+          <View style={styles.card}>
             <Text style={styles.p}>
               Dzardzongkha is a variety of Tibetan spoken in the majority of villages of Baragaon, in South Mustang. The
               name of the language is derived from the local name for the Muktinath Valley, Dzardzong Yuldruk, which means
@@ -71,6 +77,11 @@ const Culture: React.FC = () => {
               not found in any other variety, not even, for example, in Loke or other Tibetic languages spoken in Nepal or
               in the more widely used varieties like Standard or Lhasa Tibetan.
             </Text>
+          </View>
+        )}
+
+        {step === 'intro3' && (
+          <View style={styles.card}>
             <Text style={styles.p}>
               Dzardzongkha is an endangered language, which means that it is at high risk of being lost forever. It is
               currently still spoken by around 1800 speakers. Some of these live in the Muktinath Valley, but many have moved
@@ -130,12 +141,27 @@ const Culture: React.FC = () => {
       </Animated.View>
 
       <View style={styles.navRow}>
-        <TouchableOpacity style={[styles.navBtn, step === 'intro' ? styles.disabled : undefined]} disabled={step === 'intro'} onPress={() => go(step === 'image' ? 'intro' : 'image')}>
-          <MaterialCommunityIcons name="chevron-left" size={18} color={step === 'intro' ? '#9ca3af' : '#0f172a'} />
-          <Text style={[styles.navText, step === 'intro' ? styles.disabledText : undefined]}>Back</Text>
+        <TouchableOpacity
+          style={[styles.navBtn, stepsOrder.indexOf(step) <= 0 ? styles.disabled : undefined]}
+          disabled={stepsOrder.indexOf(step) <= 0}
+          onPress={() => {
+            const idx = stepsOrder.indexOf(step);
+            const prev = idx > 0 ? stepsOrder[idx - 1] : stepsOrder[0];
+            go(prev);
+          }}
+        >
+          <MaterialCommunityIcons name="chevron-left" size={18} color={stepsOrder.indexOf(step) <= 0 ? '#9ca3af' : '#0f172a'} />
+          <Text style={[styles.navText, stepsOrder.indexOf(step) <= 0 ? styles.disabledText : undefined]}>Back</Text>
         </TouchableOpacity>
         {step !== 'done' && (
-          <TouchableOpacity style={[styles.navBtn, styles.primary]} onPress={() => go(step === 'intro' ? 'image' : step === 'image' ? 'quiz' : 'done')}>
+          <TouchableOpacity
+            style={[styles.navBtn, styles.primary]}
+            onPress={() => {
+              const idx = stepsOrder.indexOf(step);
+              const next = idx < stepsOrder.length - 1 ? stepsOrder[idx + 1] : 'done';
+              go(next as Step);
+            }}
+          >
             <Text style={[styles.navText, { color: 'white' }]}>{step === 'quiz' ? 'Finish' : 'Next'}</Text>
             <MaterialCommunityIcons name="chevron-right" size={18} color={'white'} />
           </TouchableOpacity>
