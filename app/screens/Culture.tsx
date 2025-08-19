@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useRef, useState } from 'react';
-import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Image, ImageSourcePropType, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useLanguage } from '../stores/useLanguage';
 
 type Step = 'intro' | 'image' | 'quiz' | 'done';
@@ -42,6 +42,17 @@ const Culture: React.FC = () => {
         <Text style={styles.meta}>This section is currently available for Dzardzongkha only. Quechua coming soon.</Text>
       </View>
     );
+  }
+
+  let cultureImageSource: ImageSourcePropType;
+  try {
+    // Preferred image path
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    cultureImageSource = require('../../assets/images/culture/culture1.png');
+  } catch (e) {
+    // Fallback to an existing placeholder so bundling never fails if the file is missing
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    cultureImageSource = require('../../assets/images/splash-icon.png');
   }
 
   return (
@@ -87,12 +98,12 @@ const Culture: React.FC = () => {
                 <Text style={{ color: '#64748b', textAlign: 'center' }}>
                   Missing image file at
                   {'\n'}
-                  assets/images/culture/culture1.jpg
+                  assets/images/culture/culture1.png
                 </Text>
               </View>
             ) : (
               <Image
-                source={require('../../assets/images/culture/culture1.png')}
+                source={cultureImageSource}
                 style={styles.photo}
                 resizeMode="cover"
                 onError={() => setImageError(true)}
