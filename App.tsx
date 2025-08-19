@@ -45,55 +45,7 @@ function HeaderMenu({ navigation }: any) {
   );
 }
 
-function HeaderMenu({ navigation }: any) {
-  const [visible, setVisible] = React.useState(false);
-  return (
-    <PaperProvider>
-      <MaterialCommunityIcons
-        name="menu"
-        size={22}
-        color={Colors.light.text}
-        onPress={() => setVisible(v => !v)}
-        style={{ marginRight: 16 }}
-      />
-      {visible && (
-        <View
-          style={{ position: 'absolute', right: 10, top: 10, backgroundColor: 'white', borderRadius: 8, borderWidth: 1, borderColor: '#e5e7eb' }}
-        >
-          <Text
-            style={{ padding: 12, minWidth: 140 }}
-            onPress={() => {
-              setVisible(false);
-              navigation.getParent()?.navigate('Settings');
-            }}
-          >
-            Settings
-          </Text>
-          <View style={{ height: 1, backgroundColor: '#e5e7eb' }} />
-          <Text
-            style={{ padding: 12 }}
-            onPress={() => {
-              setVisible(false);
-              navigation.getParent()?.navigate('Saved');
-            }}
-          >
-            Saved
-          </Text>
-          <View style={{ height: 1, backgroundColor: '#e5e7eb' }} />
-          <Text
-            style={{ padding: 12 }}
-            onPress={() => {
-              setVisible(false);
-              navigation.getParent()?.navigate('Credits');
-            }}
-          >
-            Credits
-          </Text>
-        </View>
-      )}
-    </PaperProvider>
-  );
-}
+// removed duplicate HeaderMenu definition
 
 function MainTabs() {
   return (
