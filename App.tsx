@@ -96,6 +96,8 @@ export default function App() {
                   return <MaterialCommunityIcons name="account" size={size} color={color} />;
                 } else if (route.name === 'Credits') {
                   return <MaterialCommunityIcons name="information" size={size} color={color} />;
+                } else if (route.name === 'Culture') {
+                  return <MaterialCommunityIcons name="earth" size={size} color={color} />;
                 }
                 return null;
               },
