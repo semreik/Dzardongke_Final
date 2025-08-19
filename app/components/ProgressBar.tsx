@@ -15,13 +15,13 @@ export const ProgressBar: React.FC<Props> = ({ progress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: 8,
-    backgroundColor: '#eee',
-    borderRadius: 4,
+    height: 10,
+    backgroundColor: '#e5e7eb',
+    borderRadius: 6,
     overflow: 'hidden',
   },
   fill: {
     height: '100%',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#2563eb',
   },
 });

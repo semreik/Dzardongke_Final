@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   emptyStateTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2196F3',
+    color: '#2563eb',
     marginBottom: 12,
   },
   placeholder: {

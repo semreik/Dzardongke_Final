@@ -28,7 +28,7 @@ const Settings: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#f5f5f5' },
+  container: { flex: 1, padding: 16, backgroundColor: '#f7f7fb' },
   title: { fontSize: 20, fontWeight: '700', marginBottom: 16 },
   label: { fontSize: 14, color: '#666' },
   value: { fontSize: 16, marginBottom: 16 },
