@@ -2,21 +2,21 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { PaperProvider, Menu, IconButton } from 'react-native-paper';
 import { Congrats } from './app/screens/Congrats';
 import { ConversationCategories } from './app/screens/ConversationCategories';
 import { ConversationList } from './app/screens/ConversationList';
 import { ConversationPractice } from './app/screens/ConversationPractice';
+import Onboarding from './app/screens/Onboarding';
+import Settings from './app/screens/Settings';
+import MultipleChoice from './app/screens/MultipleChoice';
+import Profile from './app/screens/Profile';
 import Credits from './app/screens/Credits';
 import Culture from './app/screens/CultureDynamic';
 import DeckList from './app/screens/DeckList';
 import Dictionary from './app/screens/Dictionary';
-import MultipleChoice from './app/screens/MultipleChoice';
 import NumbersWrite from './app/screens/NumbersWrite';
-import Onboarding from './app/screens/Onboarding';
-import Profile from './app/screens/Profile';
-import Settings from './app/screens/Settings';
 import { Stats } from './app/screens/Stats';
 import Study from './app/screens/Study';
 import { Write } from './app/screens/Write';
@@ -42,54 +42,6 @@ function HeaderMenu({ navigation }: any) {
       <Menu.Item onPress={() => { closeMenu(); navigation.navigate('Profile'); }} title="Saved" />
       <Menu.Item onPress={() => { closeMenu(); navigation.navigate('Credits'); }} title="Credits" />
     </Menu>
-  );
-}
-
-// removed duplicate HeaderMenu definition
-
-function MainTabs() {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route, navigation }) => ({
-        tabBarActiveTintColor: Colors.light.tint,
-        headerRight: () => <HeaderMenu navigation={navigation} />,
-        tabBarIcon: ({ focused, color, size }) => {
-          if (route.name === 'DeckStack') {
-            return <Ionicons name={focused ? 'albums' : 'albums-outline'} size={size} color={color} />;
-          } else if (route.name === 'Stats') {
-            return <MaterialCommunityIcons name="chart-bar" size={size} color={color} />;
-          } else if (route.name === 'Dictionary') {
-            return <MaterialCommunityIcons name="book-open-page-variant" size={size} color={color} />;
-          } else if (route.name === 'Conversations') {
-            return <MaterialCommunityIcons name="chat" size={size} color={color} />;
-          } else if (route.name === 'MultipleChoice') {
-            return <MaterialCommunityIcons name="checkbox-multiple-choice" size={size} color={color} />;
-          } else if (route.name === 'Culture') {
-            return <MaterialCommunityIcons name="earth" size={size} color={color} />;
-          }
-          return null;
-        },
-        tabBarStyle: {
-          paddingBottom: 6,
-          height: 60,
-        },
-      })}
-    >
-      <Tab.Screen
-        name="DeckStack"
-        component={DeckStack}
-        options={{ headerShown: false, title: 'Decks' }}
-      />
-      <Tab.Screen name="Stats" component={Stats} />
-      <Tab.Screen name="Dictionary" component={Dictionary} />
-      <Tab.Screen 
-        name="Conversations" 
-        component={ConversationsStack} 
-        options={{ headerShown: false, title: 'Conversations' }}
-      />
-      <Tab.Screen name="MultipleChoice" component={MultipleChoice} options={{ title: 'Quiz' }} />
-      <Tab.Screen name="Culture" component={Culture} />
-    </Tab.Navigator>
   );
 }
 
@@ -185,9 +137,9 @@ export default function App() {
               options={{ headerShown: false, title: 'Conversations' }}
             />
             <Tab.Screen name="MultipleChoice" component={MultipleChoice} options={{ title: 'Quiz' }} />
-            <Tab.Screen name="Settings" component={Settings} />
-            <Tab.Screen name="Profile" component={Profile} />
-            <Tab.Screen name="Credits" component={Credits} />
+            <Tab.Screen name="Settings" component={Settings} options={{ tabBarButton: () => null }} />
+            <Tab.Screen name="Profile" component={Profile} options={{ tabBarButton: () => null, title: 'Saved' }} />
+            <Tab.Screen name="Credits" component={Credits} options={{ tabBarButton: () => null }} />
             <Tab.Screen name="Culture" component={Culture} />
           </Tab.Navigator>
         )}
