@@ -23,6 +23,7 @@ import MultipleChoice from './app/screens/MultipleChoice';
 import Profile from './app/screens/Profile';
 import Credits from './app/screens/Credits';
 import { Colors } from './constants/Colors';
+import Culture from './app/screens/Culture';
 
 const Tab = createBottomTabNavigator();
 const InnerStack = createStackNavigator();
@@ -120,6 +121,7 @@ export default function App() {
             <Tab.Screen name="Settings" component={Settings} />
             <Tab.Screen name="Profile" component={Profile} />
             <Tab.Screen name="Credits" component={Credits} />
+            <Tab.Screen name="Culture" component={Culture} />
           </Tab.Navigator>
         )}
       </NavigationContainer>
