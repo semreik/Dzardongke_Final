@@ -1,6 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useRef, useState } from 'react';
 import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { cultureDz } from '../content/culture.dz';
+import type { CultureDeck, CultureStep } from '../content/types';
 import { useLanguage } from '../stores/useLanguage';
 
 type Step =
@@ -46,8 +48,9 @@ interface QuizOption {
 
 const Culture: React.FC = () => {
   const { selectedLanguage } = useLanguage();
-  const [step, setStep] = useState<Step>('intro1');
+  const decks: CultureDeck[] = cultureDz;
   const [activeDeck, setActiveDeck] = useState<'1' | '2'>('1');
+  const [step, setStep] = useState<Step>('intro1');
   const fade = useRef(new Animated.Value(1)).current;
   const [selected, setSelected] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -152,7 +155,7 @@ const Culture: React.FC = () => {
     return 'Culture';
   }, [step]);
 
-  const titleText = useMemo(() => (activeDeck === '1' ? '1. Dzardzongkha: Language & Region' : '2. Dachang festival'), [activeDeck]);
+  const titleText = useMemo(() => (activeDeck === '1' ? decks[0]?.title ?? '1' : decks[1]?.title ?? '2'), [activeDeck]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
