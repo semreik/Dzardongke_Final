@@ -92,7 +92,7 @@ const Culture: React.FC = () => {
               </View>
             ) : (
               <Image
-                source={require('../../assets/images/culture/culture1.jpg')}
+                source={require('../../assets/images/culture/culture1.png')}
                 style={styles.photo}
                 resizeMode="cover"
                 onError={() => setImageError(true)}
