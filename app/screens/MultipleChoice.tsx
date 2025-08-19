@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../stores/useLanguage';
 import { contentRegistry } from '../services/contentRegistry';
 import type { Deck, Card } from '../types/deck';
@@ -145,6 +146,7 @@ export const MultipleChoice: React.FC = () => {
 
   const isCorrect = options.find(o => o.text === selected)?.isCorrect === true;
   const promptTitle = selectedLanguage === 'qu' ? 'What is the Quechua word for:' : 'What is the Dzardzongkha word for:';
+  const targetLabel = selectedLanguage === 'qu' ? 'Quechua' : 'Dzardzongkha';
   const currentKey = `${currentItem.prompt}=>${currentItem.answer}`;
   const isSaved = savedKeys.has(currentKey);
 
@@ -154,6 +156,10 @@ export const MultipleChoice: React.FC = () => {
         <Text style={styles.title}>Multiple Choice</Text>
         <Text style={styles.prompt}>{promptTitle}</Text>
         <View style={styles.promptCard}>
+          <View style={styles.promptHeader}>
+            <MaterialCommunityIcons name="translate" size={16} color="#2563eb" />
+            <Text style={styles.promptHeaderText}>English → {targetLabel}</Text>
+          </View>
           <Text style={styles.bigPrompt}>{currentItem.prompt}</Text>
         </View>
 
@@ -228,9 +234,11 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#f5f5f5' },
   title: { fontSize: 22, fontWeight: '700', marginBottom: 8 },
   prompt: { fontSize: 16, color: '#555', marginBottom: 8 },
-  promptCard: { backgroundColor: 'white', borderRadius: 12, padding: 16, borderWidth: 1, borderColor: '#e5e7eb', marginBottom: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2 },
+  promptCard: { backgroundColor: '#eef2ff', borderRadius: 12, padding: 16, borderWidth: 1, borderColor: '#bfdbfe', marginBottom: 12 },
+  promptHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 },
+  promptHeaderText: { color: '#2563eb', fontWeight: '600' },
   optionsContainer: { gap: 10, marginTop: 8 },
-  optionBtn: { backgroundColor: 'white', padding: 16, borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2 },
+  optionBtn: { backgroundColor: 'white', padding: 16, borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb' },
   optionText: { fontSize: 16, color: '#111827' },
   correctBtn: { backgroundColor: '#E8F5E9', borderColor: '#4CAF50' },
   wrongBtn: { backgroundColor: '#FDECEC', borderColor: '#FF3B30' },
