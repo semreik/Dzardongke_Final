@@ -166,6 +166,15 @@ For adding multiple audio files at once:
 
 For more detailed instructions, see the [Audio Pronunciations Guide](./docs/AUDIO_PRONUNCIATIONS.md).
 
+## Culture Images
+
+The guided Culture section (Dzardzongkha) displays photos alongside text and quizzes.
+
+- Place Culture images under: `assets/images/culture/`
+- Part a expects the file: `assets/images/culture/culture1.jpg`
+- If you change the filename or path, update the `require(...)` in `app/screens/Culture.tsx` accordingly.
+- Recommended: landscape image, at least 1600px wide; `.jpg` or `.png`.
+
 ## Dictionary Structure
 
 The Dzardzongke dictionary is stored in `/assets/dictionary/dzardzongke.dict.json` with the following structure for each entry:

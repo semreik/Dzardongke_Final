@@ -1,7 +1,7 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated } from 'react-native';
-import { useLanguage } from '../stores/useLanguage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useMemo, useRef, useState } from 'react';
+import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useLanguage } from '../stores/useLanguage';
 
 type Step = 'intro' | 'image' | 'quiz' | 'done';
 
@@ -16,6 +16,7 @@ const Culture: React.FC = () => {
   const fade = useRef(new Animated.Value(1)).current;
   const [selected, setSelected] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const quizOptions: QuizOption[] = useMemo(
     () => [
@@ -81,8 +82,22 @@ const Culture: React.FC = () => {
 
         {step === 'image' && (
           <View style={styles.card}>
-            {/* Replace with a local photo when available: require('../../assets/images/muktinath.jpg') */}
-            <Image source={require('../../assets/images/splash-icon.png')} style={styles.photo} resizeMode="cover" />
+            {imageError ? (
+              <View style={[styles.photo, { alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1f5f9' }]}> 
+                <Text style={{ color: '#64748b', textAlign: 'center' }}>
+                  Missing image file at
+                  {'\n'}
+                  assets/images/culture/culture1.jpg
+                </Text>
+              </View>
+            ) : (
+              <Image
+                source={require('../../assets/images/culture/culture1.jpg')}
+                style={styles.photo}
+                resizeMode="cover"
+                onError={() => setImageError(true)}
+              />
+            )}
             <Text style={styles.caption}>Part of the Muktinath Valley with Dzar on the left and Dzong on the right — August 2022</Text>
           </View>
         )}
