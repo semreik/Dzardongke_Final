@@ -22,6 +22,21 @@ type Step =
   | 'dachang2'
   | 'dachangImage'
   | 'dachangQuiz'
+  | 'officialsB1'
+  | 'officialsBImage'
+  | 'officialsB2'
+  | 'officialsB3'
+  | 'officialsBImage2'
+  | 'officialsBQuiz'
+  | 'fullmoonC1'
+  | 'fullmoonImage1'
+  | 'fullmoonC2'
+  | 'fullmoonImage2'
+  | 'fullmoonC3'
+  | 'fullmoonImage3'
+  | 'fullmoonC4'
+  | 'fullmoonCQuiz'
+  | 'mainDRitual'
   | 'done';
 
 interface QuizOption {
@@ -49,7 +64,15 @@ const Culture: React.FC = () => {
     []
   );
 
-  const stepsOrder: Step[] = ['intro1', 'intro2', 'intro3', 'image', 'quiz', 'region1', 'region2', 'regionImage', 'regionFest', 'regionQuiz', 'festivalsC1', 'festivalsCImage', 'festivalsC2', 'festivalsCQuiz', 'dachang1', 'dachang2', 'dachangImage', 'dachangQuiz'];
+  const stepsOrder: Step[] = [
+    'intro1', 'intro2', 'intro3', 'image', 'quiz',
+    'region1', 'region2', 'regionImage', 'regionFest', 'regionQuiz',
+    'festivalsC1', 'festivalsCImage', 'festivalsC2', 'festivalsCQuiz',
+    'dachang1', 'dachang2', 'dachangImage', 'dachangQuiz',
+    'officialsB1', 'officialsBImage', 'officialsB2', 'officialsB3', 'officialsBImage2', 'officialsBQuiz',
+    'fullmoonC1', 'fullmoonImage1', 'fullmoonC2', 'fullmoonImage2', 'fullmoonC3', 'fullmoonImage3', 'fullmoonC4', 'fullmoonCQuiz',
+    'mainDRitual'
+  ];
   const go = (next: Step) => {
     Animated.sequence([
       Animated.timing(fade, { toValue: 0, duration: 150, useNativeDriver: true }),
@@ -73,6 +96,18 @@ const Culture: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const IMG_SOURCE_3 = require('../../assets/images/Culture/culture3.png');
   // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const IMG_SOURCE_4A = require('../../assets/images/Culture/culture4.png');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const IMG_SOURCE_5 = require('../../assets/images/Culture/culture5.png');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const IMG_SOURCE_6 = require('../../assets/images/Culture/culture6.png');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const IMG_SOURCE_7 = require('../../assets/images/Culture/culture7.png');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const IMG_SOURCE_8 = require('../../assets/images/Culture/culture8.png');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const IMG_SOURCE_9 = require('../../assets/images/Culture/culture9.png');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const IMG_SOURCE_4 = require('../../assets/images/Culture/culture4.png');
 
   const subtitle = useMemo(() => {
@@ -88,6 +123,15 @@ const Culture: React.FC = () => {
     if (step === 'dachang1' || step === 'dachang2' || step === 'dachangImage' || step === 'dachangQuiz') {
       return 'Part a — Dachang preparations';
     }
+    if (step === 'officialsB1' || step === 'officialsBImage' || step === 'officialsB2' || step === 'officialsB3' || step === 'officialsBImage2' || step === 'officialsBQuiz') {
+      return 'Part b — Introducing the village officials and the Lhabon ‘village priest’';
+    }
+    if (step === 'fullmoonC1' || step === 'fullmoonImage1' || step === 'fullmoonC2' || step === 'fullmoonImage2' || step === 'fullmoonC3' || step === 'fullmoonImage3' || step === 'fullmoonC4' || step === 'fullmoonCQuiz') {
+      return 'Part c — Dachang activities on the day of the full moon';
+    }
+    if (step === 'mainDRitual') {
+      return 'Part d — The main Dachang ritual';
+    }
     return 'Culture';
   }, [step]);
 
@@ -95,7 +139,12 @@ const Culture: React.FC = () => {
     if (['intro1','intro2','intro3','image','quiz','region1','region2','regionImage','regionFest','regionQuiz','festivalsC1','festivalsCImage','festivalsC2','festivalsCQuiz'].includes(step)) {
       return '1. Dzardzongkha: Language & Region';
     }
-    if (['dachang1','dachang2','dachangImage','dachangQuiz'].includes(step)) {
+    if ([
+      'dachang1','dachang2','dachangImage','dachangQuiz',
+      'officialsB1','officialsBImage','officialsB2','officialsB3','officialsBImage2','officialsBQuiz',
+      'fullmoonC1','fullmoonImage1','fullmoonC2','fullmoonImage2','fullmoonC3','fullmoonImage3','fullmoonC4','fullmoonCQuiz',
+      'mainDRitual'
+    ].includes(step)) {
       return '2. Dachang festival';
     }
     return 'Culture';
@@ -116,6 +165,185 @@ const Culture: React.FC = () => {
               Lo. The district headquarters of Mustang is Jomsom or Dzongsam in the local language called ‘Dzardzongkha’.
               Sam is the Dzardzongkha word for “new” and dzong means ‘castle’ so the name of the town of Jomsom means
               “Newcastle”.
+            </Text>
+          </View>
+        )}
+
+        {step === 'officialsB1' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              All villages have a number of officials whose term of office runs for a full year. The most important of these are the genpa “headmen” who are appointed during the Dachang festival.
+            </Text>
+          </View>
+        )}
+
+        {step === 'officialsBImage' && (
+          <View style={styles.card}>
+            <Image source={IMG_SOURCE_5} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Text style={styles.caption}>New Khyenga village officials selected during the Dachang festival - April 2025 </Text>
+          </View>
+        )}
+
+        {step === 'officialsB2' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              The only lifelong office in the village is that of the village priest, the Lhabon, locally pronounced lhayen, whose main duties are to propitiate local divinities. In the past, almost all villages had a Lhabon, whose main duties were to propitiate local divinities, but now there is only one left in the village of Khyenga. In this village, Lhabon Ngodrup had held the office from the age of fifty until his death in 2002 at the age of eighty-four.
+            </Text>
+            <Text style={styles.p}>
+              In the meantime, he had trained another young Lhabon, also named Ngodrup, who duly replaced him. But Ngodrup the younger died prematurely after five years, without having had an opportunity to train a successor. In response to entreaties from the village and also from Lama Tshultrim of Lubrak, who has numerous patrons in Khyenga and is greatly respected, Takla agreed to assume the position.
+            </Text>
+          </View>
+        )}
+
+        {step === 'officialsB3' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              This ancient tradition was therefore at risk of being lost forever, but fortunately, professor Charles Ramble (locally known as Yungdrung Tshewang) had complete video documentation of Lhabon Ngodrup the elder’s performance from 1995. The new Lhabon Takla, who speaks Dzardzongke and Standard Tibetan but is literate only in Nepali, transcribed the narration phonetically and memorised the whole thing in 2007. He has been the Lhabön of Khyenga ever since.
+            </Text>
+          </View>
+        )}
+
+        {step === 'officialsBImage2' && (
+          <View style={styles.card}>
+            <Image source={IMG_SOURCE_6} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Text style={styles.caption}>Lhabon Takla propitiating local gods on top of the Khyenga temple - April 2025</Text>
+          </View>
+        )}
+
+        {step === 'officialsBQuiz' && (
+          <View style={styles.card}>
+            <Text style={styles.quizTitle}>Quiz</Text>
+            <Text style={styles.quizQ}>Which village in the Dzardzongke area still has a village priest?</Text>
+            <View style={{ gap: 8, marginTop: 8 }}>
+              {[
+                { text: 'Kagbeni', correct: false },
+                { text: 'Khyenga', correct: true },
+                { text: 'Dzar', correct: false },
+                { text: 'Dzong', correct: false },
+              ].map(opt => {
+                const isSelected = selected === opt.text;
+                const isCorrect = showResult && opt.correct;
+                const isWrong = showResult && isSelected && !opt.correct;
+                return (
+                  <TouchableOpacity
+                    key={opt.text}
+                    style={[styles.choice, isCorrect ? styles.correct : isWrong ? styles.wrong : undefined]}
+                    onPress={() => {
+                      if (showResult) return;
+                      setSelected(opt.text);
+                      setShowResult(true);
+                    }}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.choiceText}>{opt.text}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        )}
+
+        {step === 'fullmoonC1' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              At 9.30 in the morning of the day of the full moon, Lhabon Takla walks over to the house of one of the village constables to have simple breakfast with a cup of arak. After breakfast, his constables help him to put on his fine clothes of silk and a turban of white cotton. He then performs a small purification ritual on the roof of the stable: he lights a fire of juniper branches, blows out the flames, and fans the smoke into his own face with his hand. 
+            </Text>
+          </View>
+        )}
+
+        {step === 'fullmoonImage1' && (
+          <View style={styles.card}>
+            <Image source={IMG_SOURCE_7} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Text style={styles.caption}>Lhabon Takla prostrates in the temple - April 2025</Text>
+          </View>
+        )}
+
+        {step === 'fullmoonC2' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              Accompanied by two of the constables, he then walks to the temple, prostrates three times to the altar – which features images of Guru Rinpoche and his two wives, flanked by two of his wrathful forms to his right and left. He lights a bundle of incense sticks and placed it on the altar, before backing out of the temple and climbing on his white horse. The constables then lead the horse and the Lhabon up the hill towards Muktinath. Along the southern wall of the courtyard of the temple are six big prayer flags. Five of them are in colours corresponding to the five elements. The sixth flag is white and with no xylographic prints. This is the flag of the Lhabön himself.
+            </Text>
+          </View>
+        )}
+
+        {step === 'fullmoonImage2' && (
+          <View style={styles.card}>
+            <Image source={IMG_SOURCE_8} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Text style={styles.caption}>Village men replace the prayer flags at the new stupa - April 2025</Text>
+          </View>
+        )}
+
+        {step === 'fullmoonC3' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              25
+            </Text>
+            <Text style={styles.p}>
+              Finally, two of the other constables are chosen to consecrate the village shrines. This last group starts at the site at which Lhabon Takla later performs the propitiation ritual, the cluster of stupas jammed between a pair of huge Himalayan poplars. The site is called Jowo Dongpo, the “Lord’s trees”. One of the constables splashes red clay on the appropriate part of the main trees and the shrine, and also on the trees within the shrine enclosure, and the other administers whitewash. As they do so, one of them, loudly recites:
+            </Text>
+            <Text style={styles.p}>
+              lha darro, Khyenga Yulsa Suna Yeshe darro, mewa daro, parkha darro!
+            </Text>
+            <Text style={styles.p}>
+              “May the gods flourish, may the territorial god of Khyenga, Suna Yeshe, flourish, may the “magic squares” flourish, may the trigrams flourish!”
+            </Text>
+            <Text style={styles.p}>
+              When they finish their work here, each takes a bucket of red clay and goes to a different location. One to a nearby site to the north of the trees called Khalung, and the other to a stupa located on the steep hill to the south of the village. The latter is the site of a local god called Pholha Debka or Pholha Demba.
+            </Text>
+          </View>
+        )}
+
+        {step === 'fullmoonImage3' && (
+          <View style={styles.card}>
+            <Image source={IMG_SOURCE_9} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Text style={styles.caption}>Lhabon Takla meets one of the women who give him arak - April 2025</Text>
+          </View>
+        )}
+
+        {step === 'fullmoonC4' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              Lhabon Takla meanwhile goes up to Muktinath, where he showers under each of the 108 spouts of the sacred temple. The usual procedure is that the women of the village, wearing their beautiful clothes, follow him up and collect branches from all the different varieties of trees growing around Muktinath. They meet him while he is on his way down and honour him with beer and arak. The women are called zhulema, “women with zhules”.
+            </Text>
+          </View>
+        )}
+
+        {step === 'fullmoonCQuiz' && (
+          <View style={styles.card}>
+            <Text style={styles.quizTitle}>Quiz</Text>
+            <Text style={styles.quizQ}>Where does the Lhabon go on the first day of Dachang?</Text>
+            <View style={{ gap: 8, marginTop: 8 }}>
+              {[
+                { text: 'To consecrate the Jowo Dongpo, the “Lord’s trees”', correct: false },
+                { text: 'To the stupa to put up new prayer flags', correct: false },
+                { text: 'To Muktinath to shower', correct: true },
+              ].map(opt => {
+                const isSelected = selected === opt.text;
+                const isCorrect = showResult && opt.correct;
+                const isWrong = showResult && isSelected && !opt.correct;
+                return (
+                  <TouchableOpacity
+                    key={opt.text}
+                    style={[styles.choice, isCorrect ? styles.correct : isWrong ? styles.wrong : undefined]}
+                    onPress={() => {
+                      if (showResult) return;
+                      setSelected(opt.text);
+                      setShowResult(true);
+                    }}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.choiceText}>{opt.text}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        )}
+
+        {step === 'mainDRitual' && (
+          <View style={styles.card}>
+            <Text style={styles.p}>
+              The two main constables help the Lhabon with the main Dachang ritual at the sacred tree on the Jowo Dongpo site. In this video you can see how they make the tormas (on the right) and the goat (on the left). Later in the ritual the Lhabon ceremonially stabs the clay goat.
             </Text>
           </View>
         )}
@@ -333,7 +561,7 @@ const Culture: React.FC = () => {
 
         {step === 'dachangImage' && (
           <View style={styles.card}>
-            <Image source={IMG_SOURCE_4} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Image source={IMG_SOURCE_4A} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
             <Text style={styles.caption}>Yaks to be brought down for the festival - April 2024</Text>
           </View>
         )}
@@ -397,7 +625,15 @@ const Culture: React.FC = () => {
             }}
           >
             <Text style={[styles.navText, { color: 'white' }]}>
-              {step === 'regionQuiz' && !showResultMulti ? 'Check answers' : (step === 'quiz' || step === 'festivalsCQuiz' || step === 'dachangQuiz') && !showResult ? 'Check answer' : step === 'dachangQuiz' ? 'Finish' : 'Next'}
+              {step === 'regionQuiz' && !showResultMulti
+                ? 'Check answers'
+                : (step === 'quiz' || step === 'festivalsCQuiz' || step === 'dachangQuiz' || step === 'officialsBQuiz' || step === 'fullmoonCQuiz') && !showResult
+                ? 'Check answer'
+                : step === 'dachangQuiz'
+                ? 'Next'
+                : step === 'fullmoonCQuiz'
+                ? 'Finish'
+                : 'Next'}
             </Text>
             <MaterialCommunityIcons name="chevron-right" size={18} color={'white'} />
           </TouchableOpacity>
