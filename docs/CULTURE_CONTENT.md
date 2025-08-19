@@ -28,6 +28,57 @@ Each deck has a list of steps. A step can be:
 - `quiz-single`: a multiple-choice quiz with one correct answer
 - `quiz-multi`: a multiple-choice quiz with multiple correct answers
 
+## Add a brand‑new deck (non-technical, step by step)
+
+Follow these steps to create a third (or fourth, etc.) deck that appears as an extra tab in the Culture screen.
+
+1) Add your images (optional)
+- Put your images in `assets/images/Culture/`, for example `culture10.png`, `poster2026.jpg`.
+- IMPORTANT: because of how React Native bundles images, each new filename must also be registered once in code (see step 2).
+
+2) Register image filenames (one-time per new filename)
+- Open `app/screens/CultureDynamic.tsx`.
+- Find the `imageMap` at the top of the file.
+- Add a new line for each new file:
+```ts
+const imageMap: Record<string, any> = {
+  // existing lines...
+  'culture10.png': require('../../assets/images/Culture/culture10.png'),
+  'poster2026.jpg': require('../../assets/images/Culture/poster2026.jpg'),
+};
+```
+- Save the file. You do NOT need to touch anything else in this file.
+
+3) Create the new deck in the content file
+- Open `app/content/culture.dz.ts`.
+- Add a new object to the exported `cultureDz` array. Use any unique `id` and a human‑readable `title`.
+```ts
+import { CultureDeck } from './types';
+
+export const cultureDz: CultureDeck[] = [
+  // ... existing decks
+  {
+    id: 'deck-3',
+    title: 'My New Culture Topic',
+    steps: [
+      { type: 'text', text: 'Introduce your topic in a short paragraph.' },
+      { type: 'image', src: 'culture10.png', caption: 'A descriptive caption for the image' },
+      { type: 'quiz-single', question: 'A quick knowledge check?', options: [
+        { label: 'Option A', correct: false },
+        { label: 'Option B', correct: true },
+      ]},
+      // You can add as many steps as you like
+    ],
+  },
+];
+```
+
+4) Refresh the app
+- Save your changes. The Culture screen will automatically show a new tab with your deck title.
+- If you don’t see it, restart the dev server with `npx expo start -c`.
+
+That’s it. No backend is needed; all content and images are bundled with the app. If you later want remote content, we can fetch the same schema from a server without changing the UI.
+
 ## Example: add a new text + image + quiz
 
 Open `app/content/culture.dz.ts` and add to the proper deck’s `steps` array:
