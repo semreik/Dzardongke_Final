@@ -1,33 +1,145 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import DeckList from './app/screens/DeckList';
-import Study from './app/screens/Study';
-import { Stats } from './app/screens/Stats';
-import { Write } from './app/screens/Write';
-import NumbersWrite from './app/screens/NumbersWrite';
-import Dictionary from './app/screens/Dictionary';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { useEffect } from 'react';
+import { PaperProvider, Menu, IconButton } from 'react-native-paper';
+import { Congrats } from './app/screens/Congrats';
 import { ConversationCategories } from './app/screens/ConversationCategories';
 import { ConversationList } from './app/screens/ConversationList';
 import { ConversationPractice } from './app/screens/ConversationPractice';
-import { Congrats } from './app/screens/Congrats';
-import { useProgress } from './app/stores/useProgress';
-import { useEffect } from 'react';
-import { PaperProvider } from 'react-native-paper';
-import { RootStackParamList } from './app/navigation/types';
-import Onboarding from './app/screens/Onboarding';
-import { useLanguage } from './app/stores/useLanguage';
-import Settings from './app/screens/Settings';
-import MultipleChoice from './app/screens/MultipleChoice';
-import Profile from './app/screens/Profile';
 import Credits from './app/screens/Credits';
-import { Colors } from './constants/Colors';
 import Culture from './app/screens/CultureDynamic';
+import DeckList from './app/screens/DeckList';
+import Dictionary from './app/screens/Dictionary';
+import MultipleChoice from './app/screens/MultipleChoice';
+import NumbersWrite from './app/screens/NumbersWrite';
+import Onboarding from './app/screens/Onboarding';
+import Profile from './app/screens/Profile';
+import Settings from './app/screens/Settings';
+import { Stats } from './app/screens/Stats';
+import Study from './app/screens/Study';
+import { Write } from './app/screens/Write';
+import { useLanguage } from './app/stores/useLanguage';
+import { useProgress } from './app/stores/useProgress';
+import { Colors } from './constants/Colors';
 
 const Tab = createBottomTabNavigator();
 const InnerStack = createStackNavigator();
 const RootStack = createStackNavigator();
+
+function HeaderMenu({ navigation }: any) {
+  const [visible, setVisible] = React.useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+  return (
+    <Menu
+      visible={visible}
+      onDismiss={closeMenu}
+      anchor={<IconButton icon="menu" size={20} onPress={openMenu} />}
+    >
+      <Menu.Item onPress={() => { closeMenu(); navigation.navigate('Settings'); }} title="Settings" />
+      <Menu.Item onPress={() => { closeMenu(); navigation.navigate('Profile'); }} title="Saved" />
+      <Menu.Item onPress={() => { closeMenu(); navigation.navigate('Credits'); }} title="Credits" />
+    </Menu>
+  );
+}
+
+function HeaderMenu({ navigation }: any) {
+  const [visible, setVisible] = React.useState(false);
+  return (
+    <PaperProvider>
+      <MaterialCommunityIcons
+        name="menu"
+        size={22}
+        color={Colors.light.text}
+        onPress={() => setVisible(v => !v)}
+        style={{ marginRight: 16 }}
+      />
+      {visible && (
+        <View
+          style={{ position: 'absolute', right: 10, top: 10, backgroundColor: 'white', borderRadius: 8, borderWidth: 1, borderColor: '#e5e7eb' }}
+        >
+          <Text
+            style={{ padding: 12, minWidth: 140 }}
+            onPress={() => {
+              setVisible(false);
+              navigation.getParent()?.navigate('Settings');
+            }}
+          >
+            Settings
+          </Text>
+          <View style={{ height: 1, backgroundColor: '#e5e7eb' }} />
+          <Text
+            style={{ padding: 12 }}
+            onPress={() => {
+              setVisible(false);
+              navigation.getParent()?.navigate('Saved');
+            }}
+          >
+            Saved
+          </Text>
+          <View style={{ height: 1, backgroundColor: '#e5e7eb' }} />
+          <Text
+            style={{ padding: 12 }}
+            onPress={() => {
+              setVisible(false);
+              navigation.getParent()?.navigate('Credits');
+            }}
+          >
+            Credits
+          </Text>
+        </View>
+      )}
+    </PaperProvider>
+  );
+}
+
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route, navigation }) => ({
+        tabBarActiveTintColor: Colors.light.tint,
+        headerRight: () => <HeaderMenu navigation={navigation} />,
+        tabBarIcon: ({ focused, color, size }) => {
+          if (route.name === 'DeckStack') {
+            return <Ionicons name={focused ? 'albums' : 'albums-outline'} size={size} color={color} />;
+          } else if (route.name === 'Stats') {
+            return <MaterialCommunityIcons name="chart-bar" size={size} color={color} />;
+          } else if (route.name === 'Dictionary') {
+            return <MaterialCommunityIcons name="book-open-page-variant" size={size} color={color} />;
+          } else if (route.name === 'Conversations') {
+            return <MaterialCommunityIcons name="chat" size={size} color={color} />;
+          } else if (route.name === 'MultipleChoice') {
+            return <MaterialCommunityIcons name="checkbox-multiple-choice" size={size} color={color} />;
+          } else if (route.name === 'Culture') {
+            return <MaterialCommunityIcons name="earth" size={size} color={color} />;
+          }
+          return null;
+        },
+        tabBarStyle: {
+          paddingBottom: 6,
+          height: 60,
+        },
+      })}
+    >
+      <Tab.Screen
+        name="DeckStack"
+        component={DeckStack}
+        options={{ headerShown: false, title: 'Decks' }}
+      />
+      <Tab.Screen name="Stats" component={Stats} />
+      <Tab.Screen name="Dictionary" component={Dictionary} />
+      <Tab.Screen 
+        name="Conversations" 
+        component={ConversationsStack} 
+        options={{ headerShown: false, title: 'Conversations' }}
+      />
+      <Tab.Screen name="MultipleChoice" component={MultipleChoice} options={{ title: 'Quiz' }} />
+      <Tab.Screen name="Culture" component={Culture} />
+    </Tab.Navigator>
+  );
+}
 
 function DeckStack() {
   return (
@@ -77,8 +189,9 @@ export default function App() {
           </RootStack.Navigator>
         ) : (
           <Tab.Navigator
-            screenOptions={({ route }) => ({
+            screenOptions={({ route, navigation }) => ({
               tabBarActiveTintColor: Colors.light.tint,
+              headerRight: () => <HeaderMenu navigation={navigation} />,
               tabBarIcon: ({ focused, color, size }) => {
                 if (route.name === 'DeckStack') {
                   return <Ionicons name={focused ? 'albums' : 'albums-outline'} size={size} color={color} />;
