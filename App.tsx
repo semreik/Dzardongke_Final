@@ -21,6 +21,7 @@ import { useLanguage } from './app/stores/useLanguage';
 import Settings from './app/screens/Settings';
 import MultipleChoice from './app/screens/MultipleChoice';
 import Profile from './app/screens/Profile';
+import Credits from './app/screens/Credits';
 
 const Tab = createBottomTabNavigator();
 const InnerStack = createStackNavigator();
@@ -104,6 +105,7 @@ export default function App() {
             <Tab.Screen name="MultipleChoice" component={MultipleChoice} options={{ title: 'Quiz' }} />
             <Tab.Screen name="Settings" component={Settings} />
             <Tab.Screen name="Profile" component={Profile} />
+            <Tab.Screen name="Credits" component={Credits} />
           </Tab.Navigator>
         )}
       </NavigationContainer>

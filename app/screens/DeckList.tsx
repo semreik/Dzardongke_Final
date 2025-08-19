@@ -54,6 +54,7 @@ const DeckList: React.FC = () => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
+        ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
       />
     </View>
   );
@@ -69,14 +70,13 @@ const styles = StyleSheet.create({
   },
   deckItem: {
     backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
+    borderRadius: 14,
+    padding: 18,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
   },
   title: {
     fontSize: 20,
