@@ -1,0 +1,261 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useLanguage } from '../stores/useLanguage';
+import { cultureDz } from '../content/culture.dz';
+import type { CultureDeck, CultureQuizMultiStep, CultureQuizSingleStep, CultureStep } from '../content/types';
+
+const imageMap: Record<string, any> = {
+  'culture1.png': require('../../assets/images/Culture/culture1.png'),
+  'culture2.png': require('../../assets/images/Culture/culture2.png'),
+  'culture3.png': require('../../assets/images/Culture/culture3.png'),
+  'culture4.png': require('../../assets/images/Culture/culture4.png'),
+  'culture5.png': require('../../assets/images/Culture/culture5.png'),
+  'culture6.png': require('../../assets/images/Culture/culture6.png'),
+  'culture7.png': require('../../assets/images/Culture/culture7.png'),
+  'culture8.png': require('../../assets/images/Culture/culture8.png'),
+  'culture9.png': require('../../assets/images/Culture/culture9.png'),
+};
+
+const CultureDynamic: React.FC = () => {
+  const { selectedLanguage } = useLanguage();
+  const decks: CultureDeck[] = cultureDz;
+  const [activeDeckIndex, setActiveDeckIndex] = useState(0);
+  const [stepIndex, setStepIndex] = useState(0);
+
+  // quiz state
+  const [singleSelected, setSingleSelected] = useState<string | null>(null);
+  const [singleChecked, setSingleChecked] = useState(false);
+  const [multiSelected, setMultiSelected] = useState<Set<string>>(new Set());
+  const [multiChecked, setMultiChecked] = useState(false);
+
+  const fade = useRef(new Animated.Value(1)).current;
+  const go = () => {
+    Animated.sequence([
+      Animated.timing(fade, { toValue: 0, duration: 150, useNativeDriver: true }),
+      Animated.timing(fade, { toValue: 1, duration: 150, useNativeDriver: true }),
+    ]).start();
+  };
+
+  useEffect(() => {
+    // reset quiz state when step changes
+    setSingleSelected(null);
+    setSingleChecked(false);
+    setMultiSelected(new Set());
+    setMultiChecked(false);
+  }, [activeDeckIndex, stepIndex]);
+
+  if (selectedLanguage !== 'dz') {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Culture</Text>
+        <Text style={styles.meta}>This section is currently available for Dzardzongkha only. Quechua coming soon.</Text>
+      </View>
+    );
+  }
+
+  const currentDeck = decks[activeDeckIndex];
+  const steps = currentDeck?.steps ?? [];
+  const currentStep: CultureStep | undefined = steps[stepIndex];
+
+  const isFirst = stepIndex === 0;
+  const isLastInDeck = stepIndex === steps.length - 1;
+  const isLastDeck = activeDeckIndex === decks.length - 1;
+
+  const nextLabel = useMemo(() => {
+    if (!currentStep) return 'Next';
+    if (currentStep.type === 'quiz-single' && !singleChecked) return 'Check answer';
+    if (currentStep.type === 'quiz-multi' && !multiChecked) return 'Check answers';
+    if (isLastDeck && isLastInDeck) return 'Finish';
+    return 'Next';
+  }, [currentStep, singleChecked, multiChecked, isLastDeck, isLastInDeck]);
+
+  const handleNext = () => {
+    if (!currentStep) return;
+    if (currentStep.type === 'quiz-single' && !singleChecked) {
+      setSingleChecked(true);
+      return;
+    }
+    if (currentStep.type === 'quiz-multi' && !multiChecked) {
+      setMultiChecked(true);
+      return;
+    }
+    // advance
+    if (!isLastInDeck) {
+      setStepIndex(stepIndex + 1);
+      go();
+    } else if (!isLastDeck) {
+      setActiveDeckIndex(activeDeckIndex + 1);
+      setStepIndex(0);
+      go();
+    }
+  };
+
+  const handleBack = () => {
+    if (!isFirst) {
+      setStepIndex(stepIndex - 1);
+      go();
+    } else if (activeDeckIndex > 0) {
+      const prevDeckIdx = activeDeckIndex - 1;
+      setActiveDeckIndex(prevDeckIdx);
+      setStepIndex((decks[prevDeckIdx]?.steps.length ?? 1) - 1);
+      go();
+    }
+  };
+
+  const renderStep = (step: CultureStep | undefined) => {
+    if (!step) return null;
+    switch (step.type) {
+      case 'text':
+        return (
+          <View style={styles.card}>
+            {step.header ? <Text style={styles.subtitle}>{step.header}</Text> : null}
+            <Text style={styles.p}>{step.text}</Text>
+          </View>
+        );
+      case 'image': {
+        const src = imageMap[step.src];
+        return (
+          <View style={styles.card}>
+            {src ? (
+              <Image source={src} style={styles.photo} resizeMode="contain" />
+            ) : (
+              <View style={[styles.photo, { alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1f5f9' }]}>
+                <Text style={{ color: '#64748b', textAlign: 'center' }}>Missing image import for {step.src}{'\n'}Add it to imageMap in `app/screens/CultureDynamic.tsx`.</Text>
+              </View>
+            )}
+            <Text style={styles.caption}>{step.caption}</Text>
+          </View>
+        );
+      }
+      case 'quiz-single': {
+        const q = step as CultureQuizSingleStep;
+        return (
+          <View style={styles.card}>
+            {q.header ? <Text style={styles.subtitle}>{q.header}</Text> : null}
+            <Text style={styles.quizTitle}>Quiz</Text>
+            <Text style={styles.quizQ}>{q.question}</Text>
+            <View style={{ gap: 8, marginTop: 8 }}>
+              {q.options.map(opt => {
+                const isSelected = singleSelected === opt.label;
+                const isCorrect = singleChecked && opt.correct;
+                const isWrong = singleChecked && isSelected && !opt.correct;
+                return (
+                  <TouchableOpacity
+                    key={opt.label}
+                    style={[styles.choice, isSelected ? { borderColor: '#2563eb' } : undefined, isCorrect ? styles.correct : isWrong ? styles.wrong : undefined]}
+                    onPress={() => { if (!singleChecked) setSingleSelected(opt.label); }}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.choiceText}>{opt.label}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        );
+      }
+      case 'quiz-multi': {
+        const q = step as CultureQuizMultiStep;
+        return (
+          <View style={styles.card}>
+            {q.header ? <Text style={styles.subtitle}>{q.header}</Text> : null}
+            <Text style={styles.quizTitle}>Quiz</Text>
+            <Text style={styles.quizQ}>{q.question}</Text>
+            <View style={{ gap: 8, marginTop: 8 }}>
+              {q.options.map(opt => {
+                const isSelected = multiSelected.has(opt.label);
+                const isCorrect = multiChecked && opt.correct;
+                const isWrong = multiChecked && isSelected && !opt.correct;
+                return (
+                  <TouchableOpacity
+                    key={opt.label}
+                    style={[styles.choice, isSelected ? { borderColor: '#2563eb' } : undefined, isCorrect ? styles.correct : isWrong ? styles.wrong : undefined]}
+                    onPress={() => {
+                      if (multiChecked) return;
+                      const next = new Set(multiSelected);
+                      if (next.has(opt.label)) next.delete(opt.label); else next.add(opt.label);
+                      setMultiSelected(next);
+                    }}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.choiceText}>{opt.label}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        );
+      }
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>{`${activeDeckIndex + 1}. ${currentDeck?.title ?? 'Culture'}`}</Text>
+      <View style={styles.segmentRow}>
+        {decks.map((d, idx) => (
+          <TouchableOpacity
+            key={d.id}
+            style={[styles.segmentBtn, idx === activeDeckIndex ? styles.segmentActive : undefined]}
+            onPress={() => { setActiveDeckIndex(idx); setStepIndex(0); go(); }}
+          >
+            <Text style={[styles.segmentText, idx === activeDeckIndex ? styles.segmentTextActive : undefined]}>{d.title}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <Text style={styles.progressText}>Step {stepIndex + 1} of {steps.length}</Text>
+
+      <Animated.View style={{ opacity: fade }}>
+        {renderStep(currentStep)}
+      </Animated.View>
+
+      <View style={styles.navRow}>
+        <TouchableOpacity style={[styles.navBtn, isFirst && activeDeckIndex === 0 ? styles.disabled : undefined]} disabled={isFirst && activeDeckIndex === 0} onPress={handleBack}>
+          <MaterialCommunityIcons name="chevron-left" size={18} color={isFirst && activeDeckIndex === 0 ? '#9ca3af' : '#0f172a'} />
+          <Text style={[styles.navText, isFirst && activeDeckIndex === 0 ? styles.disabledText : undefined]}>Back</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.navBtn, styles.primary]} onPress={handleNext}>
+          <Text style={[styles.navText, { color: 'white' }]}>{nextLabel}</Text>
+          <MaterialCommunityIcons name="chevron-right" size={18} color={'white'} />
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { padding: 16, backgroundColor: '#f7f7fb' },
+  title: { fontSize: 22, fontWeight: '700', marginBottom: 6 },
+  subtitle: { fontSize: 16, color: '#475569', marginBottom: 10 },
+  meta: { fontSize: 14, color: '#64748b' },
+  card: { backgroundColor: 'white', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: '#e5e7eb', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } },
+  p: { color: '#1f2937', lineHeight: 22, marginBottom: 8 },
+  photo: { width: '100%', borderRadius: 14, backgroundColor: '#f8fafc', height: 220 },
+  caption: { marginTop: 10, color: '#475569', fontStyle: 'italic' },
+  quizTitle: { fontWeight: '700', marginBottom: 4 },
+  quizQ: { color: '#374151' },
+  choice: { backgroundColor: 'white', borderRadius: 10, padding: 12, borderWidth: 1, borderColor: '#e5e7eb' },
+  choiceText: { color: '#111827' },
+  correct: { backgroundColor: '#E8F5E9', borderColor: '#4CAF50' },
+  wrong: { backgroundColor: '#FDECEC', borderColor: '#FF3B30' },
+  navRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 },
+  navBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 16, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', backgroundColor: 'white' },
+  navText: { fontWeight: '600', color: '#0f172a' },
+  disabled: { opacity: 0.5 },
+  disabledText: { color: '#9ca3af' },
+  primary: { backgroundColor: '#2563eb', borderColor: '#2563eb' },
+  segmentRow: { flexDirection: 'row', gap: 8, marginBottom: 8, flexWrap: 'wrap' },
+  segmentBtn: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10, borderWidth: 1, borderColor: '#e5e7eb', backgroundColor: 'white' },
+  segmentActive: { backgroundColor: '#eef2ff', borderColor: '#6366f1' },
+  segmentText: { color: '#0f172a', fontWeight: '600' },
+  segmentTextActive: { color: '#3730a3' },
+  progressText: { color: '#64748b', marginBottom: 8 },
+});
+
+export default CultureDynamic;
+
+

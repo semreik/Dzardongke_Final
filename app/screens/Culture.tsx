@@ -2,7 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useRef, useState } from 'react';
 import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { cultureDz } from '../content/culture.dz';
-import type { CultureDeck, CultureStep } from '../content/types';
+import type { CultureDeck } from '../content/types';
 import { useLanguage } from '../stores/useLanguage';
 
 type Step =

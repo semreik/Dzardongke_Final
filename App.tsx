@@ -23,7 +23,7 @@ import MultipleChoice from './app/screens/MultipleChoice';
 import Profile from './app/screens/Profile';
 import Credits from './app/screens/Credits';
 import { Colors } from './constants/Colors';
-import Culture from './app/screens/Culture';
+import Culture from './app/screens/CultureDynamic';
 
 const Tab = createBottomTabNavigator();
 const InnerStack = createStackNavigator();
