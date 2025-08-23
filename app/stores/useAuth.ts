@@ -45,6 +45,15 @@ export const useAuth = create<AuthState>((set) => ({
       created_at: Date.now(),
     });
     await SecureStore.setItemAsync(CURRENT_USER_KEY, username);
+    // On user switch, load user-scoped stores
+    try {
+      const { useSaved } = require('./useSaved');
+      const saved = useSaved.getState();
+      saved.resetMemoryOnly();
+      await saved.loadSaved();
+      const { useProgress } = require('./useProgress');
+      await useProgress.getState().loadProgress();
+    } catch {}
     set({ currentUser: username, loading: false });
   },
 
@@ -56,17 +65,26 @@ export const useAuth = create<AuthState>((set) => ({
     const derived = await deriveKey(password, fromHex(u.salt), u.iters);
     if (toHex(derived) !== u.password_hash) { set({ loading: false }); throw new Error('Invalid credentials'); }
     await SecureStore.setItemAsync(CURRENT_USER_KEY, username);
+    // Hydrate user-scoped stores for this user
+    try {
+      const { useSaved } = require('./useSaved');
+      const saved = useSaved.getState();
+      saved.resetMemoryOnly();
+      await saved.loadSaved();
+      const { useProgress } = require('./useProgress');
+      await useProgress.getState().loadProgress();
+    } catch {}
     set({ currentUser: username, loading: false });
   },
 
   logout: async () => {
     await SecureStore.deleteItemAsync(CURRENT_USER_KEY);
-    // Clear user-scoped client caches
+    // Clear memory caches only; don't delete persisted user data
     try {
-      const { resetAll: resetProgress } = require('./useProgress');
+      const { useProgress } = require('./useProgress');
+      await useProgress.getState().resetAll();
       const { useSaved } = require('./useSaved');
-      if (resetProgress) await resetProgress();
-      if (useSaved?.getState) useSaved.getState().clearAll();
+      useSaved.getState().resetMemoryOnly();
     } catch {}
     set({ currentUser: null });
   },

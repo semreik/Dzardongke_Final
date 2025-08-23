@@ -21,6 +21,7 @@ export interface ProgressState {
   startSession: (deckId: string, totalCards: number) => void;
   endSession: () => void;
   getSessionsByDeck: (deckId: string) => StudySession[];
+  resetAll: () => Promise<void>;
 }
 
 const BASE_STORAGE_KEY = 'flashcard_progress';

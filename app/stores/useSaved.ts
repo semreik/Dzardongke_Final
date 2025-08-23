@@ -23,6 +23,7 @@ interface SavedState {
   saveItem: (item: Omit<SavedItem, 'id' | 'createdAt'>) => Promise<SavedItem>;
   removeItem: (id: string) => Promise<void>;
   clearAll: () => Promise<void>;
+  resetMemoryOnly: () => void;
 }
 
 const BASE_STORAGE_KEY = 'saved_items';
@@ -67,6 +68,10 @@ export const useSaved = create<SavedState>((set, get) => ({
   clearAll: async () => {
     set({ items: [] });
     await SecureStore.deleteItemAsync(getUserScopedKey());
+  },
+
+  resetMemoryOnly: () => {
+    set({ items: [] });
   },
 }));
 
