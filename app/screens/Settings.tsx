@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../stores/useLanguage';
-import { wipeAllData } from '../db/admin';
 
 const Settings: React.FC = () => {
   const { selectedLanguage, setLanguage, resetLanguageChoice } = useLanguage();
@@ -29,9 +28,6 @@ const Settings: React.FC = () => {
         <Text style={styles.btnText}>Reset and show language picker</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.button, styles.secondary]} onPress={async () => { await wipeAllData(); }}>
-        <Text style={styles.btnText}>Developer: Wipe all accounts & stats</Text>
-      </TouchableOpacity>
     </View>
   );
 };
