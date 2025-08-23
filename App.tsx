@@ -5,22 +5,25 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { IconButton, MD3LightTheme, Menu, PaperProvider } from 'react-native-paper';
+import Login from './app/screens/Auth/Login';
+import SignUp from './app/screens/Auth/SignUp';
 import { Congrats } from './app/screens/Congrats';
 import { ConversationCategories } from './app/screens/ConversationCategories';
 import { ConversationList } from './app/screens/ConversationList';
 import { ConversationPractice } from './app/screens/ConversationPractice';
-import Onboarding from './app/screens/Onboarding';
-import Settings from './app/screens/Settings';
-import MultipleChoice from './app/screens/MultipleChoice';
-import Profile from './app/screens/Profile';
 import Credits from './app/screens/Credits';
 import Culture from './app/screens/CultureDynamic';
 import DeckList from './app/screens/DeckList';
 import Dictionary from './app/screens/Dictionary';
+import MultipleChoice from './app/screens/MultipleChoice';
 import NumbersWrite from './app/screens/NumbersWrite';
+import Onboarding from './app/screens/Onboarding';
+import Profile from './app/screens/Profile';
+import Settings from './app/screens/Settings';
 import { Stats } from './app/screens/Stats';
 import Study from './app/screens/Study';
 import { Write } from './app/screens/Write';
+import { useAuth } from './app/stores/useAuth';
 import { useLanguage } from './app/stores/useLanguage';
 import { useProgress } from './app/stores/useProgress';
 import { Colors } from './constants/Colors';
@@ -28,9 +31,11 @@ import { Colors } from './constants/Colors';
 const Tab = createBottomTabNavigator();
 const InnerStack = createStackNavigator();
 const RootStack = createStackNavigator();
+const AuthStack = createStackNavigator();
 
 function HeaderMenu({ navigation }: any) {
   const [visible, setVisible] = React.useState(false);
+  const { logout } = useAuth();
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
   return (
@@ -54,6 +59,11 @@ function HeaderMenu({ navigation }: any) {
         <TouchableOpacity style={styles.menuItem} onPress={() => { closeMenu(); navigation.getParent()?.navigate('Credits'); }}>
           <MaterialCommunityIcons name="information-outline" size={18} color="#0f172a" />
           <Text style={styles.menuText}>Credits</Text>
+        </TouchableOpacity>
+        <View style={styles.menuDivider} />
+        <TouchableOpacity style={styles.menuItem} onPress={async () => { closeMenu(); await logout(); }}>
+          <MaterialCommunityIcons name="logout" size={18} color="#0f172a" />
+          <Text style={styles.menuText}>Logout</Text>
         </TouchableOpacity>
       </View>
     </Menu>
@@ -117,18 +127,25 @@ function MainTabs() {
 export default function App() {
   const loadProgress = useProgress(state => state.loadProgress);
   const { loadLanguage, hasChosenLanguage } = useLanguage();
+  const { currentUser, hydrate } = useAuth();
 
   useEffect(() => {
     loadProgress();
     loadLanguage();
-  }, [loadProgress, loadLanguage]);
+    hydrate();
+  }, [loadProgress, loadLanguage, hydrate]);
 
   const theme = { ...MD3LightTheme, colors: { ...MD3LightTheme.colors, surface: '#ffffff', onSurface: '#0f172a' } } as typeof MD3LightTheme;
 
   return (
     <PaperProvider theme={theme}>
       <NavigationContainer>
-        {!hasChosenLanguage ? (
+        {!currentUser ? (
+          <AuthStack.Navigator>
+            <AuthStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+            <AuthStack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
+          </AuthStack.Navigator>
+        ) : !hasChosenLanguage ? (
           <RootStack.Navigator screenOptions={{ headerShown: false }}>
             <RootStack.Screen name="Onboarding" component={Onboarding} />
           </RootStack.Navigator>
