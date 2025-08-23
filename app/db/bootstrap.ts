@@ -1,5 +1,5 @@
-// Use platform files directly via React Native resolver (sqlite.native.ts / sqlite.web.ts)
-import { openDb as openPlatformDb } from './sqlite.native';
+// Use platform resolver (sqlite.native.ts / sqlite.web.ts)
+import { openDb as openPlatformDb } from '../../lib/db/sqlite';
 
 export async function openDb() {
   const db = await openPlatformDb();
