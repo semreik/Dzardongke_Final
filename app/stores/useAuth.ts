@@ -1,7 +1,7 @@
-import { create } from 'zustand';
 import * as SecureStore from 'expo-secure-store';
-import { createUser, getUser } from '../db/authRepo';
+import { create } from 'zustand';
 import { deriveKey, fromHex, makeSalt, toHex } from '../auth/authCrypto';
+import { createUser, getUser } from '../db/authRepo';
 
 type AuthState = {
   currentUser: string | null;
@@ -12,7 +12,7 @@ type AuthState = {
   logout: () => Promise<void>;
 };
 
-const CURRENT_USER_KEY = 'auth:currentUser';
+const CURRENT_USER_KEY = 'auth.currentUser';
 
 export const useAuth = create<AuthState>((set) => ({
   currentUser: null,
@@ -24,7 +24,11 @@ export const useAuth = create<AuthState>((set) => ({
   },
 
   signup: async (username, password, confirm) => {
-    if (!username || !password || password !== confirm) throw new Error('Invalid input');
+    username = username.trim();
+    if (!username) throw new Error('Username is required');
+    if (!password) throw new Error('Password is required');
+    if (password.length < 6) throw new Error('Password must be at least 6 characters');
+    if (password !== confirm) throw new Error('Passwords must match');
     set({ loading: true });
     const exists = await getUser(username);
     if (exists) { set({ loading: false }); throw new Error('Username already exists'); }
@@ -42,6 +46,7 @@ export const useAuth = create<AuthState>((set) => ({
   },
 
   login: async (username, password) => {
+    username = username.trim();
     set({ loading: true });
     const u = await getUser(username);
     if (!u) { set({ loading: false }); throw new Error('User not found'); }

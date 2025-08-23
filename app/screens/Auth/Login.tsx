@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../stores/useAuth';
 
 export default function Login({ navigation }: any) {
@@ -21,6 +21,7 @@ export default function Login({ navigation }: any) {
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       {!!error && <Text style={styles.error}>{error}</Text>}
+      <Text style={styles.helper}>Password must be at least 6 characters.</Text>
       <TextInput placeholder="Username" style={styles.input} autoCapitalize="none" value={username} onChangeText={setUsername} />
       <TextInput placeholder="Password" style={styles.input} secureTextEntry value={password} onChangeText={setPassword} />
       <TouchableOpacity style={styles.button} onPress={onSubmit} disabled={loading}>
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
   buttonText: { color: 'white', fontWeight: '700' },
   link: { color: '#2563eb', textAlign: 'center', marginTop: 8 },
   error: { color: '#b91c1c' },
+  helper: { color: '#6b7280' },
 });
 
 

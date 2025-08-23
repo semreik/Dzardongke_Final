@@ -1,7 +1,7 @@
-import 'react-native-get-random-values';
-import { randomBytes, bytesToHex, hexToBytes } from '@noble/hashes/utils';
 import { pbkdf2Async } from '@noble/hashes/pbkdf2';
 import { sha256 } from '@noble/hashes/sha256';
+import { bytesToHex, hexToBytes, randomBytes } from '@noble/hashes/utils';
+import 'react-native-get-random-values';
 
 export function makeSalt(length = 16): Uint8Array {
   return randomBytes(length);
