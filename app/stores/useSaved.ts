@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import * as SecureStore from 'expo-secure-store';
-import { Platform } from 'react-native';
+import * as SecureStore from '../../lib/utils/secureStore';
+import { useAuth } from './useAuth';
 
 export type SavedSource = 'deck' | 'dictionary';
 
@@ -25,18 +25,17 @@ interface SavedState {
   clearAll: () => Promise<void>;
 }
 
-const STORAGE_KEY = 'saved_items';
+const BASE_STORAGE_KEY = 'saved_items';
+function getUserScopedKey(): string {
+  const user = useAuth.getState().currentUser || 'guest';
+  return `${BASE_STORAGE_KEY}:user:${user}`;
+}
 
 export const useSaved = create<SavedState>((set, get) => ({
   items: [],
 
   loadSaved: async () => {
-    let stored: string | null;
-    if (Platform.OS === 'web') {
-      stored = localStorage.getItem(STORAGE_KEY);
-    } else {
-      stored = await SecureStore.getItemAsync(STORAGE_KEY);
-    }
+    const stored = await SecureStore.getItemAsync(getUserScopedKey());
     if (stored) {
       try {
         const parsed = JSON.parse(stored) as SavedItem[];
@@ -54,11 +53,7 @@ export const useSaved = create<SavedState>((set, get) => ({
     const next = [...get().items, newItem];
     set({ items: next });
     const payload = JSON.stringify(next);
-    if (Platform.OS === 'web') {
-      localStorage.setItem(STORAGE_KEY, payload);
-    } else {
-      await SecureStore.setItemAsync(STORAGE_KEY, payload);
-    }
+    await SecureStore.setItemAsync(getUserScopedKey(), payload);
     return newItem;
   },
 
@@ -66,20 +61,12 @@ export const useSaved = create<SavedState>((set, get) => ({
     const next = get().items.filter(i => i.id !== id);
     set({ items: next });
     const payload = JSON.stringify(next);
-    if (Platform.OS === 'web') {
-      localStorage.setItem(STORAGE_KEY, payload);
-    } else {
-      await SecureStore.setItemAsync(STORAGE_KEY, payload);
-    }
+    await SecureStore.setItemAsync(getUserScopedKey(), payload);
   },
 
   clearAll: async () => {
     set({ items: [] });
-    if (Platform.OS === 'web') {
-      localStorage.removeItem(STORAGE_KEY);
-    } else {
-      await SecureStore.deleteItemAsync(STORAGE_KEY);
-    }
+    await SecureStore.deleteItemAsync(getUserScopedKey());
   },
 }));
 

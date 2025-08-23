@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import * as SecureStore from 'expo-secure-store';
-import { Platform } from 'react-native';
+import * as SecureStore from '../../lib/utils/secureStore';
+import { useAuth } from './useAuth';
 import type { Card } from '../types/deck';
 import type { CardProgress, ProgressStatus } from '../types/progress';
 import type { StudySession } from '../types/stats';
@@ -23,7 +23,12 @@ export interface ProgressState {
   getSessionsByDeck: (deckId: string) => StudySession[];
 }
 
-const STORAGE_KEY = 'flashcard_progress';
+const BASE_STORAGE_KEY = 'flashcard_progress';
+
+function getUserScopedKey(): string {
+  const user = useAuth.getState().currentUser || 'guest';
+  return `${BASE_STORAGE_KEY}:user:${user}`;
+}
 
 export const useProgress = create<ProgressState>((set, get) => ({
   progress: {},
@@ -65,12 +70,7 @@ export const useProgress = create<ProgressState>((set, get) => ({
       progress: newProgress,
       sessions: get().sessions
     });
-    
-    if (Platform.OS === 'web') {
-      localStorage.setItem(STORAGE_KEY, data);
-    } else {
-      await SecureStore.setItemAsync(STORAGE_KEY, data);
-    }
+    await SecureStore.setItemAsync(getUserScopedKey(), data);
 
     console.log('[setMastered] After update:', {
       deckId,
@@ -106,12 +106,7 @@ export const useProgress = create<ProgressState>((set, get) => ({
       progress: newProgress,
       sessions: get().sessions
     });
-    
-    if (Platform.OS === 'web') {
-      localStorage.setItem(STORAGE_KEY, data);
-    } else {
-      await SecureStore.setItemAsync(STORAGE_KEY, data);
-    }
+    await SecureStore.setItemAsync(getUserScopedKey(), data);
   },
 
   getDeckProgress: (deckId: string, cards: Card[]) => {
@@ -134,12 +129,7 @@ export const useProgress = create<ProgressState>((set, get) => ({
   },
 
   loadProgress: async () => {
-    let stored: string | null;
-    if (Platform.OS === 'web') {
-      stored = localStorage.getItem(STORAGE_KEY);
-    } else {
-      stored = await SecureStore.getItemAsync(STORAGE_KEY);
-    }
+    const stored = await SecureStore.getItemAsync(getUserScopedKey());
     console.log('[loadProgress] Stored data:', stored);
     if (stored) {
       const { progress, sessions } = JSON.parse(stored);
@@ -194,11 +184,7 @@ export const useProgress = create<ProgressState>((set, get) => ({
       
       // Persist to storage
       const data = JSON.stringify({ progress: get().progress, sessions: newSessions });
-      if (Platform.OS === 'web') {
-        localStorage.setItem(STORAGE_KEY, data);
-      } else {
-        SecureStore.setItemAsync(STORAGE_KEY, data);
-      }
+      SecureStore.setItemAsync(getUserScopedKey(), data);
     }
   },
 
@@ -225,5 +211,9 @@ export const useProgress = create<ProgressState>((set, get) => ({
   countByStatus: (deckId: string, status: 'new' | 'learning' | 'mastered') => {
     const deckProgress = get().progress[deckId] || {};
     return Object.values(deckProgress).filter(p => p.status === status).length;
+  },
+
+  resetAll: async () => {
+    set({ progress: {}, sessions: [], currentSession: null });
   }
 }));

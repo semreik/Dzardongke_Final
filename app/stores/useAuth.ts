@@ -61,6 +61,13 @@ export const useAuth = create<AuthState>((set) => ({
 
   logout: async () => {
     await SecureStore.deleteItemAsync(CURRENT_USER_KEY);
+    // Clear user-scoped client caches
+    try {
+      const { resetAll: resetProgress } = require('./useProgress');
+      const { useSaved } = require('./useSaved');
+      if (resetProgress) await resetProgress();
+      if (useSaved?.getState) useSaved.getState().clearAll();
+    } catch {}
     set({ currentUser: null });
   },
 }));
