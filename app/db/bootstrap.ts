@@ -1,10 +1,7 @@
-import * as SQLite from 'expo-sqlite';
+import { openDb as openPlatformDb } from './sqlite';
 
-let dbInstance: SQLite.SQLiteDatabase | null = null;
-
-export async function openDb(): Promise<SQLite.SQLiteDatabase> {
-  if (dbInstance) return dbInstance;
-  const db = await SQLite.openDatabaseAsync('app.db');
+export async function openDb() {
+  const db = await openPlatformDb();
   // Ensure basic tables exist
   await db.execAsync(`
     PRAGMA foreign_keys = ON;
