@@ -1,0 +1,46 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { useAuth } from '../../stores/useAuth';
+
+export default function Login({ navigation }: any) {
+  const { login, loading } = useAuth();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const onSubmit = async () => {
+    setError(null);
+    try {
+      await login(username.trim(), password);
+    } catch (e: any) {
+      setError(e?.message || 'Login failed');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Login</Text>
+      {!!error && <Text style={styles.error}>{error}</Text>}
+      <TextInput placeholder="Username" style={styles.input} autoCapitalize="none" value={username} onChangeText={setUsername} />
+      <TextInput placeholder="Password" style={styles.input} secureTextEntry value={password} onChangeText={setPassword} />
+      <TouchableOpacity style={styles.button} onPress={onSubmit} disabled={loading}>
+        <Text style={styles.buttonText}>{loading ? 'Please wait…' : 'Login'}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.replace('SignUp')}>
+        <Text style={styles.link}>Create an account</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', padding: 20, gap: 12 },
+  title: { fontSize: 24, fontWeight: '700', marginBottom: 8 },
+  input: { borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10 },
+  button: { backgroundColor: '#0ea5e9', borderRadius: 10, paddingVertical: 12, alignItems: 'center' },
+  buttonText: { color: 'white', fontWeight: '700' },
+  link: { color: '#2563eb', textAlign: 'center', marginTop: 8 },
+  error: { color: '#b91c1c' },
+});
+
+
