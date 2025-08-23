@@ -104,7 +104,7 @@ const Culture: React.FC = () => {
     return (
       <View style={styles.container}> 
         <Text style={styles.title}>Culture</Text>
-        <Text style={styles.meta}>This section is currently available for Dzardzongkha only. Quechua coming soon.</Text>
+        <Text style={styles.meta}>This section is currently available for Dzardzongke only. Quechua coming soon.</Text>
       </View>
     );
   }
@@ -132,13 +132,13 @@ const Culture: React.FC = () => {
 
   const subtitle = useMemo(() => {
     if (step === 'intro1' || step === 'intro2' || step === 'intro3' || step === 'image' || step === 'quiz') {
-      return 'Part a — Introduction to the Dzardzongkha language';
+      return 'Part a — Introduction to the Dzardzongke language';
     }
     if (step === 'region1' || step === 'region2' || step === 'regionImage' || step === 'regionFest' || step === 'regionQuiz') {
-      return 'Part b — About the Dzardzongkha region';
+      return 'Part b — About the Dzardzongke region';
     }
     if (step === 'festivalsC1' || step === 'festivalsCImage' || step === 'festivalsC2' || step === 'festivalsCQuiz') {
-      return 'Part c — Dzardzongkha festivals';
+      return 'Part c — Dzardzongke festivals';
     }
     if (step === 'dachang1' || step === 'dachang2' || step === 'dachangImage' || step === 'dachangQuiz') {
       return 'Part a — Dachang preparations';
@@ -196,8 +196,8 @@ const Culture: React.FC = () => {
               Mustang is one of 77 districts in Nepal, and the most sparsely populated. Like many districts or parts of
               districts, it was once an autonomous kingdom that was integrated into Nepal during the unification of the
               country by the Gorkhas in the late 18th century. The Tibetan name for the kingdom founded in the 14th c. is
-              Lo. The district headquarters of Mustang is Jomsom or Dzongsam in the local language called ‘Dzardzongkha’.
-              Sam is the Dzardzongkha word for “new” and dzong means ‘castle’ so the name of the town of Jomsom means
+              Lo. The district headquarters of Mustang is Jomsom or Dzongsam in the local language called ‘Dzardzongke’.
+              Sam is the Dzardzongke word for “new” and dzong means ‘castle’ so the name of the town of Jomsom means
               “Newcastle”.
             </Text>
           </View>
@@ -440,9 +440,9 @@ const Culture: React.FC = () => {
         {step === 'intro2' && (
           <View style={styles.card}>
             <Text style={styles.p}>
-              Dzardzongkha is a variety of Tibetan spoken in the majority of villages of Baragaon, in South Mustang. The
+              Dzardzongke is a variety of Tibetan spoken in the majority of villages of Baragaon, in South Mustang. The
               name of the language is derived from the local name for the Muktinath Valley, Dzardzong Yuldruk, which means
-              the “Six Villages including Dzar and Dzong.” Dzardzongkha is similar to other Tibetic languages, especially
+              the “Six Villages including Dzar and Dzong.” Dzardzongke is similar to other Tibetic languages, especially
               those spoken nearby like Loke in Upper Mustang. But it also has unique words and grammatical features that are
               not found in any other variety, not even, for example, in Loke or other Tibetic languages spoken in Nepal or
               in the more widely used varieties like Standard or Lhasa Tibetan.
@@ -453,10 +453,10 @@ const Culture: React.FC = () => {
         {step === 'intro3' && (
           <View style={styles.card}>
             <Text style={styles.p}>
-              Dzardzongkha is an endangered language, which means that it is at high risk of being lost forever. It is
+              Dzardzongke is an endangered language, which means that it is at high risk of being lost forever. It is
               currently still spoken by around 1800 speakers. Some of these live in the Muktinath Valley, but many have moved
-              to bigger cities like Kathmandu, Hong Kong, Paris or New York. Together with Dzardzongkha speakers, we have
-              developed this app to help preserve the Dzardzongkha language and the cultural heritage of its speakers. With
+              to bigger cities like Kathmandu, Hong Kong, Paris or New York. Together with Dzardzongke speakers, we have
+              developed this app to help preserve the Dzardzongke language and the cultural heritage of its speakers. With
               the app, you can learn about local history and festivals like the dachang ‘arrow-beer’ or the yarthung ‘summer’
               festival. You can also use the app to learn to speak the language, or, if you already speak it, you can learn
               how to write it.

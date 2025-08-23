@@ -49,7 +49,7 @@ const CultureDynamic: React.FC = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Culture</Text>
-        <Text style={styles.meta}>This section is currently available for Dzardzongkha only. Quechua coming soon.</Text>
+        <Text style={styles.meta}>This section is currently available for Dzardzongke only. Quechua coming soon.</Text>
       </View>
     );
   }

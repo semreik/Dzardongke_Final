@@ -10,7 +10,7 @@ const Onboarding: React.FC = () => {
       <Text style={styles.title}>What language do you want to learn today?</Text>
       <View style={styles.row}>
         <TouchableOpacity style={styles.button} onPress={() => setLanguage('dz')}>
-          <Text style={styles.btnText}>Dzardzongkha</Text>
+          <Text style={styles.btnText}>Dzardzongke</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => setLanguage('qu')}>
           <Text style={styles.btnText}>Quechua</Text>

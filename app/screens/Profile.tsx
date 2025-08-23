@@ -25,7 +25,7 @@ const Profile: React.FC = () => {
           keyExtractor={i => i.id}
           renderItem={({ item }) => (
             <View style={styles.card}>
-              <Text style={styles.lang}>{item.language === 'qu' ? 'Quechua' : 'Dzardzongkha'}</Text>
+              <Text style={styles.lang}>{item.language === 'qu' ? 'Quechua' : 'Dzardzongke'}</Text>
               <Text style={styles.prompt}>English: {item.prompt}</Text>
               <Text style={styles.answer}>Answer: {item.answer}</Text>
               {item.notes ? <Text style={styles.notes}>Notes: {item.notes}</Text> : null}

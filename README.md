@@ -168,7 +168,7 @@ For more detailed instructions, see the [Audio Pronunciations Guide](./docs/AUDI
 
 ## Culture Images
 
-The guided Culture section (Dzardzongkha) displays photos alongside text and quizzes.
+The guided Culture section (Dzardzongke) displays photos alongside text and quizzes.
 
 - Place Culture images under: `assets/images/culture/`
 - Part a expects the file: `assets/images/Culture/culture1.png`

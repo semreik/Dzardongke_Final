@@ -16,14 +16,14 @@ const Credits: React.FC = () => {
       <View style={styles.header}>
         <Text variant="titleLarge" style={styles.title}>Credits</Text>
         <Text variant="bodyMedium" style={styles.intro}>
-          This app is a collaborative effort between Dzardzongkha speakers and researchers from the
+          This app is a collaborative effort between Dzardzongke speakers and researchers from the
           University of Cambridge and the EPHE-PSL in Paris. We would like to thank XX for their generous
           funding to develop the first prototype of the app. The app will be accompanied by an introductory
-          textbook to learn the Dzardzongkha language.
+          textbook to learn the Dzardzongke language.
         </Text>
       </View>
 
-      <Section title="Dzardzongkha speakers and collaborators">
+      <Section title="Dzardzongke speakers and collaborators">
         <Text style={styles.item}>• Palgen Bista</Text>
         <Text style={styles.item}>• Tshewang Gurung</Text>
         <Text style={styles.item}>• Lhabon Takla</Text>

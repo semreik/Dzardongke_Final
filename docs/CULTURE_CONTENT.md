@@ -19,7 +19,7 @@ You only edit those two places.
 ## Content structure
 
 The content file exports two “decks” (tabs):
-- Deck 1: Dzardzongkha: Language & Region
+- Deck 1: Dzardzongke: Language & Region
 - Deck 2: Dachang festival
 
 Each deck has a list of steps. A step can be:
