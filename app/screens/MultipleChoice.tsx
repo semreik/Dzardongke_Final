@@ -1,17 +1,17 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useMemo, useState } from 'react';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { contentRegistry, getQuizImageForPrompt } from '../services/contentRegistry';
 import { useLanguage } from '../stores/useLanguage';
-import { contentRegistry, getQuizImageForPrompt, getQuizImageByName } from '../services/contentRegistry';
-import type { Deck, Card } from '../types/deck';
 import { useSaved } from '../stores/useSaved';
+import type { Card, Deck } from '../types/deck';
 
 type QuizOption = {
   text: string;
   isCorrect: boolean;
 };
 
-type QuizItem = { prompt: string; answer: string; notes?: string; imageName?: string };
+type QuizItem = { prompt: string; answer: string; notes?: string };
 
 export const MultipleChoice: React.FC = () => {
   const { selectedLanguage } = useLanguage();
@@ -53,11 +53,10 @@ export const MultipleChoice: React.FC = () => {
     dictionary.entries.forEach((e: any) => {
       const en = e.en as string;
       const dz = e.dz as string;
-      const imageName = e.image as string | undefined;
       if (isSensibleText(en) && isSensibleText(dz)) {
         const key = `${en}=>${dz}`;
         if (!seen.has(key)) {
-          items.push({ prompt: en, answer: dz, imageName });
+          items.push({ prompt: en, answer: dz });
           seen.add(key);
         }
       }
@@ -101,7 +100,7 @@ export const MultipleChoice: React.FC = () => {
   }, [items]);
 
   const currentItem = quizPool.length > 0 ? quizPool[currentIndex % quizPool.length] : null;
-  const currentImage = currentItem ? (getQuizImageByName(selectedLanguage as any, currentItem.imageName) || getQuizImageForPrompt(selectedLanguage as any, currentItem.prompt)) : undefined;
+  const currentImage = currentItem ? getQuizImageForPrompt(selectedLanguage as any, currentItem.prompt) : undefined;
 
   const options: QuizOption[] = useMemo(() => {
     if (!currentItem) return [];

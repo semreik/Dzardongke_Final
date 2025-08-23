@@ -74,6 +74,10 @@ To create cards with images on the front:
    }
    ```
 
+### Multiple Choice Quiz Images
+
+You can show an illustration under quiz prompts. See `docs/QUIZ_IMAGES.md` for step‑by‑step instructions (where to put images, how to map prompts to images, and recommended sizes).
+
 ### Creating Effective Notes
 
 The `notes` field supports newline characters (`\n`) for formatting. For language learning cards, we recommend this structure:
