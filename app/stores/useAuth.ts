@@ -1,7 +1,9 @@
-import * as SecureStore from '../utils/secureStore';
 import { create } from 'zustand';
 import { deriveKey, fromHex, makeSalt, toHex } from '../auth/authCrypto';
 import { createUser, getUser } from '../db/authRepo';
+import { Platform } from 'react-native';
+// Route-safe import: use lib/ for platform files to avoid expo-router scanning app/
+const SecureStore = Platform.OS === 'web' ? require('../../lib/utils/secureStore.web') : require('../../lib/utils/secureStore.native');
 
 type AuthState = {
   currentUser: string | null;
