@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from '../utils/secureStore';
 import { create } from 'zustand';
 import { deriveKey, fromHex, makeSalt, toHex } from '../auth/authCrypto';
 import { createUser, getUser } from '../db/authRepo';
