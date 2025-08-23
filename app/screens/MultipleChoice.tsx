@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../stores/useLanguage';
-import { contentRegistry } from '../services/contentRegistry';
+import { contentRegistry, getQuizImageForPrompt, getQuizImageByName } from '../services/contentRegistry';
 import type { Deck, Card } from '../types/deck';
 import { useSaved } from '../stores/useSaved';
 
@@ -11,7 +11,7 @@ type QuizOption = {
   isCorrect: boolean;
 };
 
-type QuizItem = { prompt: string; answer: string; notes?: string };
+type QuizItem = { prompt: string; answer: string; notes?: string; imageName?: string };
 
 export const MultipleChoice: React.FC = () => {
   const { selectedLanguage } = useLanguage();
@@ -53,10 +53,11 @@ export const MultipleChoice: React.FC = () => {
     dictionary.entries.forEach((e: any) => {
       const en = e.en as string;
       const dz = e.dz as string;
+      const imageName = e.image as string | undefined;
       if (isSensibleText(en) && isSensibleText(dz)) {
         const key = `${en}=>${dz}`;
         if (!seen.has(key)) {
-          items.push({ prompt: en, answer: dz });
+          items.push({ prompt: en, answer: dz, imageName });
           seen.add(key);
         }
       }
@@ -100,6 +101,7 @@ export const MultipleChoice: React.FC = () => {
   }, [items]);
 
   const currentItem = quizPool.length > 0 ? quizPool[currentIndex % quizPool.length] : null;
+  const currentImage = currentItem ? (getQuizImageByName(selectedLanguage as any, currentItem.imageName) || getQuizImageForPrompt(selectedLanguage as any, currentItem.prompt)) : undefined;
 
   const options: QuizOption[] = useMemo(() => {
     if (!currentItem) return [];
@@ -161,6 +163,16 @@ export const MultipleChoice: React.FC = () => {
             <Text style={styles.promptHeaderText}>English → {targetLabel}</Text>
           </View>
           <Text style={styles.bigPrompt}>{currentItem.prompt}</Text>
+          {currentImage ? (
+            <View style={styles.imageWrap}>
+              <View style={styles.imageBox}>
+                <MaterialCommunityIcons name="image" size={14} color="#6b7280" style={{ position: 'absolute', top: 6, right: 6 }} />
+                {/* eslint-disable-next-line @typescript-eslint/no-var-requires */}
+                <img src={currentImage} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
+              </View>
+              <Text style={styles.imageCaption}>Illustration</Text>
+            </View>
+          ) : null}
         </View>
 
         <View style={styles.optionsContainer}>
@@ -237,6 +249,9 @@ const styles = StyleSheet.create({
   promptCard: { backgroundColor: '#eef2ff', borderRadius: 12, padding: 16, borderWidth: 1, borderColor: '#bfdbfe', marginBottom: 12 },
   promptHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 },
   promptHeaderText: { color: '#2563eb', fontWeight: '600' },
+  imageWrap: { marginTop: 10, alignItems: 'center' },
+  imageBox: { width: '100%', height: 160, backgroundColor: '#f1f5f9', borderRadius: 10, borderWidth: 1, borderColor: '#e5e7eb', position: 'relative' },
+  imageCaption: { color: '#6b7280', fontSize: 12, marginTop: 4 },
   optionsContainer: { gap: 10, marginTop: 8 },
   optionBtn: { backgroundColor: 'white', padding: 16, borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb' },
   optionText: { fontSize: 16, color: '#111827' },

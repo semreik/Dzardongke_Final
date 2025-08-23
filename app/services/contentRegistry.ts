@@ -21,6 +21,9 @@ type DictionaryShape = {
     example?: string;
     exampleEn?: string;
     audio?: string;
+    // Optional image filename for this dictionary item (e.g., 'dog.png').
+    // Put the file under assets/images/quiz and register it in quizImageMap below.
+    image?: string;
   }>;
 };
 
@@ -44,5 +47,50 @@ export const contentRegistry: Record<LanguageCode, ContentBundle> = {
 };
 
 export const nsDeckId = (lang: LanguageCode, deckId: string) => `${lang}:${deckId}`;
+
+// Quiz image registry
+// You can map either prompt strings (lowercased) or explicit image filenames
+// to statically imported images. Add your images to assets/images/quiz and
+// register them here.
+const reactLogo = require('../../assets/images/react-logo.png');
+const reactLogo2x = require('../../assets/images/react-logo@2x.png');
+const reactLogo3x = require('../../assets/images/react-logo@3x.png');
+
+const quizImageMap: Record<LanguageCode, {
+  byPrompt: Record<string, any>;
+  byName: Record<string, any>;
+}> = {
+  dz: {
+    byPrompt: {
+      dog: reactLogo,
+      bird: reactLogo2x,
+      fish: reactLogo3x,
+    },
+    byName: {
+      'placeholder.png': reactLogo,
+    },
+  },
+  qu: {
+    byPrompt: {
+      dog: reactLogo,
+      bird: reactLogo2x,
+      fish: reactLogo3x,
+    },
+    byName: {
+      'placeholder.png': reactLogo,
+    },
+  },
+};
+
+export function getQuizImageForPrompt(lang: LanguageCode, prompt?: string) {
+  if (!prompt) return undefined;
+  const key = String(prompt).toLowerCase().trim();
+  return quizImageMap[lang]?.byPrompt[key];
+}
+
+export function getQuizImageByName(lang: LanguageCode, imageName?: string) {
+  if (!imageName) return undefined;
+  return quizImageMap[lang]?.byName[imageName];
+}
 
 
