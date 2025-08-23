@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { useLanguage } from '../stores/useLanguage';
 
 const Settings: React.FC = () => {
   const { selectedLanguage, setLanguage, resetLanguageChoice } = useLanguage();
+  const navigation = useNavigation<any>();
 
   return (
     <View style={styles.container}>
@@ -13,11 +15,11 @@ const Settings: React.FC = () => {
         <Text style={styles.title}>Settings</Text>
       </View>
       <Text style={styles.label}>Current language</Text>
-      <Text style={styles.value}>{selectedLanguage === 'dz' ? 'Dzardzongkha' : 'Quechua'}</Text>
+      <Text style={styles.value}>{selectedLanguage === 'dz' ? 'Dzardzongke' : 'Quechua'}</Text>
 
       <View style={styles.row}>
         <TouchableOpacity style={styles.button} onPress={() => setLanguage('dz')}>
-          <Text style={styles.btnText}>Switch to Dzardzongkha</Text>
+          <Text style={styles.btnText}>Switch to Dzardzongke</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => setLanguage('qu')}>
           <Text style={styles.btnText}>Switch to Quechua</Text>
@@ -26,6 +28,10 @@ const Settings: React.FC = () => {
 
       <TouchableOpacity style={[styles.button, styles.secondary]} onPress={resetLanguageChoice}>
         <Text style={styles.btnText}>Reset and show language picker</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={[styles.button, { backgroundColor: '#0ea5e9' }]} onPress={() => navigation.navigate('Account')}>
+        <Text style={styles.btnText}>Account</Text>
       </TouchableOpacity>
 
     </View>

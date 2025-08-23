@@ -20,6 +20,7 @@ import NumbersWrite from './app/screens/NumbersWrite';
 import Onboarding from './app/screens/Onboarding';
 import Profile from './app/screens/Profile';
 import Settings from './app/screens/Settings';
+import Account from './app/screens/Account';
 import { Stats } from './app/screens/Stats';
 import Study from './app/screens/Study';
 import { Write } from './app/screens/Write';
@@ -153,6 +154,7 @@ export default function App() {
           <RootStack.Navigator>
             <RootStack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
             <RootStack.Screen name="Settings" component={Settings} options={{ headerTitle: 'Settings' }} />
+            <RootStack.Screen name="Account" component={Account} options={{ headerTitle: 'Account' }} />
             <RootStack.Screen name="Profile" component={Profile} options={{ headerTitle: 'Saved' }} />
             <RootStack.Screen name="Credits" component={Credits} options={{ headerTitle: 'Credits' }} />
           </RootStack.Navigator>

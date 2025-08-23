@@ -74,9 +74,13 @@ export const ConversationPractice: React.FC = () => {
       { iterations: 4 }
     ).start();
 
-    // Scroll to top when changing exchanges
+    // Scroll to bottom when changing exchanges (WhatsApp-like)
     if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ y: 0, animated: true });
+      setTimeout(() => {
+        try {
+          scrollViewRef.current?.scrollToEnd({ animated: true });
+        } catch {}
+      }, 0);
     }
     
     // Clean up sound when component unmounts or exchange changes
@@ -222,7 +226,7 @@ export const ConversationPractice: React.FC = () => {
               color="#007AFF" 
             />
             <Text style={styles.controlText}>
-              {viewMode === 'both' ? 'Show English only' : viewMode === 'english' ? 'Show Dzardzongkha only' : 'Show Both'}
+              {viewMode === 'both' ? 'Show English only' : viewMode === 'english' ? 'Show Dzardzongke only' : 'Show Both'}
             </Text>
           </TouchableOpacity>
           
