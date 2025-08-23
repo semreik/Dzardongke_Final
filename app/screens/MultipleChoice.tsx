@@ -167,8 +167,11 @@ export const MultipleChoice: React.FC = () => {
             <View style={styles.imageWrap}>
               <View style={styles.imageBox}>
                 <MaterialCommunityIcons name="image" size={14} color="#6b7280" style={{ position: 'absolute', top: 6, right: 6 }} />
-                {/* eslint-disable-next-line @typescript-eslint/no-var-requires */}
-                <img src={currentImage} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
+                {/* Use React Native Image for native/web */}
+                <View style={{ flex: 1, borderRadius: 8 }}>
+                  {/* @ts-ignore - Image accepts require sources; here we use an any */}
+                  <Image source={currentImage} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
+                </View>
               </View>
               <Text style={styles.imageCaption}>Illustration</Text>
             </View>

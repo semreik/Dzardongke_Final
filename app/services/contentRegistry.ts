@@ -53,8 +53,6 @@ export const nsDeckId = (lang: LanguageCode, deckId: string) => `${lang}:${deckI
 // to statically imported images. Add your images to assets/images/quiz and
 // register them here.
 const reactLogo = require('../../assets/images/react-logo.png');
-const reactLogo2x = require('../../assets/images/react-logo@2x.png');
-const reactLogo3x = require('../../assets/images/react-logo@3x.png');
 
 const quizImageMap: Record<LanguageCode, {
   byPrompt: Record<string, any>;
@@ -63,8 +61,8 @@ const quizImageMap: Record<LanguageCode, {
   dz: {
     byPrompt: {
       dog: reactLogo,
-      bird: reactLogo2x,
-      fish: reactLogo3x,
+      bird: reactLogo,
+      fish: reactLogo,
     },
     byName: {
       'placeholder.png': reactLogo,
@@ -73,8 +71,8 @@ const quizImageMap: Record<LanguageCode, {
   qu: {
     byPrompt: {
       dog: reactLogo,
-      bird: reactLogo2x,
-      fish: reactLogo3x,
+      bird: reactLogo,
+      fish: reactLogo,
     },
     byName: {
       'placeholder.png': reactLogo,
