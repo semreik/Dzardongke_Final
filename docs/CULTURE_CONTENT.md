@@ -101,4 +101,18 @@ If in the future you want server-driven content, we can keep the same schema and
 - Image not showing? Confirm the file path: `assets/images/Culture/<filename>` and that `src` in the content matches the filename exactly (including capitalization).
 - Build cache issues: restart the dev server with `npx expo start -c`.
 
+---
+
+## Build & Run (Localhost)
+
+- Install deps: `npm install`
+- Start dev server: `npx expo start` then choose target (web/iOS/Android) or scan QR in Expo Go.
+
+## Release & Updates (Android/iOS)
+
+- Update versions in `app.json` as needed.
+- Android APK (quick review/share): `eas build -p android --profile preview`
+- Android Play Store: `eas build -p android --profile production` → `eas submit -p android`
+- iOS TestFlight/App Store: `eas build -p ios --profile production` → `eas submit -p ios`.
+
 

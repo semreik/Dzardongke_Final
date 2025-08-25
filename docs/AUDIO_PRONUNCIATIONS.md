@@ -69,6 +69,20 @@ For adding multiple audio files at once, follow the same process but make sure t
 - Ensure the audio file is properly registered in the `audioMap`
 - Verify that the audio file is in MP3 format and placed in the correct directory
 
+---
+
+## Build & Run (Localhost)
+
+- Install dependencies: `npm install`
+- Start dev server: `npx expo start` and choose web (`w`), iOS (`i`), Android (`a`), or scan QR in Expo Go.
+
+## Release & Updates (Android/iOS)
+
+- Bump `expo.version` in `app.json` (and `ios.buildNumber` / `android.versionCode` if applicable).
+- Android APK (quick share): `eas build -p android --profile preview`
+- Android Play Store: `eas build -p android --profile production` then `eas submit -p android`
+- iOS TestFlight/App Store: `eas build -p ios --profile production` then `eas submit -p ios`.
+
 # Audio Pronunciations Guide
 
 This guide explains how to add audio for dictionary entries and conversation messages.

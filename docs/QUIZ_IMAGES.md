@@ -46,3 +46,17 @@ const quizImageMap = {
 - You can map the same image for both `dz` and `qu` prompts as needed.
 - Keep images lightweight for mobile performance.
 
+---
+
+## Build & Run (Localhost)
+
+- `npm install` then `npx expo start`
+- Press `w` (web), `i` (iOS), `a` (Android) or scan the QR in Expo Go.
+
+## Release & Updates (Android/iOS)
+
+- Bump versions in `app.json` as needed.
+- Android APK (quick share): `eas build -p android --profile preview`
+- Android Play Store: `eas build -p android --profile production` then `eas submit -p android`
+- iOS TestFlight/App Store: `eas build -p ios --profile production` then `eas submit -p ios`.
+

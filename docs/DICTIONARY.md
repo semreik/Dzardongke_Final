@@ -81,3 +81,21 @@ Tips:
 2. Include practical, commonly used example sentences
 3. Verify the correctness of Dzardzongke text and translations
 4. Back up the dictionary file before making large changes
+
+---
+
+## Build & Run (Localhost)
+
+- Install dependencies:
+  - `npm install` (if peer-deps conflict: `npm install --legacy-peer-deps`)
+- Start the dev server:
+  - `npx expo start`
+  - Web: press `w`; iOS simulator: `i`; Android emulator: `a`; or scan the QR in Expo Go.
+
+## Release & Updates (Android/iOS)
+
+- Increment app version in `app.json` (`expo.version`). For store builds, also bump `ios.buildNumber` and `android.versionCode` unless using remote versioning.
+- Android quick share (APK): `eas build -p android --profile preview`
+- Android Play Store: `eas build -p android --profile production` then `eas submit -p android`
+- iOS TestFlight/App Store: `eas build -p ios --profile production` then `eas submit -p ios` (Apple Developer account required).
+- After adding new dictionary entries or audio, commit changes and repeat the relevant build step.
