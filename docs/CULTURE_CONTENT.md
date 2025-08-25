@@ -54,30 +54,14 @@ const imageMap: Record<string, any> = {
 - Add a new object to the exported `cultureDz` array. Use any unique `id` and a human‑readable `title`.
 ```ts
 import { CultureDeck } from './types';
-
-export const cultureDz: CultureDeck[] = [
-  // ... existing decks
-  {
-    id: 'deck-3',
-    title: 'My New Culture Topic',
-    steps: [
-      { type: 'text', text: 'Introduce your topic in a short paragraph.' },
-      { type: 'image', src: 'culture10.png', caption: 'A descriptive caption for the image' },
-      { type: 'quiz-single', question: 'A quick knowledge check?', options: [
-        { label: 'Option A', correct: false },
-        { label: 'Option B', correct: true },
-      ]},
-      // You can add as many steps as you like
-    ],
-  },
-];
 ```
 
-4) Refresh the app
-- Save your changes. The Culture screen will automatically show a new tab with your deck title.
-- If you don’t see it, restart the dev server with `npx expo start -c`.
+## Interactive Map (StoryMapJS)
 
-That’s it. No backend is needed; all content and images are bundled with the app. If you later want remote content, we can fetch the same schema from a server without changing the UI.
+- The Culture screen includes an “Interactive Map” tab that embeds a StoryMapJS link.
+- To change the URL, open `app/screens/CultureDynamic.tsx` and edit the `storyMapUrl` constant.
+- The map renders via an `<iframe>` on web, and a `WebView` on iOS/Android.
+- Recommended: Use public, HTTPS URLs. If your map is private, ensure it’s accessible to your users.
 
 ## Example: add a new text + image + quiz
 

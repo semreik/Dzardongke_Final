@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import WebView from 'react-native-webview';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../stores/useLanguage';
 import { cultureDz } from '../content/culture.dz';
@@ -19,9 +20,15 @@ const imageMap: Record<string, any> = {
 
 const CultureDynamic: React.FC = () => {
   const { selectedLanguage } = useLanguage();
-  const decks: CultureDeck[] = cultureDz;
+  const contentDecks: CultureDeck[] = cultureDz;
+  const uiDecks: CultureDeck[] = useMemo(
+    () => [...contentDecks, { id: 'map', title: 'Interactive Map', steps: [] as any }],
+    [contentDecks]
+  );
   const [activeDeckIndex, setActiveDeckIndex] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
+
+  const storyMapUrl = 'https://uploads.knightlab.com/storymapjs/dadb49b390f413e3dae57604e019397c/dzardzongke/index.html';
 
   // quiz state
   const [singleSelected, setSingleSelected] = useState<string | null>(null);
@@ -54,7 +61,7 @@ const CultureDynamic: React.FC = () => {
     );
   }
 
-  const currentDeck = decks[activeDeckIndex];
+  const currentDeck = uiDecks[activeDeckIndex];
   const steps = currentDeck?.steps ?? [];
   const currentStep: CultureStep | undefined = steps[stepIndex];
 
@@ -98,7 +105,7 @@ const CultureDynamic: React.FC = () => {
     } else if (activeDeckIndex > 0) {
       const prevDeckIdx = activeDeckIndex - 1;
       setActiveDeckIndex(prevDeckIdx);
-      setStepIndex((decks[prevDeckIdx]?.steps.length ?? 1) - 1);
+      setStepIndex((uiDecks[prevDeckIdx]?.steps.length ?? 1) - 1);
       go();
     }
   };
@@ -196,7 +203,7 @@ const CultureDynamic: React.FC = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>{`${activeDeckIndex + 1}. ${currentDeck?.title ?? 'Culture'}`}</Text>
       <View style={styles.segmentRow}>
-        {decks.map((d, idx) => (
+        {uiDecks.map((d, idx) => (
           <TouchableOpacity
             key={d.id}
             style={[styles.segmentBtn, idx === activeDeckIndex ? styles.segmentActive : undefined]}
@@ -207,22 +214,38 @@ const CultureDynamic: React.FC = () => {
         ))}
       </View>
 
-      <Text style={styles.progressText}>Step {stepIndex + 1} of {steps.length}</Text>
+      {currentDeck?.id === 'map' ? (
+        <View style={styles.card}>
+          {Platform.OS === 'web' ? (
+            // @ts-ignore iframe is valid on web build
+            <iframe src={storyMapUrl} style={{ width: '100%', height: 420, border: 0, borderRadius: 12 }} allow="fullscreen" />
+          ) : (
+            <View style={{ height: 420, borderRadius: 12, overflow: 'hidden' }}>
+              <WebView source={{ uri: storyMapUrl }} style={{ flex: 1 }} />
+            </View>
+          )}
+          <Text style={styles.caption}>Interactive StoryMapJS</Text>
+        </View>
+      ) : (
+        <>
+          <Text style={styles.progressText}>Step {stepIndex + 1} of {steps.length}</Text>
 
-      <Animated.View style={{ opacity: fade }}>
-        {renderStep(currentStep)}
-      </Animated.View>
+          <Animated.View style={{ opacity: fade }}>
+            {renderStep(currentStep)}
+          </Animated.View>
 
-      <View style={styles.navRow}>
-        <TouchableOpacity style={[styles.navBtn, isFirst && activeDeckIndex === 0 ? styles.disabled : undefined]} disabled={isFirst && activeDeckIndex === 0} onPress={handleBack}>
-          <MaterialCommunityIcons name="chevron-left" size={18} color={isFirst && activeDeckIndex === 0 ? '#9ca3af' : '#0f172a'} />
-          <Text style={[styles.navText, isFirst && activeDeckIndex === 0 ? styles.disabledText : undefined]}>Back</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.navBtn, styles.primary]} onPress={handleNext}>
-          <Text style={[styles.navText, { color: 'white' }]}>{nextLabel}</Text>
-          <MaterialCommunityIcons name="chevron-right" size={18} color={'white'} />
-        </TouchableOpacity>
-      </View>
+          <View style={styles.navRow}>
+            <TouchableOpacity style={[styles.navBtn, isFirst && activeDeckIndex === 0 ? styles.disabled : undefined]} disabled={isFirst && activeDeckIndex === 0} onPress={handleBack}>
+              <MaterialCommunityIcons name="chevron-left" size={18} color={isFirst && activeDeckIndex === 0 ? '#9ca3af' : '#0f172a'} />
+              <Text style={[styles.navText, isFirst && activeDeckIndex === 0 ? styles.disabledText : undefined]}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.navBtn, styles.primary]} onPress={handleNext}>
+              <Text style={[styles.navText, { color: 'white' }]}>{nextLabel}</Text>
+              <MaterialCommunityIcons name="chevron-right" size={18} color={'white'} />
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
     </ScrollView>
   );
 };
