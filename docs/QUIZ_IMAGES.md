@@ -45,3 +45,4 @@ const quizImageMap = {
 - Images are optional. If no mapping exists, the quiz renders without an image.
 - You can map the same image for both `dz` and `qu` prompts as needed.
 - Keep images lightweight for mobile performance.
+

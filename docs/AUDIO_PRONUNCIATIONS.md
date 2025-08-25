@@ -68,3 +68,49 @@ For adding multiple audio files at once, follow the same process but make sure t
 - If the audio doesn't play, check that the filename in the dictionary entry matches exactly with the audio file name
 - Ensure the audio file is properly registered in the `audioMap`
 - Verify that the audio file is in MP3 format and placed in the correct directory
+
+# Audio Pronunciations Guide
+
+This guide explains how to add audio for dictionary entries and conversation messages.
+
+## Dictionary Audio
+
+Follow the steps in README to register dictionary audio files and reference them in `app/services/AudioService.ts` if needed.
+
+## Conversation Audio (message-level)
+
+- Put files under: `assets/audio/conversations/<category>/<conversation>/`
+- File naming convention: `<sequence>_<speaker>.(mp3|wav)`
+  - `<sequence>` starts at 1 and matches the message order in the conversation
+  - `<speaker>` is `A` or `B`
+  - Example: `assets/audio/conversations/greetings/lesson1/1_A.mp3`
+
+### Registering files (required for bundlers)
+
+Open `app/services/AudioService.ts` and add require entries to the `audioMap` using keys:
+- Key format: `conv/<lang>/<category>/<conversation>/<sequence>_<speaker>`
+- Example (Dzardzongke):
+```ts
+const audioMap: Record<string, any> = {
+  'default_click': require('../../assets/audio/go.mp3'),
+  'conv/dz/greetings/lesson1/1_A': require('../../assets/audio/conversations/greetings/lesson1/1_A.mp3'),
+  'conv/dz/greetings/lesson1/1_B': require('../../assets/audio/conversations/greetings/lesson1/1_B.mp3'),
+};
+```
+
+### How playback is triggered
+
+- When a new message appears in `ConversationPractice`, the app computes the key
+  `conv/<lang>/<category>/<conversation>/<sequence>_<speaker>` and plays it automatically if registered.
+- Each bubble also shows a replay button that plays the same key on demand.
+
+### Adding a new conversation category or conversation
+
+1. Add your conversation texts in `contentRegistry` (or your content source) with ordered exchanges and `speaker: 'A'|'B'`.
+2. Place your audio files in `assets/audio/conversations/<category>/<conversation>/` following the naming convention.
+3. Register each file in `app/services/AudioService.ts` `audioMap` with the key format above.
+4. Run the app; audio will auto‑play on message appearance and replay on button press.
+
+Notes:
+- Use `.mp3` to minimize size; keep under ~150KB per clip when possible.
+- On web builds, auto‑play may be blocked until the user interacts (browser policy). The replay button always works after first interaction.

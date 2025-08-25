@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Card, Text, ActivityIndicator } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Card, Text } from 'react-native-paper';
 import { audioService } from '../services/AudioService';
+import { dictionaryAudioMap, normalizeDzKey } from '../services/dictionaryAudio';
 
 interface DictEntry {
   dz: string;
@@ -18,13 +19,30 @@ interface Props {
 
 export const DictEntryCard: React.FC<Props> = ({ entry }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const audioKey = normalizeDzKey(entry.dz);
+  const hasAudio = Boolean(entry.audio) || Boolean(dictionaryAudioMap[audioKey]);
+  const iconColor = hasAudio ? '#2196F3' : '#9ca3af';
 
   const handlePlayAudio = async () => {
-    if (isPlaying) return;
+    if (isPlaying || !hasAudio) return;
     
     try {
       setIsPlaying(true);
-      await audioService.playAudio(entry.audio);
+      // Prefer explicit entry.audio key if present, else try dictionary map by normalized dz headword
+      const explicit = entry.audio;
+      if (explicit) {
+        await audioService.playAudio(explicit);
+      } else {
+        const key = normalizeDzKey(entry.dz);
+        const asset = dictionaryAudioMap[key];
+        if (asset) {
+          // play asset directly via AudioService low-level
+          await audioService.playAudio(key); // try key route first
+        } else {
+          // fallback noop
+          await audioService.playAudio(undefined);
+        }
+      }
     } catch (error) {
       console.error('Error playing audio:', error);
     } finally {
@@ -42,13 +60,13 @@ export const DictEntryCard: React.FC<Props> = ({ entry }) => {
             </Text>
             <TouchableOpacity 
               onPress={handlePlayAudio} 
-              style={styles.audioButton}
-              disabled={isPlaying}
+              style={[styles.audioButton, !hasAudio ? { backgroundColor: '#f3f4f6' } : undefined]}
+              disabled={isPlaying || !hasAudio}
             >
               {isPlaying ? (
-                <ActivityIndicator size={24} color="#2196F3" />
+                <ActivityIndicator size={24} color={iconColor} />
               ) : (
-                <MaterialIcons name="volume-up" size={24} color="#2196F3" />
+                <MaterialIcons name="volume-up" size={24} color={iconColor} />
               )}
             </TouchableOpacity>
           </View>

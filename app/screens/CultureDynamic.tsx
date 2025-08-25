@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
-import WebView from 'react-native-webview';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useLanguage } from '../stores/useLanguage';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import WebView from 'react-native-webview';
 import { cultureDz } from '../content/culture.dz';
 import type { CultureDeck, CultureQuizMultiStep, CultureQuizSingleStep, CultureStep } from '../content/types';
+import { useLanguage } from '../stores/useLanguage';
 
 const imageMap: Record<string, any> = {
   'culture1.png': require('../../assets/images/Culture/culture1.png'),
@@ -67,7 +67,7 @@ const CultureDynamic: React.FC = () => {
 
   const isFirst = stepIndex === 0;
   const isLastInDeck = stepIndex === steps.length - 1;
-  const isLastDeck = activeDeckIndex === decks.length - 1;
+  const isLastDeck = activeDeckIndex === uiDecks.length - 1;
 
   const nextLabel = useMemo(() => {
     if (!currentStep) return 'Next';
@@ -224,7 +224,7 @@ const CultureDynamic: React.FC = () => {
               <WebView source={{ uri: storyMapUrl }} style={{ flex: 1 }} />
             </View>
           )}
-          <Text style={styles.caption}>Interactive StoryMapJS</Text>
+          <Text style={styles.caption}>Interactive StoryMapJS — This is an online feature and requires an internet connection.</Text>
         </View>
       ) : (
         <>

@@ -1,23 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Animated,
-  Dimensions,
-  Image,
-  SafeAreaView
-} from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import type { RouteProp } from '@react-navigation/native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import type { RouteProp } from '@react-navigation/native';
-import { MaterialIcons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
-import type { Exchange } from '../types/conversation';
-import { useLanguage } from '../stores/useLanguage';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+    Animated,
+    Dimensions,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from 'react-native';
+import { audioService } from '../services/AudioService';
 import { contentRegistry } from '../services/contentRegistry';
+import { useLanguage } from '../stores/useLanguage';
 
 type ConversationPracticeRouteProp = RouteProp<{
   params: {
@@ -81,6 +80,179 @@ export const ConversationPractice: React.FC = () => {
           scrollViewRef.current?.scrollToEnd({ animated: true });
         } catch {}
       }, 0);
+    }
+
+    // Auto-play audio for the newly shown message (if available)
+    const ex = exchanges[currentExchangeIndex];
+    if (ex) {
+      const langKey = selectedLanguage === 'dz' ? 'dz' : 'qu';
+      const indexOneBased = currentExchangeIndex + 1;
+      // Special case: family-members message 6_B split into two audio files (6_B then 7_B)
+      if (categoryId === 'family' && conversationId === 'family-members' && indexOneBased === 6 && ex.speaker === 'B') {
+        audioService.playSequence([
+          `conv/${langKey}/${categoryId}/${conversationId}/6_B`,
+          `conv/${langKey}/${categoryId}/${conversationId}/7_B`,
+        ]).catch(() => {});
+      } else if (categoryId === 'food' && conversationId === 'spicy-food') {
+        // Map conversation indices to actual file-number clips
+        const map: Record<number, string[]> = {
+          1: ['1_A'],
+          2: ['2_B', '3_B'],
+          3: ['4_A'],
+          4: ['5_B', '6_B'],
+          5: ['7_A'],
+          6: ['8_B'],
+          7: ['9_A'],
+          8: ['10_B'],
+        };
+        const keys = map[indexOneBased];
+        if (keys && keys.length > 0) {
+          audioService
+            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
+            .catch(() => {});
+        } else {
+          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+          audioService.playByKey(audioKey).catch(() => {});
+        }
+      } else if (categoryId === 'age-birthday' && conversationId === 'birthday-age') {
+        // Final mapping (4 balon):
+        // 1 -> 1_A + 2_A, 2 -> 3_B + 4_B, 3 -> 5_A, 4 -> 6_B + 7_B
+        const map: Record<number, string[]> = {
+          1: ['1_A', '2_A'],
+          2: ['3_B', '4_B'],
+          3: ['5_A'],
+          4: ['6_B', '7_B'],
+        };
+        const keys = map[indexOneBased];
+        if (keys && keys.length > 0) {
+          audioService
+            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
+            .catch(() => {});
+        } else {
+          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+          audioService.playByKey(audioKey).catch(() => {});
+        }
+      } else if (categoryId === 'weather' && conversationId === 'weather-park') {
+        // Same-message combos: 4_B+5_B, 6_A+7_A, 8_B+9_B+10_B, 11_A+12_A
+        const map: Record<number, string[]> = {
+          1: ['1_A'],
+          2: ['2_B'],
+          3: ['3_A'],
+          4: ['4_B', '5_B'],
+          5: ['6_A', '7_A'],
+          6: ['8_B', '9_B', '10_B'],
+          7: ['11_A', '12_A'],
+          8: ['13_B'],
+          9: ['14_A'],
+        };
+        const keys = map[indexOneBased];
+        if (keys && keys.length > 0) {
+          audioService
+            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
+            .catch(() => {});
+        } else {
+          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+          audioService.playByKey(audioKey).catch(() => {});
+        }
+      } else if (categoryId === 'school' && conversationId === 'school-schedule') {
+        // Combine 3_A+4_A+5_A into the 3rd message (A), and 6_B+7_B+8_B into the 4th message (B)
+        // Final bubbles: 1->1_A, 2->2_B, 3->(3_A+4_A+5_A), 4->(6_B+7_B+8_B), 5->9_A
+        const map: Record<number, string[]> = {
+          1: ['1_A'],
+          2: ['2_B'],
+          3: ['3_A', '4_A', '5_A'],
+          4: ['6_B', '7_B', '8_B'],
+          5: ['9_A'],
+        };
+        const keys = map[indexOneBased];
+        if (keys && keys.length > 0) {
+          audioService
+            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
+            .catch(() => {});
+        } else {
+          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+          audioService.playByKey(audioKey).catch(() => {});
+        }
+      } else if (categoryId === 'leisure' && conversationId === 'free-time') {
+        // Combine 3_A+4_A and 5_B+6_B
+        const map: Record<number, string[]> = {
+          1: ['1_A'],
+          2: ['2_B'],
+          3: ['3_A', '4_A'],
+          4: ['5_B', '6_B'],
+          5: ['7_A'],
+          6: ['8_B'],
+          7: ['9_A'],
+          8: ['10_B'],
+        };
+        const keys = map[indexOneBased];
+        if (keys && keys.length > 0) {
+          audioService
+            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
+            .catch(() => {});
+        } else {
+          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+          audioService.playByKey(audioKey).catch(() => {});
+        }
+      } else if (categoryId === 'clothing' && conversationId === 'clothing-weather') {
+        // Combine 5_A + 6_A
+        const map: Record<number, string[]> = {
+          1: ['1_A'],
+          2: ['2_B'],
+          3: ['3_A'],
+          4: ['4_B'],
+          5: ['5_A', '6_A'],
+          6: ['7_B'],
+        };
+        const keys = map[indexOneBased];
+        if (keys && keys.length > 0) {
+          audioService
+            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
+            .catch(() => {});
+        } else {
+          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+          audioService.playByKey(audioKey).catch(() => {});
+        }
+      } else if (categoryId === 'health' && conversationId === 'feeling-sick') {
+        const map: Record<number, string[]> = {
+          1: ['1_A'],
+          2: ['2_B'],
+          3: ['3_A'],
+          4: ['4_B'],
+          5: ['5_A'],
+          6: ['6_B'],
+          7: ['7_A'],
+        };
+        const keys = map[indexOneBased];
+        if (keys && keys.length > 0) {
+          audioService
+            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
+            .catch(() => {});
+        } else {
+          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+          audioService.playByKey(audioKey).catch(() => {});
+        }
+      } else if (categoryId === 'directions' && conversationId === 'lost-directions') {
+        // 3_A..7_A same bubble (A), then 8_B
+        const map: Record<number, string[]> = {
+          1: ['1_A'],
+          2: ['2_B'],
+          3: ['3_A', '4_A', '5_A', '6_A', '7_A'],
+          4: ['8_B'],
+        };
+        const keys = map[indexOneBased];
+        if (keys && keys.length > 0) {
+          audioService
+            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
+            .catch(() => {});
+        } else {
+          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+          audioService.playByKey(audioKey).catch(() => {});
+        }
+      } else {
+        const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+        audioService.playByKey(audioKey).catch(() => {});
+      }
     }
     
     // Clean up sound when component unmounts or exchange changes
@@ -193,6 +365,62 @@ export const ConversationPractice: React.FC = () => {
                   {viewMode !== 'english' && (
                     <Text style={[styles.bubbleText, styles.translationText]}>{ex.dzardzongke}</Text>
                   )}
+                  {/* Replay button */}
+                  <TouchableOpacity
+                    accessibilityRole="button"
+                    onPress={() => {
+                      const langKey = selectedLanguage === 'dz' ? 'dz' : 'qu';
+                      const indexOneBased = idx + 1;
+                      if (categoryId === 'family' && conversationId === 'family-members' && indexOneBased === 6 && ex.speaker === 'B') {
+                        audioService.playSequence([
+                          `conv/${langKey}/${categoryId}/${conversationId}/6_B`,
+                          `conv/${langKey}/${categoryId}/${conversationId}/7_B`,
+                        ]).catch(() => {});
+                      } else if (categoryId === 'food' && conversationId === 'spicy-food') {
+                        const map: Record<number, string[]> = {
+                          1: ['1_A'],
+                          2: ['2_B', '3_B'],
+                          3: ['4_A'],
+                          4: ['5_B', '6_B'],
+                          5: ['7_A'],
+                          6: ['8_B'],
+                          7: ['9_A'],
+                          8: ['10_B'],
+                        };
+                        const keys = map[indexOneBased];
+                        if (keys && keys.length > 0) {
+                          audioService
+                            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
+                            .catch(() => {});
+                        } else {
+                          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+                          audioService.playByKey(audioKey).catch(() => {});
+                        }
+                      } else if (categoryId === 'age-birthday' && conversationId === 'birthday-age') {
+                        const map: Record<number, string[]> = {
+                          1: ['1_A', '2_A'],
+                          2: ['3_B', '4_B'],
+                          3: ['5_A'],
+                          4: ['6_B', '7_B'],
+                        };
+                        const keys = map[indexOneBased];
+                        if (keys && keys.length > 0) {
+                          audioService
+                            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
+                            .catch(() => {});
+                        } else {
+                          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+                          audioService.playByKey(audioKey).catch(() => {});
+                        }
+                      } else {
+                        const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+                        audioService.playByKey(audioKey).catch(() => {});
+                      }
+                    }}
+                    style={{ marginTop: 8, alignSelf: left ? 'flex-start' : 'flex-end' }}
+                  >
+                    <MaterialIcons name="volume-up" size={20} color="#0f172a" />
+                  </TouchableOpacity>
                 </View>
               </View>
             );
