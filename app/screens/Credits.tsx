@@ -1,6 +1,6 @@
 import React from 'react';
-import { ScrollView, View, StyleSheet } from 'react-native';
-import { Text, Divider } from 'react-native-paper';
+import { ScrollView, StyleSheet, View, Platform } from 'react-native';
+import { Divider, Text } from 'react-native-paper';
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
   <View style={styles.section}>
@@ -12,7 +12,13 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
 
 const Credits: React.FC = () => {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView 
+      style={[styles.scrollView, Platform.OS === 'web' && styles.webScrollView]}
+      contentContainerStyle={[styles.container, Platform.OS === 'web' && styles.webContainer]}
+      showsVerticalScrollIndicator={true}
+      bounces={true}
+      nestedScrollEnabled={true}
+    >
       <View style={styles.header}>
         <Text variant="titleLarge" style={styles.title}>Credits</Text>
         <Text variant="bodyMedium" style={styles.intro}>
@@ -47,49 +53,94 @@ const Credits: React.FC = () => {
         <Text style={styles.item}>• Marieke Meelen (University of Cambridge)</Text>
         <Text style={styles.item}>• Charles Ramble (EPHE-PSL, Paris)</Text>
       </Section>
+
+      <Section title="Technical Development">
+        <Text style={styles.item}>• React Native & Expo Framework</Text>
+        <Text style={styles.item}>• TypeScript Implementation</Text>
+        <Text style={styles.item}>• SQLite Database Integration</Text>
+        <Text style={styles.item}>• Audio & Media Management</Text>
+        <Text style={styles.item}>• Cross-platform Compatibility</Text>
+      </Section>
+
+      <Section title="Future Development">
+        <Text style={styles.item}>• Advanced Learning Algorithms</Text>
+        <Text style={styles.item}>• Community Features</Text>
+        <Text style={styles.item}>• Offline Content Synchronization</Text>
+        <Text style={styles.item}>• Multi-language Support Framework</Text>
+        <Text style={styles.item}>• Analytics & Progress Tracking</Text>
+      </Section>
+      
+      {/* Add some bottom padding to ensure last section is fully visible */}
+      <View style={styles.bottomPadding} />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
+  scrollView: {
+    flex: 1,
     backgroundColor: '#f7f7fb',
   },
+  webScrollView: {
+    height: '100vh',
+    overflow: 'auto',
+  } as any,
+  container: {
+    padding: 16,
+    paddingBottom: 32, // Extra bottom padding for better scrolling
+    flexGrow: 1, // Ensures content can expand and scroll properly
+  },
+  webContainer: {
+    minHeight: '100vh',
+  } as any,
   header: {
     alignItems: 'flex-start',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   title: {
     fontWeight: '700',
-    marginBottom: 6,
+    marginBottom: 8,
+    color: '#111827',
   },
   intro: {
     textAlign: 'left',
     color: '#4b5563',
-    lineHeight: 20,
+    lineHeight: 22,
+    fontSize: 16,
   },
   section: {
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 12,
+    padding: 16,
     borderColor: '#e5e7eb',
     borderWidth: 1,
-    marginBottom: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   sectionTitle: {
     fontWeight: '700',
     color: '#111827',
+    fontSize: 18,
+    marginBottom: 4,
   },
   divider: {
     marginVertical: 8,
+    backgroundColor: '#e5e7eb',
   },
   sectionBody: {
-    gap: 6,
+    gap: 8,
   },
   item: {
     color: '#1f2937',
     fontSize: 16,
+    lineHeight: 22,
+  },
+  bottomPadding: {
+    height: 20, // Extra space at bottom for better scrolling experience
   },
 });
 
