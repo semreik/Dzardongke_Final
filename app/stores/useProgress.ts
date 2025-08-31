@@ -4,6 +4,7 @@ import { useAuth } from './useAuth';
 import type { Card } from '../types/deck';
 import type { CardProgress, ProgressStatus } from '../types/progress';
 import type { StudySession } from '../types/stats';
+import logger from '../utils/logger';
 
 type DeckProgress = Record<string, CardProgress>; // cardId → progress
 
@@ -56,7 +57,7 @@ export const useProgress = create<ProgressState>((set, get) => ({
       }
     };
 
-    console.log('[setMastered] Before update:', {
+    logger('[setMastered] Before update:', {
       deckId,
       cardId,
       mastered,
@@ -73,7 +74,7 @@ export const useProgress = create<ProgressState>((set, get) => ({
     });
     await SecureStore.setItemAsync(getUserScopedKey(), data);
 
-    console.log('[setMastered] After update:', {
+    logger('[setMastered] After update:', {
       deckId,
       cardId,
       storedProgress: get().progress[deckId]?.[cardId],
@@ -112,7 +113,7 @@ export const useProgress = create<ProgressState>((set, get) => ({
 
   getDeckProgress: (deckId: string, cards: Card[]) => {
     const deckProgress = get().progress[deckId] || {};
-    console.log('[getDeckProgress]', {
+    logger('[getDeckProgress]', {
       deckId,
       deckProgress,
       totalCards: cards.length,
@@ -131,10 +132,10 @@ export const useProgress = create<ProgressState>((set, get) => ({
 
   loadProgress: async () => {
     const stored = await SecureStore.getItemAsync(getUserScopedKey());
-    console.log('[loadProgress] Stored data:', stored);
+    logger('[loadProgress] Stored data:', stored);
     if (stored) {
       const { progress, sessions } = JSON.parse(stored);
-      console.log('[loadProgress] Parsed data:', { progress, sessions });
+      logger('[loadProgress] Parsed data:', { progress, sessions });
       // Migrate legacy un-namespaced deckIds to 'dz:' once
       let nextProgress = progress;
       if (progress && typeof progress === 'object') {
@@ -146,7 +147,7 @@ export const useProgress = create<ProgressState>((set, get) => ({
             migrated[`dz:${k}`] = progress[k];
           });
           nextProgress = migrated;
-          console.log('[loadProgress] Migrated legacy progress keys to dz:* namespace');
+          logger('[loadProgress] Migrated legacy progress keys to dz:* namespace');
         }
       }
       set({ progress: nextProgress || {}, sessions: sessions || [] });
