@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useRef, useState } from 'react';
 import { Animated, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { cultureDz } from '../content/culture.dz';
+import { loadCulture } from '../content/loadCulture';
 import type { CultureDeck } from '../content/types';
 import { useLanguage } from '../stores/useLanguage';
 
@@ -48,7 +48,7 @@ interface QuizOption {
 
 const Culture: React.FC = () => {
   const { selectedLanguage } = useLanguage();
-  const decks: CultureDeck[] = cultureDz;
+  const decks: CultureDeck[] = loadCulture(selectedLanguage);
   const [activeDeck, setActiveDeck] = useState<'1' | '2'>('1');
   const [step, setStep] = useState<Step>('intro1');
   const fade = useRef(new Animated.Value(1)).current;
@@ -109,26 +109,8 @@ const Culture: React.FC = () => {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const IMG_SOURCE = require('../../assets/images/Culture/culture1.png');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const IMG_SOURCE_2 = require('../../assets/images/Culture/culture2.png');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const IMG_SOURCE_3 = require('../../assets/images/Culture/culture3.png');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const IMG_SOURCE_4A = require('../../assets/images/Culture/culture4.png');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const IMG_SOURCE_5 = require('../../assets/images/Culture/culture5.png');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const IMG_SOURCE_6 = require('../../assets/images/Culture/culture6.png');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const IMG_SOURCE_7 = require('../../assets/images/Culture/culture7.png');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const IMG_SOURCE_8 = require('../../assets/images/Culture/culture8.png');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const IMG_SOURCE_9 = require('../../assets/images/Culture/culture9.png');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const IMG_SOURCE_4 = require('../../assets/images/Culture/culture4.png');
+  // Image sources are now loaded from JSON content files
+  const placeholderImage = require('../../assets/images/react-logo.png');
 
   const subtitle = useMemo(() => {
     if (step === 'intro1' || step === 'intro2' || step === 'intro3' || step === 'image' || step === 'quiz') {
@@ -213,7 +195,7 @@ const Culture: React.FC = () => {
 
         {step === 'officialsBImage' && (
           <View style={styles.card}>
-            <Image source={IMG_SOURCE_5} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Image source={placeholderImage} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
             <Text style={styles.caption}>New Khyenga village officials selected during the Dachang festival - April 2025 </Text>
           </View>
         )}
@@ -239,7 +221,7 @@ const Culture: React.FC = () => {
 
         {step === 'officialsBImage2' && (
           <View style={styles.card}>
-            <Image source={IMG_SOURCE_6} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Image source={placeholderImage} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
             <Text style={styles.caption}>Lhabon Takla propitiating local gods on top of the Khyenga temple - April 2025</Text>
           </View>
         )}
@@ -287,7 +269,7 @@ const Culture: React.FC = () => {
 
         {step === 'fullmoonImage1' && (
           <View style={styles.card}>
-            <Image source={IMG_SOURCE_7} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Image source={placeholderImage} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
             <Text style={styles.caption}>Lhabon Takla prostrates in the temple - April 2025</Text>
           </View>
         )}
@@ -302,7 +284,7 @@ const Culture: React.FC = () => {
 
         {step === 'fullmoonImage2' && (
           <View style={styles.card}>
-            <Image source={IMG_SOURCE_8} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Image source={placeholderImage} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
             <Text style={styles.caption}>Village men replace the prayer flags at the new stupa - April 2025</Text>
           </View>
         )}
@@ -326,7 +308,7 @@ const Culture: React.FC = () => {
 
         {step === 'fullmoonImage3' && (
           <View style={styles.card}>
-            <Image source={IMG_SOURCE_9} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Image source={placeholderImage} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
             <Text style={styles.caption}>Lhabon Takla meets one of the women who give him arak - April 2025</Text>
           </View>
         )}
@@ -392,7 +374,7 @@ const Culture: React.FC = () => {
 
         {step === 'festivalsCImage' && (
           <View style={styles.card}>
-            <Image source={IMG_SOURCE_3} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Image source={placeholderImage} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
             <Text style={styles.caption}>Poster to advertise the annual Yarthung horse riding competition in August 2022</Text>
           </View>
         )}
@@ -527,7 +509,7 @@ const Culture: React.FC = () => {
 
         {step === 'regionImage' && (
           <View style={styles.card}>
-            <Image source={IMG_SOURCE_2} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Image source={placeholderImage} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
             <Text style={styles.caption}>The northern part of the village of Chusang - August 2022</Text>
           </View>
         )}
@@ -592,7 +574,7 @@ const Culture: React.FC = () => {
 
         {step === 'dachangImage' && (
           <View style={styles.card}>
-            <Image source={IMG_SOURCE_4A} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
+            <Image source={placeholderImage} style={styles.photo} resizeMode="contain" onError={() => setImageError(true)} />
             <Text style={styles.caption}>Yaks to be brought down for the festival - April 2024</Text>
           </View>
         )}
