@@ -93,7 +93,7 @@ const Dictionary: React.FC = () => {
         value={searchQuery}
         style={styles.searchBar}
         autoCapitalize="none"
-        icon="dictionary"
+        icon="book-open-variant"
         iconColor="#2196F3"
       />
       {searchQuery.trim() === '' ? (

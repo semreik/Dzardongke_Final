@@ -52,6 +52,23 @@ export const ConversationPractice: React.FC = () => {
     });
   }, [navigation, title]);
 
+
+
+    // Auto-play first message audio when conversation starts
+  useEffect(() => {
+    if (currentExchangeIndex === 0) {
+      const ex = exchanges[0];
+      if (ex) {
+        const langKey = selectedLanguage === 'dz' ? 'dz' : 'qu';
+        const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/1_A`;
+        console.log('🎵 Auto-playing first message:', audioKey);
+        audioService.playByKey(audioKey).catch((error) => {
+          console.error('❌ First message audio failed:', error);
+        });
+      }
+    }
+  }, []); // Only run once when component mounts
+
   useEffect(() => {
     // Reset animation when changing exchanges
     speakingAnimation.setValue(0);
@@ -82,176 +99,17 @@ export const ConversationPractice: React.FC = () => {
       }, 0);
     }
 
-    // Auto-play audio for the newly shown message (if available)
-    const ex = exchanges[currentExchangeIndex];
-    if (ex) {
-      const langKey = selectedLanguage === 'dz' ? 'dz' : 'qu';
-      const indexOneBased = currentExchangeIndex + 1;
-      // Special case: family-members message 6_B split into two audio files (6_B then 7_B)
-      if (categoryId === 'family' && conversationId === 'family-members' && indexOneBased === 6 && ex.speaker === 'B') {
-        audioService.playSequence([
-          `conv/${langKey}/${categoryId}/${conversationId}/6_B`,
-          `conv/${langKey}/${categoryId}/${conversationId}/7_B`,
-        ]).catch(() => {});
-      } else if (categoryId === 'food' && conversationId === 'spicy-food') {
-        // Map conversation indices to actual file-number clips
-        const map: Record<number, string[]> = {
-          1: ['1_A'],
-          2: ['2_B', '3_B'],
-          3: ['4_A'],
-          4: ['5_B', '6_B'],
-          5: ['7_A'],
-          6: ['8_B'],
-          7: ['9_A'],
-          8: ['10_B'],
-        };
-        const keys = map[indexOneBased];
-        if (keys && keys.length > 0) {
-          audioService
-            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
-            .catch(() => {});
-        } else {
-          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-          audioService.playByKey(audioKey).catch(() => {});
-        }
-      } else if (categoryId === 'age-birthday' && conversationId === 'birthday-age') {
-        // Final mapping (4 balon):
-        // 1 -> 1_A + 2_A, 2 -> 3_B + 4_B, 3 -> 5_A, 4 -> 6_B + 7_B
-        const map: Record<number, string[]> = {
-          1: ['1_A', '2_A'],
-          2: ['3_B', '4_B'],
-          3: ['5_A'],
-          4: ['6_B', '7_B'],
-        };
-        const keys = map[indexOneBased];
-        if (keys && keys.length > 0) {
-          audioService
-            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
-            .catch(() => {});
-        } else {
-          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-          audioService.playByKey(audioKey).catch(() => {});
-        }
-      } else if (categoryId === 'weather' && conversationId === 'weather-park') {
-        // Same-message combos: 4_B+5_B, 6_A+7_A, 8_B+9_B+10_B, 11_A+12_A
-        const map: Record<number, string[]> = {
-          1: ['1_A'],
-          2: ['2_B'],
-          3: ['3_A'],
-          4: ['4_B', '5_B'],
-          5: ['6_A', '7_A'],
-          6: ['8_B', '9_B', '10_B'],
-          7: ['11_A', '12_A'],
-          8: ['13_B'],
-          9: ['14_A'],
-        };
-        const keys = map[indexOneBased];
-        if (keys && keys.length > 0) {
-          audioService
-            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
-            .catch(() => {});
-        } else {
-          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-          audioService.playByKey(audioKey).catch(() => {});
-        }
-      } else if (categoryId === 'school' && conversationId === 'school-schedule') {
-        // Combine 3_A+4_A+5_A into the 3rd message (A), and 6_B+7_B+8_B into the 4th message (B)
-        // Final bubbles: 1->1_A, 2->2_B, 3->(3_A+4_A+5_A), 4->(6_B+7_B+8_B), 5->9_A
-        const map: Record<number, string[]> = {
-          1: ['1_A'],
-          2: ['2_B'],
-          3: ['3_A', '4_A', '5_A'],
-          4: ['6_B', '7_B', '8_B'],
-          5: ['9_A'],
-        };
-        const keys = map[indexOneBased];
-        if (keys && keys.length > 0) {
-          audioService
-            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
-            .catch(() => {});
-        } else {
-          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-          audioService.playByKey(audioKey).catch(() => {});
-        }
-      } else if (categoryId === 'leisure' && conversationId === 'free-time') {
-        // Combine 3_A+4_A and 5_B+6_B
-        const map: Record<number, string[]> = {
-          1: ['1_A'],
-          2: ['2_B'],
-          3: ['3_A', '4_A'],
-          4: ['5_B', '6_B'],
-          5: ['7_A'],
-          6: ['8_B'],
-          7: ['9_A'],
-          8: ['10_B'],
-        };
-        const keys = map[indexOneBased];
-        if (keys && keys.length > 0) {
-          audioService
-            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
-            .catch(() => {});
-        } else {
-          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-          audioService.playByKey(audioKey).catch(() => {});
-        }
-      } else if (categoryId === 'clothing' && conversationId === 'clothing-weather') {
-        // Combine 5_A + 6_A
-        const map: Record<number, string[]> = {
-          1: ['1_A'],
-          2: ['2_B'],
-          3: ['3_A'],
-          4: ['4_B'],
-          5: ['5_A', '6_A'],
-          6: ['7_B'],
-        };
-        const keys = map[indexOneBased];
-        if (keys && keys.length > 0) {
-          audioService
-            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
-            .catch(() => {});
-        } else {
-          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-          audioService.playByKey(audioKey).catch(() => {});
-        }
-      } else if (categoryId === 'health' && conversationId === 'feeling-sick') {
-        const map: Record<number, string[]> = {
-          1: ['1_A'],
-          2: ['2_B'],
-          3: ['3_A'],
-          4: ['4_B'],
-          5: ['5_A'],
-          6: ['6_B'],
-          7: ['7_A'],
-        };
-        const keys = map[indexOneBased];
-        if (keys && keys.length > 0) {
-          audioService
-            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
-            .catch(() => {});
-        } else {
-          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-          audioService.playByKey(audioKey).catch(() => {});
-        }
-      } else if (categoryId === 'directions' && conversationId === 'lost-directions') {
-        // 3_A..7_A same bubble (A), then 8_B
-        const map: Record<number, string[]> = {
-          1: ['1_A'],
-          2: ['2_B'],
-          3: ['3_A', '4_A', '5_A', '6_A', '7_A'],
-          4: ['8_B'],
-        };
-        const keys = map[indexOneBased];
-        if (keys && keys.length > 0) {
-          audioService
-            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
-            .catch(() => {});
-        } else {
-          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-          audioService.playByKey(audioKey).catch(() => {});
-        }
-      } else {
+    // Auto-play audio for new messages when advancing
+    if (currentExchangeIndex > 0) {
+      const ex = exchanges[currentExchangeIndex];
+      if (ex) {
+        const langKey = selectedLanguage === 'dz' ? 'dz' : 'qu';
+        const indexOneBased = currentExchangeIndex + 1;
         const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-        audioService.playByKey(audioKey).catch(() => {});
+        console.log('🎵 Auto-playing new message:', audioKey);
+        audioService.playByKey(audioKey).catch((error) => {
+          console.error('❌ New message audio failed:', error);
+        });
       }
     }
     
@@ -371,51 +229,11 @@ export const ConversationPractice: React.FC = () => {
                     onPress={() => {
                       const langKey = selectedLanguage === 'dz' ? 'dz' : 'qu';
                       const indexOneBased = idx + 1;
-                      if (categoryId === 'family' && conversationId === 'family-members' && indexOneBased === 6 && ex.speaker === 'B') {
-                        audioService.playSequence([
-                          `conv/${langKey}/${categoryId}/${conversationId}/6_B`,
-                          `conv/${langKey}/${categoryId}/${conversationId}/7_B`,
-                        ]).catch(() => {});
-                      } else if (categoryId === 'food' && conversationId === 'spicy-food') {
-                        const map: Record<number, string[]> = {
-                          1: ['1_A'],
-                          2: ['2_B', '3_B'],
-                          3: ['4_A'],
-                          4: ['5_B', '6_B'],
-                          5: ['7_A'],
-                          6: ['8_B'],
-                          7: ['9_A'],
-                          8: ['10_B'],
-                        };
-                        const keys = map[indexOneBased];
-                        if (keys && keys.length > 0) {
-                          audioService
-                            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
-                            .catch(() => {});
-                        } else {
-                          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-                          audioService.playByKey(audioKey).catch(() => {});
-                        }
-                      } else if (categoryId === 'age-birthday' && conversationId === 'birthday-age') {
-                        const map: Record<number, string[]> = {
-                          1: ['1_A', '2_A'],
-                          2: ['3_B', '4_B'],
-                          3: ['5_A'],
-                          4: ['6_B', '7_B'],
-                        };
-                        const keys = map[indexOneBased];
-                        if (keys && keys.length > 0) {
-                          audioService
-                            .playSequence(keys.map(k => `conv/${langKey}/${categoryId}/${conversationId}/${k}`))
-                            .catch(() => {});
-                        } else {
-                          const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-                          audioService.playByKey(audioKey).catch(() => {});
-                        }
-                      } else {
-                        const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
-                        audioService.playByKey(audioKey).catch(() => {});
-                      }
+                      const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
+                      console.log('🎵 Playing conversation audio:', audioKey);
+                      audioService.playByKey(audioKey).catch((error) => {
+                        console.error('❌ Failed to play audio:', error);
+                      });
                     }}
                     style={{ marginTop: 8, alignSelf: left ? 'flex-start' : 'flex-end' }}
                   >

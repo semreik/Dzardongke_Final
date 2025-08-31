@@ -36,14 +36,19 @@ class AudioService {
       else if (filename && dictionaryAudioMap[filename]) {
         source = dictionaryAudioMap[filename];
       }
-      // Try to convert conversation key format (conv/dz/greetings/greetings/1_A -> conversations_greetings_greetings_1_A)
+      // Try to convert conversation key format (conv/dz/greetings/basic-greeting/1_A -> conversations_greetings_greetings_1_A)
       else if (filename && filename.startsWith('conv/')) {
         // Remove 'conv/' prefix and convert slashes to underscores
-        // conv/dz/greetings/greetings/1_A -> dz_greetings_greetings_1_A
+        // conv/dz/greetings/basic-greeting/1_A -> greetings_basic-greeting_1_A
         let convertedKey = filename.replace('conv/', '').replace(/\//g, '_');
         
-        // Add 'conversations_' prefix
-        // dz_greetings_greetings_1_A -> conversations_greetings_greetings_1_A
+        // Remove language prefix (dz_ or qu_) and add 'conversations_' prefix
+        // greetings_basic-greeting_1_A -> conversations_greetings_greetings_1_A
+        convertedKey = convertedKey.replace(/^(dz_|qu_)/, '');
+        
+        // Special case: basic-greeting -> greetings (audio files use 'greetings' not 'basic-greeting')
+        convertedKey = convertedKey.replace('basic-greeting', 'greetings');
+        
         convertedKey = 'conversations_' + convertedKey;
         
         console.log('🔍 AudioService Debug:');
@@ -56,6 +61,7 @@ class AudioService {
           console.log('  ✅ Audio source found!');
         } else {
           console.log('  ❌ Audio source NOT found!');
+          console.log('  Available keys:', Object.keys(audioMap).filter(k => k.includes('greetings')));
         }
       }
       // No fallback - just warn if no source found

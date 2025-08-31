@@ -109,7 +109,7 @@ function MainTabs() {
           if (route.name === 'Stats') return <MaterialCommunityIcons name="chart-bar" size={size} color={color} />;
           if (route.name === 'Dictionary') return <MaterialCommunityIcons name="book-open-page-variant" size={size} color={color} />;
           if (route.name === 'Conversations') return <MaterialCommunityIcons name="chat" size={size} color={color} />;
-          if (route.name === 'MultipleChoice') return <MaterialCommunityIcons name="checkbox-multiple-choice" size={size} color={color} />;
+          if (route.name === 'MultipleChoice') return <MaterialCommunityIcons name="checkbox-multiple-marked" size={size} color={color} />;
           if (route.name === 'Culture') return <MaterialCommunityIcons name="earth" size={size} color={color} />;
           return null;
         },

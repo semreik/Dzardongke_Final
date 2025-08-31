@@ -21,15 +21,15 @@ import type {
 import { useLanguage } from '../stores/useLanguage';
 
 const imageMap: Record<string, any> = {
-  'culture1.png': require('../../assets/images/Culture/culture1.png'),
-  'culture2.png': require('../../assets/images/Culture/culture2.png'),
-  'culture3.png': require('../../assets/images/Culture/culture3.png'),
-  'culture4.png': require('../../assets/images/Culture/culture4.png'),
-  'culture5.png': require('../../assets/images/Culture/culture5.png'),
-  'culture6.png': require('../../assets/images/Culture/culture6.png'),
-  'culture7.png': require('../../assets/images/Culture/culture7.png'),
-  'culture8.png': require('../../assets/images/Culture/culture8.png'),
-  'culture9.png': require('../../assets/images/Culture/culture9.png'),
+  'culture1.png': require('../../assets/images/culture/culture1.png'),
+  'culture2.png': require('../../assets/images/culture/culture2.png'),
+  'culture3.png': require('../../assets/images/culture/culture3.png'),
+  'culture4.png': require('../../assets/images/culture/culture4.png'),
+  'culture5.png': require('../../assets/images/culture/culture5.png'),
+  'culture6.png': require('../../assets/images/culture/culture6.png'),
+  'culture7.png': require('../../assets/images/culture/culture7.png'),
+  'culture8.png': require('../../assets/images/culture/culture8.png'),
+  'culture9.png': require('../../assets/images/culture/culture9.png'),
 };
 
 const CultureDynamic: React.FC = () => {
