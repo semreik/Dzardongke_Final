@@ -50,81 +50,45 @@ export const nsDeckId = (lang: LanguageCode, deckId: string) => `${lang}:${deckI
 // Add your images under assets/images (or a subfolder) and register them here.
 const reactLogo = require('../../assets/images/react-logo.png');
 
+const baseQuizImageMap: Record<string, any> = {
+  // animals / common nouns
+  dog: reactLogo,
+  bird: reactLogo,
+  fish: reactLogo,
+  horse: reactLogo,
+  cat: reactLogo,
+  cow: reactLogo,
+  yak: reactLogo,
+  water: reactLogo,
+  money: reactLogo,
+  house: reactLogo,
+  sun: reactLogo,
+  moon: reactLogo,
+  flask: reactLogo,
+  // colours
+  white: reactLogo,
+  yellow: reactLogo,
+  black: reactLogo,
+  green: reactLogo,
+  brown: reactLogo,
+  blue: reactLogo,
+  red: reactLogo,
+  // numbers (if used as prompts)
+  one: reactLogo,
+  two: reactLogo,
+  three: reactLogo,
+  four: reactLogo,
+  five: reactLogo,
+  six: reactLogo,
+  seven: reactLogo,
+  eight: reactLogo,
+  nine: reactLogo,
+  ten: reactLogo,
+};
+
 const quizImageMap: Record<LanguageCode, { byPrompt: Record<string, any> }> = {
-  dz: {
-    byPrompt: {
-      // animals / common nouns
-      dog: reactLogo,
-      bird: reactLogo,
-      fish: reactLogo,
-      horse: reactLogo,
-      cat: reactLogo,
-      cow: reactLogo,
-      yak: reactLogo,
-      water: reactLogo,
-      money: reactLogo,
-      house: reactLogo,
-      sun: reactLogo,
-      moon: reactLogo,
-      flask: reactLogo,
-      // colours
-      white: reactLogo,
-      yellow: reactLogo,
-      black: reactLogo,
-      green: reactLogo,
-      brown: reactLogo,
-      blue: reactLogo,
-      red: reactLogo,
-      // numbers (if used as prompts)
-      one: reactLogo,
-      two: reactLogo,
-      three: reactLogo,
-      four: reactLogo,
-      five: reactLogo,
-      six: reactLogo,
-      seven: reactLogo,
-      eight: reactLogo,
-      nine: reactLogo,
-      ten: reactLogo,
-    },
-  },
-  qu: {
-    byPrompt: {
-      // animals / common nouns
-      dog: reactLogo,
-      bird: reactLogo,
-      fish: reactLogo,
-      horse: reactLogo,
-      cat: reactLogo,
-      cow: reactLogo,
-      yak: reactLogo,
-      water: reactLogo,
-      money: reactLogo,
-      house: reactLogo,
-      sun: reactLogo,
-      moon: reactLogo,
-      flask: reactLogo,
-      // colours
-      white: reactLogo,
-      yellow: reactLogo,
-      black: reactLogo,
-      green: reactLogo,
-      brown: reactLogo,
-      blue: reactLogo,
-      red: reactLogo,
-      // numbers
-      one: reactLogo,
-      two: reactLogo,
-      three: reactLogo,
-      four: reactLogo,
-      five: reactLogo,
-      six: reactLogo,
-      seven: reactLogo,
-      eight: reactLogo,
-      nine: reactLogo,
-      ten: reactLogo,
-    },
-  },
+  dz: { byPrompt: baseQuizImageMap },
+  qu: { byPrompt: baseQuizImageMap },
 };
 
 export function getQuizImageForPrompt(lang: LanguageCode, prompt?: string) {
