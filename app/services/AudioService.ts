@@ -38,7 +38,14 @@ class AudioService {
       }
       // Try to convert conversation key format (conv/dz/greetings/greetings/1_A -> conversations_greetings_greetings_1_A)
       else if (filename && filename.startsWith('conv/')) {
-        const convertedKey = filename.replace('conv/', 'conversations_').replace(/\//g, '_');
+        // Remove 'conv/' prefix and convert slashes to underscores
+        // conv/dz/greetings/greetings/1_A -> dz_greetings_greetings_1_A
+        let convertedKey = filename.replace('conv/', '').replace(/\//g, '_');
+        
+        // Add 'conversations_' prefix
+        // dz_greetings_greetings_1_A -> conversations_greetings_greetings_1_A
+        convertedKey = 'conversations_' + convertedKey;
+        
         if (audioMap[convertedKey]) {
           source = audioMap[convertedKey];
         }
