@@ -4,7 +4,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Searchbar, Snackbar, Text } from 'react-native-paper';
 import { DictEntryCard } from '../components/DictEntryCard';
-import { AudioTest } from '../components/AudioTest';
 import { contentRegistry } from '../services/contentRegistry';
 import { useLanguage } from '../stores/useLanguage';
 import { useSaved } from '../stores/useSaved';
@@ -88,7 +87,6 @@ const Dictionary: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <AudioTest />
       <Searchbar
         placeholder="Search in target language or English..."
         onChangeText={handleSearch}

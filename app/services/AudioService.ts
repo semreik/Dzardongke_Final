@@ -14,7 +14,7 @@ class AudioService {
   private sound: Audio.Sound | null = null;
 
   /**
-   * Play an audio file from the assets/audio directory
+   * Play an audio file from the assets directory
    * @param filename The filename of the audio file to play
    * @returns Promise that resolves when audio playback is complete
    */
@@ -36,11 +36,14 @@ class AudioService {
       else if (filename && dictionaryAudioMap[filename]) {
         source = dictionaryAudioMap[filename];
       }
-      // Finally, fall back to default click
-      else {
-        source = audioMap['go'] || audioMap['default_click'];
+      // Try to convert conversation key format (conv/dz/greetings/greetings/1_A -> conversations_greetings_greetings_1_A)
+      else if (filename && filename.startsWith('conv/')) {
+        const convertedKey = filename.replace('conv/', 'conversations_').replace(/\//g, '_');
+        if (audioMap[convertedKey]) {
+          source = audioMap[convertedKey];
+        }
       }
-
+      // No fallback - just warn if no source found
       if (!source) {
         console.warn('No audio source found for:', filename);
         return;
@@ -57,20 +60,6 @@ class AudioService {
           }
         });
       });
-
-      // Wait for the audio to finish playing
-      // This code is not currently used since we're simulating audio playback
-      // But we'll keep it for when we implement actual audio playback
-      /*
-      return new Promise((resolve) => {
-        this.sound?.setOnPlaybackStatusUpdate((status: Audio.PlaybackStatus) => {
-          if (status.didJustFinish) {
-            this.unloadSound();
-            resolve();
-          }
-        });
-      });
-      */
     } catch (error) {
       console.error('Error playing audio:', error);
       this.unloadSound();

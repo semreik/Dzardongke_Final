@@ -149,7 +149,6 @@ const audioMap: Record<string, any> = {
   'dictionary_words_dre-mule': require('../../assets/audio/dictionary_words/dre-mule.wav'),
   'dictionary_words_dro-go': require('../../assets/audio/dictionary_words/dro-go.wav'),
   'dictionary_words_dro-to_go': require('../../assets/audio/dictionary_words/dro-to_go.wav'),
-  'go': require('../../assets/audio/go.mp3'),
 };
 
 export { audioMap };
