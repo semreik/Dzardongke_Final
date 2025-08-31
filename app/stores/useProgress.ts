@@ -1,3 +1,4 @@
+import 'react-native-get-random-values';
 import { create } from 'zustand';
 import * as SecureStore from '../../lib/utils/secureStore';
 import { useAuth } from './useAuth';
@@ -155,7 +156,7 @@ export const useProgress = create<ProgressState>((set, get) => ({
 
   startSession: (deckId: string, totalCards: number) => {
     const session: StudySession = {
-      id: Math.random().toString(36).substring(7),
+      id: crypto.randomUUID(),
       deckId,
       startTime: new Date().toISOString(),
       endTime: '',
