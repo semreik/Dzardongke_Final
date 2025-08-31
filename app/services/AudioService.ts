@@ -46,8 +46,16 @@ class AudioService {
         // dz_greetings_greetings_1_A -> conversations_greetings_greetings_1_A
         convertedKey = 'conversations_' + convertedKey;
         
+        console.log('🔍 AudioService Debug:');
+        console.log('  Original key:', filename);
+        console.log('  Converted key:', convertedKey);
+        console.log('  Found in audioMap:', !!audioMap[convertedKey]);
+        
         if (audioMap[convertedKey]) {
           source = audioMap[convertedKey];
+          console.log('  ✅ Audio source found!');
+        } else {
+          console.log('  ❌ Audio source NOT found!');
         }
       }
       // No fallback - just warn if no source found
