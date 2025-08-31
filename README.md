@@ -92,10 +92,17 @@ Example:
 
 ### Creating a New Deck
 
+**Option 1: Google Sheets (Recommended for Non-Technical Users)**
+1. Open your Google Sheets (Decks tab)
+2. Add new rows with your deck content following the template structure
+3. Run `npm run export-content` to sync changes
+4. Test locally with `npm start`
+
+**Option 2: Direct JSON Editing (For Developers)**
 1. Create a new JSON file in `/assets/decks/` (e.g., `colors.json`)
 2. Follow the deck structure format above
 3. Add your cards with appropriate content
-4. Register the deck in `/app/screens/DeckList.tsx` by importing it and adding it to the `decks` array
+4. The app will automatically detect new JSON files
 
 ### Best Practices
 
@@ -218,6 +225,35 @@ To learn more about developing your project with Expo, look at the following res
 
 - [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
 - [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+
+## 🚀 Content Management for Non-Technical Users
+
+This app now supports **Google Sheets-based content management** - no coding required!
+
+### **Quick Start:**
+1. **Setup Google API access** (one-time)
+2. **Create content spreadsheets** (one-time)  
+3. **Edit content directly in Google Sheets**
+4. **Export to app** with one command
+5. **Test and deploy**
+
+### **What You Can Manage:**
+- ✅ **Flashcard decks** - Add/remove cards, create new decks
+- ✅ **Dictionary entries** - Add new words, update translations
+- ✅ **Culture content** - Add new sections, images, descriptions
+- ✅ **Quiz content** - Create new quizzes with images
+- ✅ **Audio files** - Link audio to words and cards
+
+### **Documentation:**
+- 📚 **[Content Workflow Guide](./docs/CONTENT_WORKFLOW.md)** - Complete setup and usage instructions
+- 📊 **[Google Sheets Template](./docs/GOOGLE_SHEETS_TEMPLATE.md)** - Spreadsheet structure and examples
+- 🎯 **[Audio Guide](./docs/AUDIO_PRONUNCIATIONS.md)** - How to add audio pronunciations
+- 🖼️ **[Image Guide](./docs/QUIZ_IMAGES.md)** - How to add images to quizzes
+
+### **Traditional Development:**
+For developers who prefer direct file editing, all the original JSON-based workflows are still supported.
+
+---
 
 ## Join the community
 

@@ -4,7 +4,7 @@ You can show an optional illustration for multiple-choice quiz items. The UI sca
 
 ## TL;DR
 - Put your image under `assets/images/` (e.g., `assets/images/quiz/horse.png`).
-- Map an English prompt to an image in `app/services/contentRegistry.ts` under `quizImageMap.byPrompt` for the corresponding language.
+- Map an English prompt to an image in Google Sheets (Decks tab) by adding the image filename to the `image` column.
 - Build/run locally; the image will show on the quiz card for that prompt.
 
 ## Steps
@@ -14,28 +14,14 @@ You can show an optional illustration for multiple-choice quiz items. The UI sca
 - Recommended format: PNG or WebP
 - Recommended size: square, around 256–512 px (optimize size < 100KB when possible)
 
-2) Register the mapping
-- Open `app/services/contentRegistry.ts`
-- Inside `quizImageMap`, add a prompt→image mapping:
-```ts
-// Example (English prompt is the left-hand side of the quiz card)
-const horsePng = require('../../assets/images/quiz/horse.png');
-
-const quizImageMap = {
-  dz: {
-    byPrompt: {
-      horse: horsePng,
-      // other prompts...
-    },
-  },
-  qu: {
-    byPrompt: {
-      horse: horsePng,
-    },
-  },
-};
-```
-- Keys are compared in lowercase; ensure your prompt text matches.
+2) Register the mapping in Google Sheets
+- Open your Google Sheets (Decks tab)
+- Add a new row or update existing row with:
+  - `id`: quiz-deck-name
+  - `front`: The Dzardzongke text or prompt
+  - `back`: The English answer
+  - `image`: The image filename (e.g., `horse.png`)
+- The image filename must match exactly with the file in `assets/images/quiz/`
 
 3) Verify in the app
 - Run locally; open the Multiple Choice screen and navigate until the prompt appears.

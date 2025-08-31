@@ -120,7 +120,7 @@ const audioMap: Record<string, any> = {
 
 ### Adding a new conversation category or conversation
 
-1. Add your conversation texts in `contentRegistry` (or your content source) with ordered exchanges and `speaker: 'A'|'B'`.
+1. Add your conversation texts in Google Sheets (Decks tab) with ordered exchanges and `speaker: 'A'|'B'`.
 2. Place your audio files in `assets/audio/conversations/<category>/<conversation>/` following the naming convention.
 3. Register each file in `app/services/AudioService.ts` `audioMap` with the key format above.
 4. Run the app; audio will auto‑play on message appearance and replay on button press.
