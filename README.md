@@ -54,15 +54,8 @@ Decks are stored in `/assets/decks/` as JSON files with the following structure:
 
 To create cards with images on the front:
 
-1. **Add your image files** to `/assets/images/animals/` or another appropriate subdirectory
-2. **Register the images** in the `imageMap` in `/app/components/Card.tsx`:
-   ```typescript
-   const imageMap: Record<string, ImageSourcePropType> = {
-     'existing-image.png': require('../../assets/images/animals/existing-image.png'),
-     'your-new-image.png': require('../../assets/images/animals/your-new-image.png'),
-   };
-   ```
-3. **Reference the image** in your card's `front` field:
+1. **Add your image files** to `/assets/images/animals/` or another appropriate subdirectory. The build script will automatically include any images placed here in the app's image registry—no manual code changes are needed.
+2. **Reference the image** in your card's `front` field:
    ```json
    {
      "id": "animal-example",

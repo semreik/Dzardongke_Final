@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ImageSourcePropType } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { Card as CardType } from '../types/deck';
+import imageRegistry from '../services/imageRegistry';
 
 interface Props {
   card: CardType;
@@ -26,8 +27,8 @@ export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
   // Check if the front content is an image filename
   const isFrontImage = card.front && typeof card.front === 'string' && card.front.endsWith('.png');
   
-  // Check if the image exists in our imageMap
-  const imageExists = isFrontImage && imageMap[card.front as string] !== undefined;
+  // Check if the image exists in the generated image registry
+  const imageExists = isFrontImage && imageRegistry[card.front as string] !== undefined;
   
   // Check if this is a color card by checking if the front matches a color name (case-insensitive)
   // For color cards, we'll use the front (English) color name to determine the background color
@@ -58,8 +59,8 @@ export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
       <View style={styles.content}>
         {!isFlipped && imageExists ? (
           <Image 
-            source={imageMap[card.front as string]} 
-            style={styles.image} 
+            source={imageRegistry[card.front as string]}
+            style={styles.image}
             resizeMode="contain"
           />
         ) : (
@@ -78,19 +79,6 @@ export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
   );
 };
 
-// Map image filenames to require statements
-const imageMap: Record<string, ImageSourcePropType> = {
-  'white-dog.png': require('../../assets/images/animals/white-dog.png'),
-  'two-frogs.png': require('../../assets/images/animals/two-frogs.png'),
-  'black-birds.png': require('../../assets/images/animals/black-birds.png'),
-  'turtles.png': require('../../assets/images/animals/turtles.png'),
-  'monkeys.png': require('../../assets/images/animals/monkeys.png'),
-  'foxes.png': require('../../assets/images/animals/foxes.png'),
-  'birds.png': require('../../assets/images/animals/birds.png'),
-  'fish.png': require('../../assets/images/animals/fish.png'),
-  'butterflies.png': require('../../assets/images/animals/butterflies.png'),
-  'bats.png': require('../../assets/images/animals/bats.png'),
-};
 
 const styles = StyleSheet.create({
   container: {
