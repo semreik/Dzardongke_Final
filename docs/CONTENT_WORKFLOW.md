@@ -115,8 +115,37 @@ We'll provide a template spreadsheet you can copy.
 
 ## 🖼️ Step 4: Managing Images & Audio Files
 
-### **Important: File Management Still Required**
-**Images and audio files must still be added manually to the `assets/` folder.** This is a technical limitation we're working to solve.
+### **Images: Manual File Management Required**
+**Images must still be added manually to the `assets/images/` folder.** This is a technical limitation we're working to solve.
+
+### **Audio: AUTOMATIC Mapping! 🎉**
+**Great news! Audio file mapping is now completely automatic.** No more manual TypeScript editing required!
+
+**How it works:**
+1. **Place audio files** in the correct folders (see structure below)
+2. **Run auto-mapper**: `npm run map-audio`
+3. **That's it!** The app automatically creates all necessary mappings
+
+**Audio folder structure:**
+```
+assets/audio/
+├── dictionary_words/     # Dictionary pronunciations
+│   ├── word-meaning.wav
+│   └── another-word.mp3
+├── conversations/        # Conversation audio
+│   ├── greetings/
+│   │   ├── lesson1/
+│   │   │   ├── 1_A.wav
+│   │   │   └── 1_B.wav
+│   │   └── lesson2/
+│   └── family/
+└── other_audio/         # Any other audio files
+```
+
+**File naming conventions:**
+- **Dictionary words**: `word-meaning.wav` (word before first hyphen becomes the key)
+- **Conversations**: `1_A.wav`, `2_B.wav` (sequence_speaker format)
+- **Supported formats**: `.wav`, `.mp3`, `.m4a`, `.aac`
 
 ### **Current Process:**
 1. **Add image/audio files** to `assets/images/` or `assets/audio/`
@@ -128,6 +157,9 @@ We'll provide a template spreadsheet you can copy.
 - Use **hyphens** instead of spaces: `bird-image.png`
 - **No special characters**: `bird_image.png` ❌, `bird-image.png` ✅
 - **Supported formats**: `.png`, `.jpg`, `.mp3`, `.wav`
+
+### **Audio Format Note:**
+**Important:** While we recommend MP3 for new audio files (smaller size, better compatibility), the current app uses **WAV files**. You can use either format, but be consistent within your project.
 
 ### **Example File Structure:**
 ```
@@ -191,6 +223,19 @@ CULTURE_SHEET_ID=1BxiM...your-spreadsheet-id
 ```bash
 npm run export-content
 ```
+
+### **If you added new audio files:**
+
+4. **Run audio auto-mapper:**
+```bash
+npm run map-audio
+```
+
+**What this does:**
+- Automatically scans `assets/audio/` folder
+- Creates all necessary TypeScript mappings
+- Updates AudioService.ts and dictionaryAudio.ts
+- **No manual coding required!**
 
 ### **What This Does:**
 - Reads your Google Sheets
@@ -281,7 +326,12 @@ eas build --platform ios --profile production
    npm run export-content
    ```
 
-6. **Test locally:**
+6. **If you added audio files, map them automatically:**
+   ```bash
+   npm run map-audio
+   ```
+
+7. **Test locally:**
    ```bash
    npm start
    ```
@@ -313,6 +363,12 @@ eas build --platform ios --profile production
 - Run `npm run export-content` again
 - Check Google Sheets for typos
 - Restart development server
+
+### **Audio Not Working:**
+- Run `npm run map-audio` to regenerate audio mappings
+- Check audio file exists in correct folder
+- Verify file naming follows conventions
+- Check file format is supported (.wav, .mp3, .m4a, .aac)
 
 ### **Need Help?**
 - Check this documentation first

@@ -10,7 +10,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "test": "jest",
-    "export-content": "npx ts-node scripts/export-content.ts"
+    "export-content": "npx ts-node scripts/export-content.ts",
+    "map-audio": "node scripts/auto-audio-mapper.js"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",

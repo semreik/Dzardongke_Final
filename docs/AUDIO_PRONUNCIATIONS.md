@@ -99,18 +99,35 @@ Follow the steps in README to register dictionary audio files and reference them
   - `<speaker>` is `A` or `B`
   - Example: `assets/audio/conversations/greetings/lesson1/1_A.mp3`
 
-### Registering files (required for bundlers)
+### Registering files (AUTOMATIC - No manual work required!)
 
-Open `app/services/AudioService.ts` and add require entries to the `audioMap` using keys:
-- Key format: `conv/<lang>/<category>/<conversation>/<sequence>_<speaker>`
-- Example (Dzardzongke):
-```ts
-const audioMap: Record<string, any> = {
-  'default_click': require('../../assets/audio/go.mp3'),
-  'conv/dz/greetings/lesson1/1_A': require('../../assets/audio/conversations/greetings/lesson1/1_A.mp3'),
-  'conv/dz/greetings/lesson1/1_B': require('../../assets/audio/conversations/greetings/lesson1/1_B.mp3'),
-};
+**🎉 Good news!** Audio file registration is now **completely automatic**. The app automatically scans your `assets/audio/` folder and creates all necessary mappings.
+
+**What you need to do:**
+1. **Place audio files** in the correct folders (see structure below)
+2. **Run the auto-mapper**: `npm run map-audio`
+3. **That's it!** No manual TypeScript editing required
+
+**Audio folder structure:**
 ```
+assets/audio/
+├── dictionary_words/     # Dictionary pronunciations
+│   ├── word-meaning.wav
+│   └── another-word.mp3
+├── conversations/        # Conversation audio
+│   ├── greetings/
+│   │   ├── lesson1/
+│   │   │   ├── 1_A.wav
+│   │   │   └── 1_B.wav
+│   │   └── lesson2/
+│   └── family/
+└── other_audio/         # Any other audio files
+```
+
+**File naming conventions:**
+- **Dictionary words**: `word-meaning.wav` (word before first hyphen becomes the key)
+- **Conversations**: `1_A.wav`, `2_B.wav` (sequence_speaker format)
+- **Supported formats**: `.wav`, `.mp3`, `.m4a`, `.aac`
 
 ### How playback is triggered
 

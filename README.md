@@ -242,7 +242,7 @@ This app now supports **Google Sheets-based content management** - no coding req
 - ✅ **Dictionary entries** - Add new words, update translations
 - ✅ **Culture content** - Add new sections, images, descriptions
 - ✅ **Quiz content** - Create new quizzes with images
-- ✅ **Audio files** - Link audio to words and cards
+- ✅ **Audio files** - Link audio to words and cards (AUTOMATIC mapping!)
 
 ### **Documentation:**
 - 📚 **[Content Workflow Guide](./docs/CONTENT_WORKFLOW.md)** - Complete setup and usage instructions
