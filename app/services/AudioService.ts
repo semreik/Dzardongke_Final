@@ -1,5 +1,6 @@
 import { Audio } from 'expo-av';
 import { audioMap } from './autoAudioMap';
+import { dictionaryAudioMap } from './dictionaryAudio';
 
 // Static audio registry (keys -> require). Keep this list in sync with files under assets/.
 // IMPORTANT: Only include files that actually exist to avoid bundling errors.
@@ -24,19 +25,30 @@ class AudioService {
         await this.sound.unloadAsync();
       }
 
-      // Try registry-based playback if key exists, otherwise check dictionary map, else default click
-      let key = filename && audioMap[filename] ? filename : undefined;
-      let source = key ? audioMap[key] : undefined;
-      if (!source && filename && dictionaryAudioMap[filename]) {
-        key = filename;
+      // Try to find the audio source
+      let source = null;
+      
+      // First, try to find in autoAudioMap
+      if (filename && audioMap[filename]) {
+        source = audioMap[filename];
+      }
+      // Then, try in dictionaryAudioMap
+      else if (filename && dictionaryAudioMap[filename]) {
         source = dictionaryAudioMap[filename];
       }
-      if (!source) {
-        key = 'default_click';
-        source = audioMap[key];
+      // Finally, fall back to default click
+      else {
+        source = audioMap['go'] || audioMap['default_click'];
       }
+
+      if (!source) {
+        console.warn('No audio source found for:', filename);
+        return;
+      }
+
       const { sound } = await Audio.Sound.createAsync(source, { shouldPlay: true });
       this.sound = sound;
+      
       return new Promise((resolve) => {
         sound.setOnPlaybackStatusUpdate((status: any) => {
           if (status && status.didJustFinish) {
