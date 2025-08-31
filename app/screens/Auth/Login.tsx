@@ -22,8 +22,8 @@ export default function Login({ navigation }: any) {
       <Text style={styles.title}>Login</Text>
       {!!error && <Text style={styles.error}>{error}</Text>}
       <Text style={styles.helper}>Password must be at least 6 characters.</Text>
-      <TextInput placeholder="Username" style={styles.input} autoCapitalize="none" value={username} onChangeText={setUsername} />
-      <TextInput placeholder="Password" style={styles.input} secureTextEntry value={password} onChangeText={setPassword} />
+      <TextInput placeholder="Username" style={styles.input} autoCapitalize="none" autoCorrect={false} spellCheck={false} value={username} onChangeText={setUsername} />
+      <TextInput placeholder="Password" style={styles.input} secureTextEntry autoCorrect={false} spellCheck={false} value={password} onChangeText={setPassword} />
       <TouchableOpacity style={styles.button} onPress={onSubmit} disabled={loading}>
         <Text style={styles.buttonText}>{loading ? 'Please wait…' : 'Login'}</Text>
       </TouchableOpacity>

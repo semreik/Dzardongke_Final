@@ -23,9 +23,9 @@ export default function SignUp({ navigation }: any) {
       <Text style={styles.title}>Create account</Text>
       {!!error && <Text style={styles.error}>{error}</Text>}
       <Text style={styles.helper}>Password must be at least 6 characters.</Text>
-      <TextInput placeholder="Username" style={styles.input} autoCapitalize="none" value={username} onChangeText={setUsername} />
-      <TextInput placeholder="Password" style={styles.input} secureTextEntry value={password} onChangeText={setPassword} />
-      <TextInput placeholder="Confirm password" style={styles.input} secureTextEntry value={confirm} onChangeText={setConfirm} />
+      <TextInput placeholder="Username" style={styles.input} autoCapitalize="none" autoCorrect={false} spellCheck={false} value={username} onChangeText={setUsername} />
+      <TextInput placeholder="Password" style={styles.input} secureTextEntry autoCorrect={false} spellCheck={false} value={password} onChangeText={setPassword} />
+      <TextInput placeholder="Confirm password" style={styles.input} secureTextEntry autoCorrect={false} spellCheck={false} value={confirm} onChangeText={setConfirm} />
       <TouchableOpacity style={styles.button} onPress={onSubmit} disabled={loading}>
         <Text style={styles.buttonText}>{loading ? 'Please wait…' : 'Sign up'}</Text>
       </TouchableOpacity>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import type { Card } from '../types/deck';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useProgress } from '../stores/useProgress';
+import type { Card } from '../types/deck';
 
 type RootStackParamList = {
   Write: { deckId: string; cards: Card[] };
@@ -50,6 +50,8 @@ export const Write: React.FC<Props> = ({ navigation, route }) => {
         placeholder="Type the English translation..."
         onSubmitEditing={handleCheck}
         autoCapitalize="none"
+        autoCorrect={false}
+        spellCheck={false}
         editable={!showResult}
       />
       {!showResult ? (

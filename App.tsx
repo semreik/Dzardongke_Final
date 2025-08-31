@@ -5,6 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { IconButton, MD3LightTheme, Menu, PaperProvider } from 'react-native-paper';
+import { KeyboardConfig } from './app/components/KeyboardConfig';
+import Account from './app/screens/Account';
 import Login from './app/screens/Auth/Login';
 import SignUp from './app/screens/Auth/SignUp';
 import { Congrats } from './app/screens/Congrats';
@@ -20,7 +22,6 @@ import NumbersWrite from './app/screens/NumbersWrite';
 import Onboarding from './app/screens/Onboarding';
 import Profile from './app/screens/Profile';
 import Settings from './app/screens/Settings';
-import Account from './app/screens/Account';
 import { Stats } from './app/screens/Stats';
 import Study from './app/screens/Study';
 import { Write } from './app/screens/Write';
@@ -140,26 +141,28 @@ export default function App() {
 
   return (
     <PaperProvider theme={theme}>
-      <NavigationContainer>
-        {!currentUser ? (
-          <AuthStack.Navigator>
-            <AuthStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-            <AuthStack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
-          </AuthStack.Navigator>
-        ) : !hasChosenLanguage ? (
-          <RootStack.Navigator screenOptions={{ headerShown: false }}>
-            <RootStack.Screen name="Onboarding" component={Onboarding} />
-          </RootStack.Navigator>
-        ) : (
-          <RootStack.Navigator>
-            <RootStack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
-            <RootStack.Screen name="Settings" component={Settings} options={{ headerTitle: 'Settings' }} />
-            <RootStack.Screen name="Account" component={Account} options={{ headerTitle: 'Account' }} />
-            <RootStack.Screen name="Profile" component={Profile} options={{ headerTitle: 'Saved' }} />
-            <RootStack.Screen name="Credits" component={Credits} options={{ headerTitle: 'Credits' }} />
-          </RootStack.Navigator>
-        )}
-      </NavigationContainer>
+      <KeyboardConfig>
+        <NavigationContainer>
+          {!currentUser ? (
+            <AuthStack.Navigator>
+              <AuthStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+              <AuthStack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
+            </AuthStack.Navigator>
+          ) : !hasChosenLanguage ? (
+            <RootStack.Navigator screenOptions={{ headerShown: false }}>
+              <RootStack.Screen name="Onboarding" component={Onboarding} />
+            </RootStack.Navigator>
+          ) : (
+            <RootStack.Navigator>
+              <RootStack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
+              <RootStack.Screen name="Settings" component={Settings} options={{ headerTitle: 'Settings' }} />
+              <RootStack.Screen name="Account" component={Account} options={{ headerTitle: 'Account' }} />
+              <RootStack.Screen name="Profile" component={Profile} options={{ headerTitle: 'Saved' }} />
+              <RootStack.Screen name="Credits" component={Credits} options={{ headerTitle: 'Credits' }} />
+            </RootStack.Navigator>
+          )}
+        </NavigationContainer>
+      </KeyboardConfig>
     </PaperProvider>
   );
 }
