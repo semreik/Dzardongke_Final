@@ -6,7 +6,7 @@ All UI wiring is automatic.
 ## Where to edit
 
 - Images folder: `assets/images/Culture/`
-- Content file: `app/content/culture.dz.ts`
+- Deck files: `assets/culture/dz/deck-*.json`
 
 You only edit those two places.
 
@@ -18,11 +18,13 @@ You only edit those two places.
 
 ## Content structure
 
-The content file exports two “decks” (tabs):
-- Deck 1: Dzardzongke: Language & Region
-- Deck 2: Dachang festival
+Each deck lives in its own JSON file inside `assets/culture/dz/`:
+
+- `deck-1.json`: Dzardzongke: Language & Region
+- `deck-2.json`: Dachang festival
 
 Each deck has a list of steps. A step can be:
+
 - `text`: a paragraph card
 - `image`: an image with a caption
 - `quiz-single`: a multiple-choice quiz with one correct answer
@@ -32,14 +34,17 @@ Each deck has a list of steps. A step can be:
 
 Follow these steps to create a third (or fourth, etc.) deck that appears as an extra tab in the Culture screen.
 
-1) Add your images (optional)
+1. Add your images (optional)
+
 - Put your images in `assets/images/Culture/`, for example `culture10.png`, `poster2026.jpg`.
 - IMPORTANT: because of how React Native bundles images, each new filename must also be registered once in code (see step 2).
 
-2) Register image filenames (one-time per new filename)
+2. Register image filenames (one-time per new filename)
+
 - Open `app/screens/CultureDynamic.tsx`.
 - Find the `imageMap` at the top of the file.
 - Add a new line for each new file:
+
 ```ts
 const imageMap: Record<string, any> = {
   // existing lines...
@@ -47,14 +52,14 @@ const imageMap: Record<string, any> = {
   'poster2026.jpg': require('../../assets/images/Culture/poster2026.jpg'),
 };
 ```
+
 - Save the file. You do NOT need to touch anything else in this file.
 
-3) Create the new deck in the content file
-- Open `app/content/culture.dz.ts`.
-- Add a new object to the exported `cultureDz` array. Use any unique `id` and a human‑readable `title`.
-```ts
-import { CultureDeck } from './types';
-```
+3. Create or edit the deck JSON
+
+- Duplicate one of the existing files under `assets/culture/dz/` (e.g., copy `deck-1.json` to `deck-3.json`).
+- Update the `id`, `title` and `steps` as needed. The structure matches the examples in the other deck files.
+- Finally, register the new file in `app/content/loadCulture.ts` by adding a `require` line so the app loads it.
 
 ## Interactive Map (StoryMapJS)
 
@@ -65,17 +70,21 @@ import { CultureDeck } from './types';
 
 ## Example: add a new text + image + quiz
 
-Open `app/content/culture.dz.ts` and add to the proper deck’s `steps` array:
+Open the deck JSON (e.g., `assets/culture/dz/deck-1.json`) and add to the `steps` array:
 
 ```ts
 steps: [
   { type: 'text', text: 'Write your new paragraph here.' },
   { type: 'image', src: 'culture10.png', caption: 'Your caption text' },
-  { type: 'quiz-single', question: 'Your question?', options: [
-    { label: 'Option A', correct: false },
-    { label: 'Option B', correct: true },
-  ]},
-]
+  {
+    type: 'quiz-single',
+    question: 'Your question?',
+    options: [
+      { label: 'Option A', correct: false },
+      { label: 'Option B', correct: true },
+    ],
+  },
+];
 ```
 
 Make sure `culture10.png` exists under `assets/images/Culture/`.
@@ -114,5 +123,3 @@ If in the future you want server-driven content, we can keep the same schema and
 - Android APK (quick review/share): `eas build -p android --profile preview`
 - Android Play Store: `eas build -p android --profile production` → `eas submit -p android`
 - iOS TestFlight/App Store: `eas build -p ios --profile production` → `eas submit -p ios`.
-
-
