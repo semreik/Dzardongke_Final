@@ -1,9 +1,23 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Animated,
+  Image,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import WebView from 'react-native-webview';
-import { cultureDz } from '../content/culture.dz';
-import type { CultureDeck, CultureQuizMultiStep, CultureQuizSingleStep, CultureStep } from '../content/types';
+import { loadCulture } from '../content/loadCulture';
+import type {
+  CultureDeck,
+  CultureQuizMultiStep,
+  CultureQuizSingleStep,
+  CultureStep,
+} from '../content/types';
 import { useLanguage } from '../stores/useLanguage';
 
 const imageMap: Record<string, any> = {
@@ -20,15 +34,19 @@ const imageMap: Record<string, any> = {
 
 const CultureDynamic: React.FC = () => {
   const { selectedLanguage } = useLanguage();
-  const contentDecks: CultureDeck[] = cultureDz;
+  const contentDecks: CultureDeck[] = loadCulture(selectedLanguage);
   const uiDecks: CultureDeck[] = useMemo(
-    () => [...contentDecks, { id: 'map', title: 'Interactive Map', steps: [] as any }],
+    () => [
+      ...contentDecks,
+      { id: 'map', title: 'Interactive Map', steps: [] as any },
+    ],
     [contentDecks]
   );
   const [activeDeckIndex, setActiveDeckIndex] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
 
-  const storyMapUrl = 'https://uploads.knightlab.com/storymapjs/dadb49b390f413e3dae57604e019397c/dzardzongke/index.html';
+  const storyMapUrl =
+    'https://uploads.knightlab.com/storymapjs/dadb49b390f413e3dae57604e019397c/dzardzongke/index.html';
 
   // quiz state
   const [singleSelected, setSingleSelected] = useState<string | null>(null);
@@ -39,8 +57,16 @@ const CultureDynamic: React.FC = () => {
   const fade = useRef(new Animated.Value(1)).current;
   const go = () => {
     Animated.sequence([
-      Animated.timing(fade, { toValue: 0, duration: 150, useNativeDriver: true }),
-      Animated.timing(fade, { toValue: 1, duration: 150, useNativeDriver: true }),
+      Animated.timing(fade, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fade, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
     ]).start();
   };
 
@@ -56,7 +82,10 @@ const CultureDynamic: React.FC = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Culture</Text>
-        <Text style={styles.meta}>This section is currently available for Dzardzongke only. Quechua coming soon.</Text>
+        <Text style={styles.meta}>
+          This section is currently available for Dzardzongke only. Quechua
+          coming soon.
+        </Text>
       </View>
     );
   }
@@ -71,8 +100,10 @@ const CultureDynamic: React.FC = () => {
 
   const nextLabel = useMemo(() => {
     if (!currentStep) return 'Next';
-    if (currentStep.type === 'quiz-single' && !singleChecked) return 'Check answer';
-    if (currentStep.type === 'quiz-multi' && !multiChecked) return 'Check answers';
+    if (currentStep.type === 'quiz-single' && !singleChecked)
+      return 'Check answer';
+    if (currentStep.type === 'quiz-multi' && !multiChecked)
+      return 'Check answers';
     if (isLastDeck && isLastInDeck) return 'Finish';
     return 'Next';
   }, [currentStep, singleChecked, multiChecked, isLastDeck, isLastInDeck]);
@@ -116,7 +147,9 @@ const CultureDynamic: React.FC = () => {
       case 'text':
         return (
           <View style={styles.card}>
-            {step.header ? <Text style={styles.subtitle}>{step.header}</Text> : null}
+            {step.header ? (
+              <Text style={styles.subtitle}>{step.header}</Text>
+            ) : null}
             <Text style={styles.p}>{step.text}</Text>
           </View>
         );
@@ -127,8 +160,20 @@ const CultureDynamic: React.FC = () => {
             {src ? (
               <Image source={src} style={styles.photo} resizeMode="contain" />
             ) : (
-              <View style={[styles.photo, { alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1f5f9' }]}>
-                <Text style={{ color: '#64748b', textAlign: 'center' }}>Missing image import for {step.src}{'\n'}Add it to imageMap in `app/screens/CultureDynamic.tsx`.</Text>
+              <View
+                style={[
+                  styles.photo,
+                  {
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#f1f5f9',
+                  },
+                ]}
+              >
+                <Text style={{ color: '#64748b', textAlign: 'center' }}>
+                  Missing image import for {step.src}
+                  {'\n'}Add it to imageMap in `app/screens/CultureDynamic.tsx`.
+                </Text>
               </View>
             )}
             <Text style={styles.caption}>{step.caption}</Text>
@@ -143,15 +188,25 @@ const CultureDynamic: React.FC = () => {
             <Text style={styles.quizTitle}>Quiz</Text>
             <Text style={styles.quizQ}>{q.question}</Text>
             <View style={{ gap: 8, marginTop: 8 }}>
-              {q.options.map(opt => {
+              {q.options.map((opt) => {
                 const isSelected = singleSelected === opt.label;
                 const isCorrect = singleChecked && opt.correct;
                 const isWrong = singleChecked && isSelected && !opt.correct;
                 return (
                   <TouchableOpacity
                     key={opt.label}
-                    style={[styles.choice, isSelected ? { borderColor: '#2563eb' } : undefined, isCorrect ? styles.correct : isWrong ? styles.wrong : undefined]}
-                    onPress={() => { if (!singleChecked) setSingleSelected(opt.label); }}
+                    style={[
+                      styles.choice,
+                      isSelected ? { borderColor: '#2563eb' } : undefined,
+                      isCorrect
+                        ? styles.correct
+                        : isWrong
+                          ? styles.wrong
+                          : undefined,
+                    ]}
+                    onPress={() => {
+                      if (!singleChecked) setSingleSelected(opt.label);
+                    }}
                     activeOpacity={0.85}
                   >
                     <Text style={styles.choiceText}>{opt.label}</Text>
@@ -170,18 +225,27 @@ const CultureDynamic: React.FC = () => {
             <Text style={styles.quizTitle}>Quiz</Text>
             <Text style={styles.quizQ}>{q.question}</Text>
             <View style={{ gap: 8, marginTop: 8 }}>
-              {q.options.map(opt => {
+              {q.options.map((opt) => {
                 const isSelected = multiSelected.has(opt.label);
                 const isCorrect = multiChecked && opt.correct;
                 const isWrong = multiChecked && isSelected && !opt.correct;
                 return (
                   <TouchableOpacity
                     key={opt.label}
-                    style={[styles.choice, isSelected ? { borderColor: '#2563eb' } : undefined, isCorrect ? styles.correct : isWrong ? styles.wrong : undefined]}
+                    style={[
+                      styles.choice,
+                      isSelected ? { borderColor: '#2563eb' } : undefined,
+                      isCorrect
+                        ? styles.correct
+                        : isWrong
+                          ? styles.wrong
+                          : undefined,
+                    ]}
                     onPress={() => {
                       if (multiChecked) return;
                       const next = new Set(multiSelected);
-                      if (next.has(opt.label)) next.delete(opt.label); else next.add(opt.label);
+                      if (next.has(opt.label)) next.delete(opt.label);
+                      else next.add(opt.label);
                       setMultiSelected(next);
                     }}
                     activeOpacity={0.85}
@@ -201,15 +265,31 @@ const CultureDynamic: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>{`${activeDeckIndex + 1}. ${currentDeck?.title ?? 'Culture'}`}</Text>
+      <Text
+        style={styles.title}
+      >{`${activeDeckIndex + 1}. ${currentDeck?.title ?? 'Culture'}`}</Text>
       <View style={styles.segmentRow}>
         {uiDecks.map((d, idx) => (
           <TouchableOpacity
             key={d.id}
-            style={[styles.segmentBtn, idx === activeDeckIndex ? styles.segmentActive : undefined]}
-            onPress={() => { setActiveDeckIndex(idx); setStepIndex(0); go(); }}
+            style={[
+              styles.segmentBtn,
+              idx === activeDeckIndex ? styles.segmentActive : undefined,
+            ]}
+            onPress={() => {
+              setActiveDeckIndex(idx);
+              setStepIndex(0);
+              go();
+            }}
           >
-            <Text style={[styles.segmentText, idx === activeDeckIndex ? styles.segmentTextActive : undefined]}>{d.title}</Text>
+            <Text
+              style={[
+                styles.segmentText,
+                idx === activeDeckIndex ? styles.segmentTextActive : undefined,
+              ]}
+            >
+              {d.title}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -218,30 +298,73 @@ const CultureDynamic: React.FC = () => {
         <View style={styles.card}>
           {Platform.OS === 'web' ? (
             // @ts-ignore iframe is valid on web build
-            <iframe src={storyMapUrl} style={{ width: '100%', height: 420, border: 0, borderRadius: 12 }} allow="fullscreen" />
+            <iframe
+              src={storyMapUrl}
+              style={{
+                width: '100%',
+                height: 420,
+                border: 0,
+                borderRadius: 12,
+              }}
+              allow="fullscreen"
+            />
           ) : (
             <View style={{ height: 420, borderRadius: 12, overflow: 'hidden' }}>
               <WebView source={{ uri: storyMapUrl }} style={{ flex: 1 }} />
             </View>
           )}
-          <Text style={styles.caption}>Interactive StoryMapJS — This is an online feature and requires an internet connection.</Text>
+          <Text style={styles.caption}>
+            Interactive StoryMapJS — This is an online feature and requires an
+            internet connection.
+          </Text>
         </View>
       ) : (
         <>
-          <Text style={styles.progressText}>Step {stepIndex + 1} of {steps.length}</Text>
+          <Text style={styles.progressText}>
+            Step {stepIndex + 1} of {steps.length}
+          </Text>
 
           <Animated.View style={{ opacity: fade }}>
             {renderStep(currentStep)}
           </Animated.View>
 
           <View style={styles.navRow}>
-            <TouchableOpacity style={[styles.navBtn, isFirst && activeDeckIndex === 0 ? styles.disabled : undefined]} disabled={isFirst && activeDeckIndex === 0} onPress={handleBack}>
-              <MaterialCommunityIcons name="chevron-left" size={18} color={isFirst && activeDeckIndex === 0 ? '#9ca3af' : '#0f172a'} />
-              <Text style={[styles.navText, isFirst && activeDeckIndex === 0 ? styles.disabledText : undefined]}>Back</Text>
+            <TouchableOpacity
+              style={[
+                styles.navBtn,
+                isFirst && activeDeckIndex === 0 ? styles.disabled : undefined,
+              ]}
+              disabled={isFirst && activeDeckIndex === 0}
+              onPress={handleBack}
+            >
+              <MaterialCommunityIcons
+                name="chevron-left"
+                size={18}
+                color={isFirst && activeDeckIndex === 0 ? '#9ca3af' : '#0f172a'}
+              />
+              <Text
+                style={[
+                  styles.navText,
+                  isFirst && activeDeckIndex === 0
+                    ? styles.disabledText
+                    : undefined,
+                ]}
+              >
+                Back
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.navBtn, styles.primary]} onPress={handleNext}>
-              <Text style={[styles.navText, { color: 'white' }]}>{nextLabel}</Text>
-              <MaterialCommunityIcons name="chevron-right" size={18} color={'white'} />
+            <TouchableOpacity
+              style={[styles.navBtn, styles.primary]}
+              onPress={handleNext}
+            >
+              <Text style={[styles.navText, { color: 'white' }]}>
+                {nextLabel}
+              </Text>
+              <MaterialCommunityIcons
+                name="chevron-right"
+                size={18}
+                color={'white'}
+              />
             </TouchableOpacity>
           </View>
         </>
@@ -255,24 +378,71 @@ const styles = StyleSheet.create({
   title: { fontSize: 22, fontWeight: '700', marginBottom: 6 },
   subtitle: { fontSize: 16, color: '#475569', marginBottom: 10 },
   meta: { fontSize: 14, color: '#64748b' },
-  card: { backgroundColor: 'white', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: '#e5e7eb', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } },
+  card: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+  },
   p: { color: '#1f2937', lineHeight: 22, marginBottom: 8 },
-  photo: { width: '100%', borderRadius: 14, backgroundColor: '#f8fafc', height: 220 },
+  photo: {
+    width: '100%',
+    borderRadius: 14,
+    backgroundColor: '#f8fafc',
+    height: 220,
+  },
   caption: { marginTop: 10, color: '#475569', fontStyle: 'italic' },
   quizTitle: { fontWeight: '700', marginBottom: 4 },
   quizQ: { color: '#374151' },
-  choice: { backgroundColor: 'white', borderRadius: 10, padding: 12, borderWidth: 1, borderColor: '#e5e7eb' },
+  choice: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+  },
   choiceText: { color: '#111827' },
   correct: { backgroundColor: '#E8F5E9', borderColor: '#4CAF50' },
   wrong: { backgroundColor: '#FDECEC', borderColor: '#FF3B30' },
-  navRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 },
-  navBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 16, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', backgroundColor: 'white' },
+  navRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12,
+  },
+  navBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    backgroundColor: 'white',
+  },
   navText: { fontWeight: '600', color: '#0f172a' },
   disabled: { opacity: 0.5 },
   disabledText: { color: '#9ca3af' },
   primary: { backgroundColor: '#2563eb', borderColor: '#2563eb' },
-  segmentRow: { flexDirection: 'row', gap: 8, marginBottom: 8, flexWrap: 'wrap' },
-  segmentBtn: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10, borderWidth: 1, borderColor: '#e5e7eb', backgroundColor: 'white' },
+  segmentRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 8,
+    flexWrap: 'wrap',
+  },
+  segmentBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    backgroundColor: 'white',
+  },
   segmentActive: { backgroundColor: '#eef2ff', borderColor: '#6366f1' },
   segmentText: { color: '#0f172a', fontWeight: '600' },
   segmentTextActive: { color: '#3730a3' },
@@ -280,5 +450,3 @@ const styles = StyleSheet.create({
 });
 
 export default CultureDynamic;
-
-
