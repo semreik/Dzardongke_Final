@@ -255,6 +255,93 @@ For developers who prefer direct file editing, all the original JSON-based workf
 
 ---
 
+## 🚀 Build & Deployment
+
+### **Android APK Build**
+
+To build an Android APK for distribution:
+
+```bash
+# Install EAS CLI
+npm install -g @expo/eas-cli
+
+# Login to Expo
+eas login
+
+# Build APK
+eas build --platform android --profile preview
+```
+
+**Build Profile**: Uses `preview` profile from `eas.json` for APK output.
+
+### **Build Troubleshooting**
+
+If you encounter build failures, here are common solutions:
+
+#### **1. Lockfile Sync Issues**
+**Problem**: `npm ci` fails with "package.json and package-lock.json are not in sync"
+**Solution**:
+```bash
+# Remove old lockfiles
+rm -rf node_modules
+git rm -f yarn.lock pnpm-lock.yaml
+
+# Fresh install
+npm install
+
+# Commit updated lockfile
+git add package-lock.json package.json
+git commit -m "Sync lockfile for EAS build"
+```
+
+#### **2. Image Path Case Sensitivity**
+**Problem**: Build fails with "Unable to resolve module" for image files
+**Cause**: macOS is case-insensitive, but EAS builds on Linux (case-sensitive)
+**Solution**: Ensure import paths match exact folder/file names:
+```tsx
+// ❌ Wrong (build will fail)
+require('../../assets/images/Culture/culture1.png')
+
+// ✅ Correct
+require('../../assets/images/culture/culture1.png')
+```
+
+#### **3. Missing Peer Dependencies**
+**Problem**: Build fails with missing peer dependencies
+**Solution**:
+```bash
+# Install missing dependencies
+npx expo install react-native-svg
+
+# Remove unnecessary types
+npm remove @types/react-native
+
+# Update Expo packages
+npx expo install --check
+```
+
+#### **4. Metro Bundler Errors**
+**Problem**: JavaScript bundling fails during build
+**Solution**:
+```bash
+# Clear Metro cache
+npx expo start --clear
+
+# Check for missing imports
+grep -r "require.*assets" app/
+
+# Verify file existence
+ls -la assets/images/
+```
+
+### **Development vs Production**
+
+- **Development**: `npx expo start` for local testing
+- **Preview**: `eas build --profile preview` for APK testing
+- **Production**: `eas build --profile production` for app store
+
+---
+
 ## Join the community
 
 Join our community of developers creating universal apps.
