@@ -105,7 +105,9 @@ const Dictionary: React.FC = () => {
         </View>
       ) : results.length === 0 ? (
         <View style={styles.emptyStateContainer}>
-          <Text style={styles.noResults}>No results found for "{searchQuery}"</Text>
+          <Text style={styles.noResults}>
+            No results found for &quot;{searchQuery}&quot;
+          </Text>
           <Text style={styles.placeholder}>Try a different search term</Text>
         </View>
       ) : (
@@ -231,11 +233,6 @@ const styles = StyleSheet.create({
   savedTag: {
     color: '#10b981',
     fontWeight: '700',
-  },
-  saveLink: {
-    color: '#007AFF',
-    marginHorizontal: 16,
-    marginBottom: 12,
   },
 });
 
