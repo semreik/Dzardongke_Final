@@ -8,6 +8,7 @@ import type { Deck } from '../types/deck';
 import { Card as CardComponent } from '../components/Card';
 import type { Card } from '../types/deck';
 import { useProgress } from '../stores/useProgress';
+import logger from '../utils/logger';
 
 type StudyScreenRouteProp = RouteProp<RootStackParamList, 'Study'>;
 type StudyScreenNavigationProp = StackNavigationProp<RootStackParamList>;
@@ -33,7 +34,7 @@ const Study: React.FC = () => {
   }, [deckId, cards.length, startSession, endSession]);
 
   const handleGotIt = async () => {
-    console.log('[handleGotIt] Before marking as mastered:', {
+    logger('[handleGotIt] Before marking as mastered:', {
       deckId,
       cardId: currentCard.id,
       currentCard
@@ -42,7 +43,7 @@ const Study: React.FC = () => {
     await setMastered(deckId, currentCard.id, true);
     
     const masteredCount = countByStatus(deckId, 'mastered');
-    console.log('[handleGotIt] After marking as mastered:', {
+    logger('[handleGotIt] After marking as mastered:', {
       deckId,
       cardId: currentCard.id,
       masteredCount
