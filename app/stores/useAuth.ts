@@ -4,7 +4,7 @@ import { deriveKey, fromHex, makeSalt, toHex } from '../auth/authCrypto';
 import { createUser, getUser } from '../db/authRepo';
 // Route-safe import: use lib/ for platform files to avoid expo-router scanning app/
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const SecureStore = Platform.OS === 'web' ? require('../../lib/utils/secureStore') : require('../../lib/utils/secureStore');
+const SecureStore = Platform.OS === 'web' ? require('../../lib/utils/secureStore.web') : require('../../lib/utils/secureStore.native');
 
 type AuthState = {
   currentUser: string | null;
