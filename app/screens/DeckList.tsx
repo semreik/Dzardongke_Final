@@ -1,12 +1,12 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import type { Deck } from '../types/deck';
+import React from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ProgressBar } from '../components/ProgressBar';
-import { useProgress } from '../stores/useProgress';
-import { useLanguage } from '../stores/useLanguage';
 import { contentRegistry, nsDeckId } from '../services/contentRegistry';
+import { useLanguage } from '../stores/useLanguage';
+import { useProgress } from '../stores/useProgress';
+import type { Deck } from '../types/deck';
 
 const DeckList: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<any>>();

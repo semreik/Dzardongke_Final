@@ -1,10 +1,10 @@
-import 'react-native-get-random-values';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import 'react-native-get-random-values';
 import { IconButton, MD3LightTheme, Menu, PaperProvider } from 'react-native-paper';
 import { KeyboardConfig } from './app/components/KeyboardConfig';
 import Account from './app/screens/Account';
