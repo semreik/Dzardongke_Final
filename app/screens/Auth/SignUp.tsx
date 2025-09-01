@@ -23,9 +23,36 @@ export default function SignUp({ navigation }: any) {
       <Text style={styles.title}>Create account</Text>
       {!!error && <Text style={styles.error}>{error}</Text>}
       <Text style={styles.helper}>Password must be at least 6 characters.</Text>
-      <TextInput placeholder="Username" style={styles.input} autoCapitalize="none" autoCorrect={false} spellCheck={false} value={username} onChangeText={setUsername} />
-      <TextInput placeholder="Password" style={styles.input} secureTextEntry autoCorrect={false} spellCheck={false} value={password} onChangeText={setPassword} />
-      <TextInput placeholder="Confirm password" style={styles.input} secureTextEntry autoCorrect={false} spellCheck={false} value={confirm} onChangeText={setConfirm} />
+      <TextInput 
+        placeholder="Username" 
+        placeholderTextColor="#9ca3af"
+        style={styles.input} 
+        autoCapitalize="none" 
+        autoCorrect={false} 
+        spellCheck={false} 
+        value={username} 
+        onChangeText={setUsername} 
+      />
+      <TextInput 
+        placeholder="Password" 
+        placeholderTextColor="#9ca3af"
+        style={styles.input} 
+        secureTextEntry 
+        autoCorrect={false} 
+        spellCheck={false} 
+        value={password} 
+        onChangeText={setPassword} 
+      />
+      <TextInput 
+        placeholder="Confirm password" 
+        placeholderTextColor="#9ca3af"
+        style={styles.input} 
+        secureTextEntry 
+        autoCorrect={false} 
+        spellCheck={false} 
+        value={confirm} 
+        onChangeText={setConfirm} 
+      />
       <TouchableOpacity style={styles.button} onPress={onSubmit} disabled={loading}>
         <Text style={styles.buttonText}>{loading ? 'Please wait…' : 'Sign up'}</Text>
       </TouchableOpacity>
@@ -39,7 +66,17 @@ export default function SignUp({ navigation }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', padding: 20, gap: 12 },
   title: { fontSize: 24, fontWeight: '700', marginBottom: 8 },
-  input: { borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10 },
+  input: { 
+    borderWidth: 1, 
+    borderColor: '#e5e7eb', 
+    borderRadius: 10, 
+    paddingHorizontal: 12, 
+    paddingVertical: 10,
+    color: '#000000',
+    backgroundColor: '#ffffff',
+    fontSize: 16,
+    fontWeight: '400',
+  },
   button: { backgroundColor: '#22c55e', borderRadius: 10, paddingVertical: 12, alignItems: 'center' },
   buttonText: { color: 'white', fontWeight: '700' },
   link: { color: '#2563eb', textAlign: 'center', marginTop: 8 },
