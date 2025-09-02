@@ -31,18 +31,16 @@ const DeckList: React.FC = () => {
           <Text style={styles.cardCount}>{deck.cards.length} cards</Text>
         </View>
         
-        {deck.id === 'numbers-basic' && (
-          <TouchableOpacity
-            style={styles.practiceButton}
-            onPress={() => navigation.navigate('NumbersWrite', { 
-              deckId: namespacedId, 
-              cards: deck.cards,
-              deckTitle: deck.title 
-            })}
-          >
-            <Text style={styles.practiceButtonText}>Practice Writing Numbers</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          style={styles.practiceButton}
+          onPress={() => navigation.navigate('Write', { 
+            deckId: namespacedId, 
+            cards: deck.cards,
+            deckTitle: deck.title 
+          })}
+        >
+          <Text style={styles.practiceButtonText}>✍️ Practice Writing</Text>
+        </TouchableOpacity>
       </TouchableOpacity>
     );
   };
@@ -63,52 +61,63 @@ const DeckList: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8fafc',
   },
   list: {
-    padding: 16,
+    padding: 20,
   },
   deckItem: {
-    backgroundColor: 'white',
-    borderRadius: 14,
-    padding: 18,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 2,
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 24,
+    marginBottom: 16,
+    shadowColor: '#6366f1',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#f1f5f9',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '700',
     marginBottom: 8,
+    color: '#1e293b',
+    letterSpacing: -0.5,
   },
   description: {
     fontSize: 16,
-    color: '#666',
-    marginBottom: 16,
+    color: '#64748b',
+    marginBottom: 20,
+    lineHeight: 22,
   },
   progressContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   cardCount: {
-    marginLeft: 8,
+    marginLeft: 12,
     fontSize: 14,
-    color: '#666',
+    color: '#6366f1',
+    fontWeight: '600',
   },
   practiceButton: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: '#f0f4ff',
+    borderRadius: 16,
+    padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#e0e7ff',
+    alignSelf: 'flex-start',
   },
   practiceButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: '#6366f1',
+    fontSize: 14,
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
 });
 

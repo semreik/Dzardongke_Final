@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import type { Card as CardType } from '../types/deck';
+import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import imageRegistry from '../services/imageRegistry';
+import type { Card as CardType } from '../types/deck';
 
 interface Props {
   card: CardType;
@@ -44,6 +44,16 @@ export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
   
   const formatDisplayText = (text: unknown): string => {
     const s = typeof text === 'string' ? text : '';
+    
+    // Convert PNG filename to clean text
+    if (s.endsWith('.png')) {
+      return s
+        .replace('.png', '')
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    }
+    
     // For animal cards, render phrases in lowercase per requirement
     if (card.id && typeof card.id === 'string' && card.id.startsWith('animal-')) {
       return s.toLowerCase();

@@ -20,7 +20,22 @@ export const Write: React.FC<Props> = ({ navigation, route }) => {
   const { setMastered } = useProgress();
 
   const currentCard = cards[currentCardIndex];
-  const isCorrect = userInput.toLowerCase().trim() === currentCard.back.toLowerCase().trim();
+  
+  // Convert PNG filename to clean text for comparison
+  const getCleanText = (text: string) => {
+    if (text.endsWith('.png')) {
+      // Remove .png and convert kebab-case to Title Case
+      return text
+        .replace('.png', '')
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    }
+    return text;
+  };
+  
+  const cleanBackText = getCleanText(currentCard.back);
+  const isCorrect = userInput.toLowerCase().trim() === cleanBackText.toLowerCase().trim();
 
   const handleCheck = () => {
     setShowResult(true);
@@ -47,7 +62,7 @@ export const Write: React.FC<Props> = ({ navigation, route }) => {
         style={styles.input}
         value={userInput}
         onChangeText={setUserInput}
-        placeholder="Type the English translation..."
+        placeholder="Type the Dzardzongke word..."
         onSubmitEditing={handleCheck}
         autoCapitalize="none"
         autoCorrect={false}
@@ -61,7 +76,7 @@ export const Write: React.FC<Props> = ({ navigation, route }) => {
       ) : (
         <View style={styles.resultContainer}>
           <Text style={[styles.result, isCorrect ? styles.correct : styles.incorrect]}>
-            {isCorrect ? '✓ Correct!' : `✗ Incorrect. The answer is: ${currentCard.back}`}
+            {isCorrect ? '✓ Correct!' : `✗ Incorrect. The answer is: ${cleanBackText}`}
           </Text>
           <TouchableOpacity style={styles.button} onPress={handleNext}>
             <Text style={styles.buttonText}>

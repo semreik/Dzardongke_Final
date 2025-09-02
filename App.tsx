@@ -1,12 +1,13 @@
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import 'react-native-get-random-values';
 import { IconButton, MD3LightTheme, Menu, PaperProvider } from 'react-native-paper';
 import { KeyboardConfig } from './app/components/KeyboardConfig';
+import ModernTopNavigation from './app/components/ModernTopNavigation';
 import Account from './app/screens/Account';
 import Login from './app/screens/Auth/Login';
 import SignUp from './app/screens/Auth/SignUp';
@@ -29,7 +30,6 @@ import { Write } from './app/screens/Write';
 import { useAuth } from './app/stores/useAuth';
 import { useLanguage } from './app/stores/useLanguage';
 import { useProgress } from './app/stores/useProgress';
-import { Colors } from './constants/Colors';
 
 const Tab = createBottomTabNavigator();
 const InnerStack = createStackNavigator();
@@ -75,9 +75,7 @@ function HeaderMenu({ navigation }: any) {
 
 function DeckStack() {
   return (
-    <InnerStack.Navigator
-      screenOptions={({ navigation }: any) => ({ headerRight: () => <HeaderMenu navigation={navigation} /> })}
-    >
+    <InnerStack.Navigator>
       <InnerStack.Screen name="Decks" component={DeckList} />
       <InnerStack.Screen name="Study" component={Study} />
       <InnerStack.Screen name="Write" component={Write} options={{ title: 'Write Practice' }} />
@@ -89,9 +87,7 @@ function DeckStack() {
 
 function ConversationsStack() {
   return (
-    <InnerStack.Navigator
-      screenOptions={({ navigation }: any) => ({ headerRight: () => <HeaderMenu navigation={navigation} /> })}
-    >
+    <InnerStack.Navigator>
       <InnerStack.Screen name="Categories" component={ConversationCategories} options={{ title: 'Conversation Categories' }} />
       <InnerStack.Screen name="ConversationList" component={ConversationList} options={({ route }: any) => ({ title: route.params?.title || 'Conversations' })} />
       <InnerStack.Screen name="ConversationPractice" component={ConversationPractice} options={({ route }: any) => ({ title: route.params?.title || 'Practice' })} />
@@ -100,30 +96,34 @@ function ConversationsStack() {
 }
 
 function MainTabs() {
+  const [currentTab, setCurrentTab] = useState('DeckStack');
+
+  const renderCurrentScreen = () => {
+    switch (currentTab) {
+      case 'DeckStack':
+        return <DeckStack />;
+      case 'Stats':
+        return <Stats />;
+      case 'Dictionary':
+        return <Dictionary />;
+      case 'Conversations':
+        return <ConversationsStack />;
+      case 'MultipleChoice':
+        return <MultipleChoice />;
+      case 'Culture':
+        return <Culture />;
+      default:
+        return <DeckStack />;
+    }
+  };
+
   return (
-    <Tab.Navigator
-      screenOptions={({ route, navigation }) => ({
-        tabBarActiveTintColor: Colors.light.tint,
-        headerRight: () => <HeaderMenu navigation={navigation} />,
-        tabBarIcon: ({ focused, color, size }) => {
-          if (route.name === 'DeckStack') return <Ionicons name={focused ? 'albums' : 'albums-outline'} size={size} color={color} />;
-          if (route.name === 'Stats') return <MaterialCommunityIcons name="chart-bar" size={size} color={color} />;
-          if (route.name === 'Dictionary') return <MaterialCommunityIcons name="book-open-page-variant" size={size} color={color} />;
-          if (route.name === 'Conversations') return <MaterialCommunityIcons name="chat" size={size} color={color} />;
-          if (route.name === 'MultipleChoice') return <MaterialCommunityIcons name="checkbox-multiple-marked" size={size} color={color} />;
-          if (route.name === 'Culture') return <MaterialCommunityIcons name="earth" size={size} color={color} />;
-          return null;
-        },
-        tabBarStyle: { paddingBottom: 6, height: 60, paddingHorizontal: 0 },
-      })}
-    >
-      <Tab.Screen name="DeckStack" component={DeckStack} options={{ title: 'Decks', headerShown: false }} />
-      <Tab.Screen name="Stats" component={Stats} />
-      <Tab.Screen name="Dictionary" component={Dictionary} />
-      <Tab.Screen name="Conversations" component={ConversationsStack} options={{ title: 'Conversations', headerShown: false }} />
-      <Tab.Screen name="MultipleChoice" component={MultipleChoice} options={{ title: 'Quiz' }} />
-      <Tab.Screen name="Culture" component={Culture} />
-    </Tab.Navigator>
+    <View style={{ flex: 1 }}>
+      <ModernTopNavigation currentTab={currentTab} onTabChange={setCurrentTab} />
+      <View style={{ flex: 1 }}>
+        {renderCurrentScreen()}
+      </View>
+    </View>
   );
 }
 
