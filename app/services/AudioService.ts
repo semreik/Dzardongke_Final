@@ -20,6 +20,16 @@ class AudioService {
    */
   async playAudio(filename?: string): Promise<void> {
     try {
+      // Set audio mode for Android compatibility
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        staysActiveInBackground: false,
+        shouldDuckAndroid: true,
+        playThroughEarpieceAndroid: false,
+        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+        interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+      });
+
       // Unload any previously loaded sound
       if (this.sound) {
         await this.sound.unloadAsync();

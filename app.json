@@ -17,7 +17,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.s.emreik.dzardzongke_app"
+      "package": "com.s.emreik.dzardzongke_app",
+      "usesCleartextTraffic": true
     },
     "web": {
       "bundler": "metro",
@@ -40,6 +41,10 @@
     "experiments": {
       "typedRoutes": true
     },
+    "assetBundlePatterns": [
+      "assets/audio/**/*",
+      "assets/images/**/*"
+    ],
     "extra": {
       "router": {},
       "eas": {

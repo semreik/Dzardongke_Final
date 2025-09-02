@@ -11,7 +11,7 @@ module.exports = (() => {
   };
   config.resolver = {
     ...resolver,
-    assetExts: resolver.assetExts.filter((ext) => ext !== 'svg'),
+    assetExts: [...resolver.assetExts.filter((ext) => ext !== 'svg'), 'wav', 'mp3', 'm4a', 'aac', 'ogg'],
     sourceExts: [...resolver.sourceExts, 'svg', 'json'],
   };
 
