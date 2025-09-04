@@ -40,7 +40,7 @@ const ModernTopNavigation: React.FC<ModernTopNavigationProps> = ({ currentTab, o
 
   return (
     <View style={styles.container}>
-      {/* Header with app title and menu */}
+      {/* Header with app title */}
       <View style={styles.header}>
         <View style={styles.titleContainer}>
           <Text style={styles.appTitle}>Dzardzongke</Text>
@@ -48,13 +48,47 @@ const ModernTopNavigation: React.FC<ModernTopNavigationProps> = ({ currentTab, o
             <Text style={styles.subtitle}>Learn • Practice • Master</Text>
           </View>
         </View>
+      </View>
+
+      {/* Mobile Navigation Row - Tabs + Menu */}
+      <View style={styles.mobileNavRow}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabScrollView}
+          style={styles.tabScrollContainer}
+        >
+          {tabs.map((tab) => {
+            const isActive = currentTab === tab.key;
+            return (
+              <TouchableOpacity
+                key={tab.key}
+                style={[styles.tab, isActive && styles.activeTab]}
+                onPress={() => handleTabPress(tab.key)}
+              >
+                <View style={styles.tabContent}>
+                  <Ionicons
+                    name={isActive ? tab.activeIcon : tab.icon}
+                    size={18}
+                    color={isActive ? '#6366f1' : '#6b7280'}
+                  />
+                  <Text style={[styles.tabLabel, isActive && styles.activeTabLabel]}>
+                    {tab.label}
+                  </Text>
+                </View>
+                {isActive && <View style={styles.activeIndicator} />}
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
         
+        {/* Three dots menu - fixed position */}
         <Menu
           visible={menuVisible}
           onDismiss={closeMenu}
           anchor={
-            <TouchableOpacity onPress={openMenu} style={styles.menuButton}>
-              <MaterialCommunityIcons name="dots-vertical" size={24} color="#6366f1" />
+            <TouchableOpacity onPress={openMenu} style={styles.mobileMenuButton}>
+              <MaterialCommunityIcons name="dots-vertical" size={20} color="#6b7280" />
             </TouchableOpacity>
           }
           contentStyle={styles.menuContent}
@@ -80,38 +114,6 @@ const ModernTopNavigation: React.FC<ModernTopNavigationProps> = ({ currentTab, o
           </TouchableOpacity>
         </Menu>
       </View>
-
-      {/* Tab Navigation */}
-      <View style={styles.tabContainer}>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.tabScrollView}
-        >
-          {tabs.map((tab) => {
-            const isActive = currentTab === tab.key;
-            return (
-              <TouchableOpacity
-                key={tab.key}
-                style={[styles.tab, isActive && styles.activeTab]}
-                onPress={() => handleTabPress(tab.key)}
-              >
-                <View style={styles.tabContent}>
-                  <Ionicons
-                    name={isActive ? tab.activeIcon : tab.icon}
-                    size={18}
-                    color={isActive ? '#6366f1' : '#6b7280'}
-                  />
-                  <Text style={[styles.tabLabel, isActive && styles.activeTabLabel]}>
-                    {tab.label}
-                  </Text>
-                </View>
-                {isActive && <View style={styles.activeIndicator} />}
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
     </View>
   );
 };
@@ -129,11 +131,8 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: 20,
-    paddingBottom: 16,
+    paddingBottom: 12,
   },
   titleContainer: {
     flex: 1,
@@ -162,21 +161,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e2e8f0',
   },
-  tabContainer: {
+  mobileNavRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
     paddingBottom: 8,
+    backgroundColor: '#ffffff',
+  },
+  tabScrollContainer: {
+    flex: 1,
   },
   tabScrollView: {
-    paddingHorizontal: 16,
     alignItems: 'center',
+    paddingRight: 8,
   },
   tab: {
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    marginHorizontal: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    marginHorizontal: 2,
     position: 'relative',
-    minWidth: 80,
+    minWidth: 60,
   },
   activeTab: {
     backgroundColor: '#f0f4ff',
@@ -186,10 +192,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tabLabel: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '600',
     color: '#6b7280',
-    marginTop: 4,
+    marginTop: 2,
     textAlign: 'center',
   },
   activeTabLabel: {
@@ -198,13 +204,24 @@ const styles = StyleSheet.create({
   },
   activeIndicator: {
     position: 'absolute',
-    bottom: 4,
+    bottom: 2,
     left: '50%',
-    marginLeft: -12,
-    width: 24,
-    height: 3,
+    marginLeft: -8,
+    width: 16,
+    height: 2,
     backgroundColor: '#6366f1',
-    borderRadius: 2,
+    borderRadius: 1,
+  },
+  mobileMenuButton: {
+    padding: 8,
+    borderRadius: 12,
+    backgroundColor: '#f8fafc',
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    marginLeft: 8,
+    minWidth: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   menuContent: {
     backgroundColor: '#ffffff',

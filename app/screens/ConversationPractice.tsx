@@ -140,6 +140,7 @@ export const ConversationPractice: React.FC = () => {
     setViewMode(prev => (prev === 'both' ? 'english' : prev === 'english' ? 'dz' : 'both'));
   };
 
+
   const currentExchange = exchanges[currentExchangeIndex];
   const isSpeakerA = currentExchange?.speaker === 'A';
   

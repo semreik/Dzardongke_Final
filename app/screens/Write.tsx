@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useProgress } from '../stores/useProgress';
 import type { Card } from '../types/deck';
 
@@ -56,49 +56,63 @@ export const Write: React.FC<Props> = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.front}>{currentCard.front}</Text>
-      <TextInput
-        style={styles.input}
-        value={userInput}
-        onChangeText={setUserInput}
-        placeholder="Type the Dzardzongke word..."
-        onSubmitEditing={handleCheck}
-        autoCapitalize="none"
-        autoCorrect={false}
-        spellCheck={false}
-        editable={!showResult}
-      />
-      {!showResult ? (
-        <TouchableOpacity style={styles.button} onPress={handleCheck}>
-          <Text style={styles.buttonText}>Check</Text>
-        </TouchableOpacity>
-      ) : (
-        <View style={styles.resultContainer}>
-          <Text style={[styles.result, isCorrect ? styles.correct : styles.incorrect]}>
-            {isCorrect ? '✓ Correct!' : `✗ Incorrect. The answer is: ${cleanBackText}`}
-          </Text>
-          <TouchableOpacity style={styles.button} onPress={handleNext}>
-            <Text style={styles.buttonText}>
-              {currentCardIndex < cards.length - 1 ? 'Next' : 'Finish'}
-            </Text>
+    <KeyboardAvoidingView 
+      style={styles.container} 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.front}>{currentCard.front}</Text>
+        <TextInput
+          style={styles.input}
+          value={userInput}
+          onChangeText={setUserInput}
+          placeholder="Type the Dzardzongke word..."
+          onSubmitEditing={handleCheck}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
+          editable={!showResult}
+        />
+        {!showResult ? (
+          <TouchableOpacity style={styles.button} onPress={handleCheck}>
+            <Text style={styles.buttonText}>Check</Text>
           </TouchableOpacity>
-        </View>
-      )}
-      <Text style={styles.progress}>
-        {currentCardIndex + 1} / {cards.length}
-      </Text>
-    </View>
+        ) : (
+          <View style={styles.resultContainer}>
+            <Text style={[styles.result, isCorrect ? styles.correct : styles.incorrect]}>
+              {isCorrect ? '✓ Correct!' : `✗ Incorrect. The answer is: ${cleanBackText}`}
+            </Text>
+            <TouchableOpacity style={styles.button} onPress={handleNext}>
+              <Text style={styles.buttonText}>
+                {currentCardIndex < cards.length - 1 ? 'Next' : 'Finish'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        <Text style={styles.progress}>
+          {currentCardIndex + 1} / {cards.length}
+        </Text>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: '#f5f5f5',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 100, // Extra padding for keyboard
   },
   front: {
     fontSize: 24,

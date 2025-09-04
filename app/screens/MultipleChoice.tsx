@@ -146,7 +146,6 @@ export const MultipleChoice: React.FC = () => {
   }
 
   const isCorrect = options.find(o => o.text === selected)?.isCorrect === true;
-  const promptTitle = selectedLanguage === 'qu' ? 'What is the Quechua word for:' : 'What is the Dzardzongke word for:';
   const targetLabel = selectedLanguage === 'qu' ? 'Quechua' : 'Dzardzongke';
   const currentKey = `${currentItem.prompt}=>${currentItem.answer}`;
   const isSaved = savedKeys.has(currentKey);
@@ -155,7 +154,6 @@ export const MultipleChoice: React.FC = () => {
     <ScrollView contentContainerStyle={styles.scrollContent}>
       <View style={styles.container}>
         <Text style={styles.title}>Multiple Choice</Text>
-        <Text style={styles.prompt}>{promptTitle}</Text>
         <View style={styles.promptCard}>
           <View style={styles.promptHeader}>
             <MaterialCommunityIcons name="translate" size={16} color="#2563eb" />
