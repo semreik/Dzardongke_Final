@@ -27,8 +27,12 @@ export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
   // Check if the front content is an image filename
   const isFrontImage = card.front && typeof card.front === 'string' && card.front.endsWith('.png');
   
+  // Check if there's an image field
+  const hasImageField = card.image && typeof card.image === 'string' && card.image.endsWith('.png');
+  
   // Check if the image exists in the generated image registry
-  const imageExists = isFrontImage && imageRegistry[card.front as string] !== undefined;
+  const imageExists = (isFrontImage && imageRegistry[card.front as string] !== undefined) ||
+                     (hasImageField && imageRegistry[card.image as string] !== undefined);
   
   // Check if this is a color card by checking if the front matches a color name (case-insensitive)
   // For color cards, we'll use the front (English) color name to determine the background color
@@ -69,7 +73,7 @@ export const Card: React.FC<Props> = ({ card, isFlipped, onFlip }) => {
       <View style={styles.content}>
         {!isFlipped && imageExists ? (
           <Image 
-            source={imageRegistry[card.front as string]}
+            source={imageRegistry[card.front as string] || imageRegistry[card.image as string]}
             style={styles.image}
             resizeMode="contain"
           />
