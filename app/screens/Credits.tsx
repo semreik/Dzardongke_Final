@@ -1,146 +1,93 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View, Platform } from 'react-native';
-import { Divider, Text } from 'react-native-paper';
-
-const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-  <View style={styles.section}>
-    <Text variant="titleMedium" style={styles.sectionTitle}>{title}</Text>
-    <Divider style={styles.divider} />
-    <View style={styles.sectionBody}>{children}</View>
-  </View>
-);
+import { StyleSheet, View } from 'react-native';
+import { Text } from 'react-native-paper';
 
 const Credits: React.FC = () => {
   return (
-    <ScrollView 
-      style={[styles.scrollView, Platform.OS === 'web' && styles.webScrollView]}
-      contentContainerStyle={[styles.container, Platform.OS === 'web' && styles.webContainer]}
-      showsVerticalScrollIndicator={true}
-      bounces={true}
-      nestedScrollEnabled={true}
-    >
+    <View style={styles.container}>
       <View style={styles.header}>
-        <Text variant="titleLarge" style={styles.title}>Credits</Text>
-        <Text variant="bodyMedium" style={styles.intro}>
-          This app is a collaborative effort between Dzardzongke speakers and researchers from the
-          University of Cambridge and the EPHE-PSL in Paris. We would like to thank XX for their generous
-          funding to develop the first prototype of the app. The app will be accompanied by an introductory
-          textbook to learn the Dzardzongke language.
+        <Text variant="headlineSmall" style={styles.title}>Credits</Text>
+        <Text style={styles.intro}>
+          This app is a collaborative effort between Dzardzongke speakers and researchers from the University of Cambridge and the EPHE-PSL in Paris. The app will be accompanied by an introductory textbook to learn the Dzardzongke language, which was inspired by
         </Text>
       </View>
 
-      <Section title="Dzardzongke speakers and collaborators">
-        <Text style={styles.item}>• Palgen Bista</Text>
-        <Text style={styles.item}>• Tshewang Gurung</Text>
-        <Text style={styles.item}>• Lhabon Takla</Text>
-        <Text style={styles.item}>• Tenzin Thakuri</Text>
-        <Text style={styles.item}>• Kemi Tsewang</Text>
-        <Text style={styles.item}>• Tsewang Khyenga</Text>
-        <Text style={styles.item}>• Gyaltsen Muktivilla</Text>
-      </Section>
+      <View style={styles.content}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Dzardzongke Speakers</Text>
+          <Text style={styles.compactText}>
+            Palgen Bista • Tshewang Gurung • Lhabon Takla • Tenzin Thakuri • Kemi Tsewang • Tsewang Khyenga • Gyaltsen Muktivilla
+          </Text>
+        </View>
 
-      <Section title="Illustrations">
-        <Text style={styles.item}>• Hilaria Cruz</Text>
-        <Text style={styles.item}>• Kids at the Lubrak hostel: XX, YY, ZZ (TBC)</Text>
-      </Section>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Illustrations</Text>
+          <Text style={styles.compactText}>
+            Hilaria Cruz • Kids at Lubrak hostel
+          </Text>
+        </View>
 
-      <Section title="Research team">
-        <Text style={styles.item}>• Hannah Claus (University of Cambridge)</Text>
-        <Text style={styles.item}>• Songbo Hu (University of Cambridge)</Text>
-        <Text style={styles.item}>• Emre Isik (University of Cambridge)</Text>
-        <Text style={styles.item}>• Anna Korhonen (University of Cambridge)</Text>
-        <Text style={styles.item}>• Kitty Liu (University of Cambridge)</Text>
-        <Text style={styles.item}>• Marieke Meelen (University of Cambridge)</Text>
-        <Text style={styles.item}>• Charles Ramble (EPHE-PSL, Paris)</Text>
-      </Section>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Research Team</Text>
+          <Text style={styles.compactText}>
+            Hannah Claus • Songbo Hu • Emre Isik • Anna Korhonen • Kitty Liu • Marieke Meelen (Cambridge) • Charles Ramble (EPHE-PSL)
+          </Text>
+        </View>
 
-      <Section title="Technical Development">
-        <Text style={styles.item}>• React Native & Expo Framework</Text>
-        <Text style={styles.item}>• TypeScript Implementation</Text>
-        <Text style={styles.item}>• SQLite Database Integration</Text>
-        <Text style={styles.item}>• Audio & Media Management</Text>
-        <Text style={styles.item}>• Cross-platform Compatibility</Text>
-      </Section>
-
-      <Section title="Future Development">
-        <Text style={styles.item}>• Advanced Learning Algorithms</Text>
-        <Text style={styles.item}>• Community Features</Text>
-        <Text style={styles.item}>• Offline Content Synchronization</Text>
-        <Text style={styles.item}>• Multi-language Support Framework</Text>
-        <Text style={styles.item}>• Analytics & Progress Tracking</Text>
-      </Section>
-      
-      {/* Add some bottom padding to ensure last section is fully visible */}
-      <View style={styles.bottomPadding} />
-    </ScrollView>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
+  container: {
     flex: 1,
     backgroundColor: '#f7f7fb',
-  },
-  webScrollView: {
-    height: '100vh',
-    overflow: 'auto',
-  } as any,
-  container: {
     padding: 16,
-    paddingBottom: 32, // Extra bottom padding for better scrolling
-    flexGrow: 1, // Ensures content can expand and scroll properly
   },
-  webContainer: {
-    minHeight: '100vh',
-  } as any,
   header: {
-    alignItems: 'flex-start',
     marginBottom: 16,
   },
   title: {
     fontWeight: '700',
     marginBottom: 8,
     color: '#111827',
+    textAlign: 'center',
   },
   intro: {
-    textAlign: 'left',
+    textAlign: 'center',
     color: '#4b5563',
-    lineHeight: 22,
-    fontSize: 16,
+    lineHeight: 18,
+    fontSize: 13,
+  },
+  content: {
+    flex: 1,
   },
   section: {
     backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
     borderColor: '#e5e7eb',
     borderWidth: 1,
-    marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   sectionTitle: {
     fontWeight: '700',
     color: '#111827',
     fontSize: 18,
-    marginBottom: 4,
+    marginBottom: 12,
+    textAlign: 'center',
   },
-  divider: {
-    marginVertical: 8,
-    backgroundColor: '#e5e7eb',
-  },
-  sectionBody: {
-    gap: 8,
-  },
-  item: {
+  compactText: {
     color: '#1f2937',
     fontSize: 16,
-    lineHeight: 22,
-  },
-  bottomPadding: {
-    height: 20, // Extra space at bottom for better scrolling experience
+    lineHeight: 24,
+    textAlign: 'center',
   },
 });
 
