@@ -62,7 +62,7 @@ export const ConversationPractice: React.FC = () => {
         const langKey = selectedLanguage === 'dz' ? 'dz' : 'qu';
         const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/1_A`;
         console.log('🎵 Auto-playing first message:', audioKey);
-        audioService.playByKey(audioKey).catch((error) => {
+        audioService.playConversationAudio(audioKey).catch((error) => {
           console.error('❌ First message audio failed:', error);
         });
       }
@@ -107,7 +107,7 @@ export const ConversationPractice: React.FC = () => {
         const indexOneBased = currentExchangeIndex + 1;
         const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
         console.log('🎵 Auto-playing new message:', audioKey);
-        audioService.playByKey(audioKey).catch((error) => {
+        audioService.playConversationAudio(audioKey).catch((error) => {
           console.error('❌ New message audio failed:', error);
         });
       }
@@ -232,7 +232,7 @@ export const ConversationPractice: React.FC = () => {
                       const indexOneBased = idx + 1;
                       const audioKey = `conv/${langKey}/${categoryId}/${conversationId}/${indexOneBased}_${ex.speaker}`;
                       console.log('🎵 Playing conversation audio:', audioKey);
-                      audioService.playByKey(audioKey).catch((error) => {
+                      audioService.playConversationAudio(audioKey).catch((error) => {
                         console.error('❌ Failed to play audio:', error);
                       });
                     }}
